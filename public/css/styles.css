@@ -1,0 +1,143 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "untitled-font-2";
+  src:url("fonts/untitled-font-2.eot");
+  src:url("fonts/untitled-font-2.eot?#iefix") format("embedded-opentype"),
+    url("fonts/untitled-font-2.woff") format("woff"),
+    url("fonts/untitled-font-2.ttf") format("truetype"),
+    url("fonts/untitled-font-2.svg#untitled-font-2") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+.dataTables_filter input[type=search]
+{
+  background-image: url(https://img.icons8.com/ios-filled/24/888888/search.png);
+  background-repeat: no-repeat;
+  background-size: 15px;
+  background-position: bottom 8px right 8px;
+}
+
+.dataTables_filter input[type=search]:focus {
+  background-image: url(https://img.icons8.com/ios-filled/24/000000/search.png);
+}
+[data-icon]:before {
+  font-family: "untitled-font-2" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "untitled-font-2" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tire-flat:before {
+  content: "\61";
+}
+.icon-eye-r:before {
+  content: "\62";
+}
+.icon-eye-s:before {
+  content: "\63";
+}
+.icon-sliders-h:before {
+  content: "\64";
+}
+.icon-arrow-alt-circle-down-s:before {
+  content: "\65";
+}
+.icon-arrow-alt-circle-up-s:before {
+  content: "\66";
+}
+.icon-address-card-r:before {
+  content: "\67";
+}
+.icon-phone-s:before {
+  content: "\68";
+}
+.icon-store-alt-s:before {
+  content: "\69";
+}
+.icon-container-storage-r:before {
+  content: "\6a";
+}
+.icon-calendar-alt-s:before {
+  content: "\6b";
+}
+.icon-check-circle-s:before {
+  content: "\6c";
+}
+.icon-clipboard-list-r:before {
+  content: "\6d";
+}
+.icon-equals-s:before {
+  content: "\6e";
+}
+.icon-angle-left-s:before {
+  content: "\6f";
+}
+.icon-angle-right-s:before {
+  content: "\70";
+}
+.icon-receipt-r:before {
+  content: "\71";
+}
+.icon-tachometer-s:before {
+  content: "\72";
+}
+.icon-anchor-r:before {
+  content: "\73";
+}
+.icon-chart-bar-s:before {
+  content: "\74";
+}
+.icon-dolly-s:before {
+  content: "\75";
+}
+.icon-file-invoice-dollar-r:before {
+  content: "\76";
+}
+.icon-file-invoice-dollar-s:before {
+  content: "\77";
+}
+.icon-hand-holding-usd-s:before {
+  content: "\78";
+}
+.icon-minus-circle-s:before {
+  content: "\79";
+}
+.icon-percent-s:before {
+  content: "\7a";
+}
+.icon-plus-circle-s:before {
+  content: "\41";
+}
+.icon-tyre-s:before {
+  content: "\43";
+}
+.icon-user-r:before {
+  content: "\42";
+}
+.icon-users-s:before {
+  content: "\44";
+}
+.icon-warehouse-s:before {
+  content: "\45";
+}

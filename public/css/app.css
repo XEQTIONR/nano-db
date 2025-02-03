@@ -1,0 +1,199 @@
+/**app.less
+@author Ishtehar Hussain
+@desc The main files with all the styles for the app
+**/
+::-webkit-scrollbar {
+  display: none;
+}
+html {
+  background-color: #333634;
+}
+body {
+  color: #494252;
+  font-size: 14px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  background-color: #C4CCC3;
+}
+body h1 {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+}
+.nav-topmost {
+  background-color: #373C6E;
+}
+.nav-topmost a {
+  color: #FFF;
+  text-decoration: none;
+}
+.nav-topmost a:hover {
+  color: #5BB234;
+}
+#NavBootstrapOverride > a:hover {
+  background-color: transparent;
+  color: #5BB234;
+}
+#NavBootstrapOverride > a:focus {
+  background-color: transparent;
+  color: #5BB234;
+}
+#NavBootstrapOverride > a:active {
+  background-color: transparent;
+  color: #5BB234;
+}
+.navbar-intertrac {
+  background-color: #26294c;
+  margin-top: 50px;
+  margin-bottom: 0px;
+  z-index: 500;
+}
+.nav-intertrac {
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 200;
+  line-height: 2em;
+}
+.nav-intertrac li {
+  width: auto;
+  display: block;
+  float: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+.nav-intertrac li a {
+  color: #FFF;
+  font-weight: 600;
+}
+.nav-intertrac li a:hover {
+  color: #5BB234;
+  background-color: transparent;
+}
+.nav-intertrac li a:active {
+  color: #F26101;
+  background-color: #FFF;
+}
+.subMenu {
+  display: none;
+  background-color: white;
+}
+.subMenu a {
+  color: #373C6E;
+}
+.subMenu a:hover {
+  color: #5BB234;
+}
+.menu-option-title {
+  font-size: 1.2em;
+  font-family: 'Montserrat', serif;
+  font-weight: 600;
+}
+.menu-table-cell {
+  padding: 5px;
+  vertical-align: middle;
+  text-align: center;
+  /*border: 1px solid blue;*/
+}
+.white-card {
+  width: 100%;
+  background-color: #ffffff;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+.marg-top {
+  margin-top: 2em;
+}
+.stat {
+  text-align: center;
+  font-weight: 100;
+}
+.stat-figure {
+  font-size: 4em;
+}
+.stat-diagram {
+  height: 20em;
+  border: 1px sold red;
+}
+.stat-text {
+  font-size: 1em;
+  margin-bottom: 2em;
+  font-weight: 100;
+}
+#mainContent {
+  width: 100%;
+  height: auto;
+  min-height: vh;
+  margin-top: 90px;
+  background-color: #FFF;
+}
+#mainContent hr {
+  background-color: #DDD;
+}
+#mainContent table {
+  background-color: #ffffff;
+}
+#mainContent table thead tr {
+  font-family: 'Montserrat', serif;
+  font-size: .7em;
+  background-color: #373C6E;
+  color: #FFF;
+  text-transform: uppercase;
+}
+#mainContent table thead th {
+  text-align: center;
+  border-left: 1px solid white;
+  border-right: 1px solid white;
+}
+.welcome-banner {
+  background-color: #373C6E;
+  height: auto;
+  margin: 0;
+}
+.welcome-banner h1 {
+  font-size: 100px;
+  font-weight: 500;
+  color: #F26101;
+  margin-top: 1em;
+}
+.welcome-banner h1 span {
+  color: #FFF;
+  font-weight: 500;
+}
+.main-title {
+  font-size: 50px;
+}
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+.left-aligned {
+  margin-left: 1em;
+  margin-right: auto;
+}
+.vertical-spaced {
+  margin-top: 1em;
+  margin-bottom: 2.5em;
+  height: 4em;
+}
+.border {
+  border: 1px dashed green;
+}
+#footer {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  text-transform: uppercase;
+  postion: absolute;
+  background-color: #444;
+  border-top: 1px solid #5BB234;
+  margin: 0;
+  padding-top: 7vh;
+  padding-bottom: 3vh;
+  bottom: 0;
+}
+#footer p {
+  color: #5BB234;
+  font-weight: 600;
+}
+.icon-bar {
+  background-color: black;
+}

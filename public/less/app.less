@@ -1,0 +1,346 @@
+/**app.less
+@author Ishtehar Hussain
+@desc The main files with all the styles for the app
+**/
+@red:#E25E69;
+@contrast:#7BC2CA;
+@yellow:#EC7;
+@dark: #494252;
+@purple: #373C6E;//#2D2757;
+@a-color:#304269;
+
+@slate-gray: #345;
+@orange: #FA4;
+@orange2: #F26101;
+@green: #5BB234;
+@light-gray: #DDD;
+
+@green4: #325443;
+@green3: #24823B;
+@green2: #46CC43;
+@green1: #6FF22E;
+@green0: #ACFF12;
+
+@gray6: #1D1F1E;
+@gray5: #333634;
+@gray4: #505451;
+@gray3: #7E827F;
+@gray2: #C4CCC3;
+@gray1: #EBF2E8;
+@gray0: #F7FFF5;
+
+@pt:#0295C6;
+@vg:#45C770;
+
+
+::-webkit-scrollbar {
+display: none;
+}
+
+html
+{
+  background-color: @gray5;
+}
+body
+{
+  color: @dark;
+  font-size: 14px;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 400;
+  background-color: @gray2;
+  //margin-top: 100px;
+
+  h1
+  {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 800;
+  }
+}
+
+.nav-topmost
+{
+  background-color: @purple;
+
+  a
+  {
+    color: #FFF;
+    text-decoration: none;
+
+    &:hover
+    {
+      color: @green;
+    }
+  }
+}
+
+#NavBootstrapOverride
+{
+  //li{
+    >a{
+      &:hover
+      {
+        background-color: transparent;
+        color: @green;
+        //border-bottom: 3px solid @green;
+      }
+
+      &:focus
+      {
+        background-color: transparent;
+        color: @green;
+      }
+      &:active
+      {
+        background-color: transparent;
+        color: @green;
+      }
+    }
+  //}
+}
+
+.navbar-intertrac
+{
+  background-color: darken(@purple, 10%);
+  margin-top: 50px;
+  margin-bottom: 0px;
+  z-index: 500;
+  //border-bottom: 6px solid @orange2;//lighten(@orange2, 30%);
+
+}
+
+.nav-intertrac
+{
+  //background-color: @pt;
+  font-family: 'Montserrat', sans-serif;
+  text-transform:uppercase;
+  font-size: 12px;
+  font-weight: 200;
+  line-height: 2em;
+  //height: 5em;
+  li
+  {
+      width: auto;
+      display: block;
+      float: left;
+      margin-left: 0;
+      margin-right: 0;
+      a
+      {
+        color: #FFF;//darken(@contrast,15%);
+        font-weight: 600;
+        //background-color: @nav-tab-color;
+        //border: 0px;
+        &:hover
+        {
+          color: @green;//darken(saturate(@green,100%),20%);
+          background-color: transparent;//lighten(#EEE, 15%);
+          //font-weight: 600;
+          //border-top: 3px solid @pt;
+          //border-left: 3px solid @pt;
+          //border-right: 3px solid @pt;
+          //border-bottom: 3px solid @orange2;//lighten(saturate(@green,100%),10%);
+        }
+        &:active
+        {
+          color: @orange2;
+          background-color: #FFF;
+        }
+
+      }
+    }
+  }
+
+  .subMenu
+  {
+    display: none;
+    background-color: white;//lighten(@orange, 30%);
+    //border-bottom: 5px solid @contrast;
+
+    a
+    {
+      color: @purple ;
+
+      &:hover
+      {
+
+        color: @green;
+      }
+    }
+
+  }
+
+
+
+    .menu-option-title
+    {
+      font-size: 1.2em;
+      //text-transform: uppercase;
+      font-family: 'Montserrat', serif;
+      font-weight: 600;
+    }
+
+    .menu-table-cell
+    {
+      padding: 5px;
+      vertical-align: middle;
+      text-align: center;
+      /*border: 1px solid blue;*/
+
+    }
+
+
+
+.white-card
+{
+  width: 100%;
+  //min-height: 200px;
+  background-color: lighten(@purple, 70%);
+  //border: 1px solid red;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.marg-top
+{
+  margin-top: 2em;
+}
+
+.stat
+{
+  //font-family: 'Oswald', serif;
+  text-align: center;
+  font-weight: 100;
+}
+.stat-figure
+{
+  font-size: 4em;
+}
+
+.stat-diagram
+{
+  height: 20em;
+  border: 1px sold red;
+  //font-family: 'Oswald', serif;
+}
+
+.stat-text
+{
+  font-size: 1em;
+  margin-bottom: 2em;
+  font-weight: 100;
+}
+
+
+#mainContent
+{
+  width: 100%;
+  height: auto;
+  min-height: vh;
+  margin-top: 90px;
+  background-color: #FFF;
+
+  hr{
+    background-color: #DDD;
+  }
+table{
+  background-color: lighten(@purple, 70%);
+  thead{
+    tr{
+      font-family: 'Montserrat', serif;
+      font-size: .7em;
+      background-color: @purple;
+      //border-bottom: 3px solid @orange2;
+      color: #FFF;
+      text-transform: uppercase;
+
+      //font-size: .75em;
+    }
+    th{
+      text-align: center;
+      border-left: 1px solid white;
+      border-right: 1px solid white;
+
+    }
+  }
+}
+}
+
+.welcome-banner
+{
+  background-color: @purple;//desaturate(@orange, 10%);
+  //height: 100vh -100px;
+  height:auto;
+  //min-height: 60vh;
+  //overflow: hidden;
+  margin: 0;
+  h1
+  {
+
+    font-size: 100px;
+    font-weight: 500;
+    color: @orange2;//lighten(@yellow, 10%);
+
+    margin-top: 1em;
+    span
+    {
+      color: #FFF;
+      font-weight: 500;
+    }
+  }
+}
+.main-title
+{
+  font-size: 50px;
+}
+
+.centered
+{
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.left-aligned
+{
+  margin-left: 1em;
+  margin-right: auto;
+}
+
+.vertical-spaced
+{
+   margin-top: 1em;
+   margin-bottom: 2.5em;
+   height: 4em;
+  // border: 1px dashed @pt;
+}
+
+.border
+{
+  border: 1px dashed green;
+}
+
+  #footer
+  {
+    font-family: 'Raleway', sans-serif;
+    font-size: 12px;
+
+    text-transform: uppercase;
+    postion: absolute;
+    background-color: #444;//desaturate(@pt, 15%);
+    border-top: 1px solid @green;
+    margin: 0;
+    padding-top: 7vh;
+    padding-bottom: 3vh;
+    bottom: 0;
+
+    p
+    {
+      color: @green;
+      font-weight: 600;
+    }
+  }
+
+  .icon-bar
+  {
+    background-color: black;
+  }
