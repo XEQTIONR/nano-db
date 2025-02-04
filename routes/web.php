@@ -1,8 +1,25 @@
 <?php
 
+use App\Http\Controllers\ConsignmentContainerController;
+use App\Http\Controllers\ConsignmentController;
+use App\Http\Controllers\ConsignmentExpenseController;
+use App\Http\Controllers\ContainerContentController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\HscodeController;
+use App\Http\Controllers\LcController;
+use App\Http\Controllers\MiscController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PerformaInvoiceController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\TyreController;
+use App\Http\Controllers\WasteController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/', 'MiscController@welcome')->middleware('auth')->name('home');
+Route::get('/', [MiscController::class, 'welcome'])->middleware('auth')->name('home');
 
 Route::get('/admin-test', function(){
 
@@ -16,56 +33,56 @@ Route::get('/users', function(){
   return view('users', compact('users'));
 })->name('users.index')->middleware(['auth', 'admin']);
 
-Route::resource('tyres','TyreController');
+Route::resource('tyres', TyreController::class);
 
-Route::resource('lcs','LcController');
+Route::resource('lcs', LcController::class);
 
-Route::get('/proforma_invoice/create', 'LcController@createProformaInvoice')->name('proforma_invoice.create');
+Route::get('/proforma_invoice/create', [LcController::class, 'createProformaInvoice'])->name('proforma_invoice.create');
 
-Route::post('/proforma_invoice/store', 'LcController@storeProformaInvoice')->name('proforma_invoice.store');
+Route::post('/proforma_invoice/store', [LcController::class, 'storeProformaInvoice'])->name('proforma_invoice.store');
 
 //To pass the lc_num
-Route::get('/consignments/create/{lc}', 'ConsignmentController@createGivenLC');
+Route::get('/consignments/create/{lc}', [LcController::class, 'createGivenLC']);
 
-Route::resource('consignments','ConsignmentController');
+Route::resource('consignments', ConsignmentController::class);
 
 
 
-Route::resource('customers','CustomerController');
+Route::resource('customers', CustomerController::class);
 
-Route::resource('consignment_expenses','ConsignmentExpenseController');
+Route::resource('consignment_expenses', ConsignmentExpenseController::class);
 
-Route::resource('consignment_containers','ConsignmentContainerController');
-Route::get('/consignment_containers/{consignment}/{container}', 'ConsignmentContainerController@show');
+Route::resource('consignment_containers', ConsignmentContainerController::class);
+Route::get('/consignment_containers/{consignment}/{container}', [ConsignmentContainerController::class, 'show']);
 
-Route::resource('performa_invoices','PerformaInvoiceController');
+Route::resource('performa_invoices', PerformaInvoiceController::class);
 
 
 //raw json order info
-Route::get('/orders/json/{order_num}', 'OrderController@showJSON');
+Route::get('/orders/json/{order_num}', [OrderController::class, 'showJSON']);
 
-Route::resource('orders','OrderController');
+Route::resource('orders', OrderController::class);
 
-Route::get('orders/{order}/receipt', 'OrderController@viewReceipt')->name('orders.receipt');;
-
-
-
-Route::resource('returns', 'ReturnController');
-
-
-Route::resource('payments','PaymentController');
-
-Route::resource('hscodes','HscodeController');
+Route::get('orders/{order}/receipt', [OrderController::class, 'viewReceipt'])->name('orders.receipt');;
 
 
 
-Route::get('/container_contents/create/{bol}', 'ContainerContentController@createGivenBOL');
-
-Route::resource('container_contents', 'ContainerContentController');
+Route::resource('returns', ReturnController::class);
 
 
+Route::resource('payments', PaymentController::class);
 
-Route::resource('order_contents', 'OrderContentController');
+Route::resource('hscodes', HscodeController::class);
+
+
+
+Route::get('/container_contents/create/{bol}', [ContainerContentController::class, 'createGivenBOL']);
+
+Route::resource('container_contents', ContainerContentController::class);
+
+
+
+Route::resource('order_contents', OrderController::class);
 
 
 Route::get('stock', function()
@@ -75,78 +92,34 @@ Route::get('stock', function()
 })->name('stock');
 
 
-Route::get('reports/expense', 'ReportController@defaultExpenseReport');
+Route::get('reports/expense', [ReportController::class, 'defaultExpenseReport']);
 
-Route::get('reports/expense/{time_frame}/{year}', 'ReportController@showExpenseReport');
+Route::get('reports/expense/{time_frame}/{year}', [ReportController::class, 'showExpenseReport']);
 
-Route::get('reports/order/', 'ReportController@defaultOrderReport');
+Route::get('reports/order/', [ReportController::class, 'defaultOrderReport']);
 
-Route::get('reports/order/{time_frame}/{year}', 'ReportController@showOrderReport');
-
-
-Route::get('reports/payment/', 'ReportController@defaultPaymentReport');
-
-Route::get('reports/payment/{time_frame}/{year}', 'ReportController@showPaymentReport');
+Route::get('reports/order/{time_frame}/{year}', [ReportController::class, 'showOrderReport']);
 
 
-Route::get('reports/outstanding_balance', 'ReportController@showOutstandingBalanceReport');
+Route::get('reports/payment/', [ReportController::class, 'defaultPaymentReport']);
 
-Route::get('reports/profit', 'ReportController@showProfitReport');
-
-
-Route::resource('waste', 'WasteController');
+Route::get('reports/payment/{time_frame}/{year}', [ReportController::class, 'showPaymentReport']);
 
 
-Route::get('test2', 'OrderController@btest');
-Route::get('test3', 'OrderController@ctest');
+Route::get('reports/outstanding_balance', [ReportController::class, 'showOutstandingBalanceReport']);
 
-//Route::get('test', function()
-//{
-//  $orders = App\Order::all();
-//  $customers = collect();
-//  //$num_customers=0;
-//  $num_orders=0;
-//  $total_owed=0;
-//  $total_value=0;
-//
-//  foreach ($orders as $order)
-//  {
-//    $order->totalValueBeforeDiscountAndTax();
-//    $order->calculateAndSetDiscount();
-//    $order->calculateAndSetTax();
-//    $order->calculatePayable();
-//    $order->final_value = $order->subtotal + $order->totalTax - $order->totalDiscount;
-//
-//    if ($order->payable>0)
-//    {
-//
-//      $customers->push($order->customer_id);
-//      $num_orders++;
-//      $total_owed+= $order->payable;
-//      $total_value+= $order->final_value;
-//    }
-//    //$customer = $order->customer()->get();
-//    //$order->customer_id = $order->customer()->id;
-//  }
-//
-//  $unique = $customers->unique();
-//  $num_customers = count($unique);
-//  return [$orders, $customers, $unique, $total_owed, $total_value, $num_orders, $num_customers];
-//});
+Route::get('reports/profit', [ReportController::class, 'showProfitReport']);
 
 
-
+Route::resource('waste', WasteController::class);
 
 Route::get('title', function()
 {
   return view('title');
 });
 
-//Route::get('/', 'WelcomeController@show');
-
 Auth::routes();
 
 Route::get('/home', function(){
-
   return redirect('/');
 });
