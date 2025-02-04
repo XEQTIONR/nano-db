@@ -27,7 +27,7 @@
         <button type="button" aria-label="Close" data-dismiss="alert" class="close"><span aria-hidden="true">×</span></button>
         <h4><i class="icon icon-check-circle-s fa-check-circle"></i> Done</h4>
         Waste items added. Stock has been adjusted.
-        <a href="{{route('waste.create')}}" class="btn btn-success ml-5">Add More Returns</a>
+        <a href="{{route('waste.create')}}" class="btn btn-success ml-5">Add More Waste</a>
         <a href="{{route('stock')}}" class="btn btn-success">View Current Stock</a>
       </div>
   </transition>

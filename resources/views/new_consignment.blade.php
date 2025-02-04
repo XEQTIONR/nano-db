@@ -142,7 +142,7 @@
                       <label>Consignment Value (in local currency) </label>
                       <div class="input-group">
                         <span class="input-group-addon"><strong>৳</strong></span>
-                        <input type="number" step="0.01" class="form-control" :value="value_local | currency" disabled>
+                        <input step="0.01" class="form-control" :value="value_local | currency" disabled>
                       </div>
                     </div>
                   </div>
@@ -166,7 +166,7 @@
                       <label>Total Cost to obtain consignment</label>
                       <div class="input-group">
                         <span class="input-group-addon"><strong>৳</strong></span>
-                        <input :value="total_cost | currency" type="number" step="0.01" min="0" class="form-control" disabled placeholder="0.00">
+                        <input :value="total_cost | currency" step="0.01" min="0" class="form-control" disabled placeholder="0.00">
                       </div>
                       <span class="help-block"></span>
                     </div>
