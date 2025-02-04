@@ -6,11 +6,11 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
-class RegisterController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+class RegisterController extends Controller implements HasMiddleware
 {
     /*
-    |--------------------------------------------------------------------------
+    |-----------------------------`---------------------------------------------
     | Register Controller
     |--------------------------------------------------------------------------
     |
@@ -34,10 +34,13 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct()
+
+    public static function middleware(): array
     {
-        $this->middleware('auth');
-        $this->middleware('admin');
+        return [
+            'auth',
+            'admin',
+        ];
     }
 
     /**
