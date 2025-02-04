@@ -11,18 +11,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class OrderController extends Controller
+class OrderController extends Controller implements HasMiddleware
 {
 
 
 
 
-    public function __construct()
+    public static function middleware(): array
     {
-      parent::__construct();
-
-      $this->middleware('no_payments')->only('edit');
+      //parent::__construct();
+      return [
+        'auth',
+        new Middleware('no_payments', only: ['edit']),
+      ];
+      //$this->middleware('no_payments')->only('edit');
     }
 
     public static function setContents(&$contents, $index, $order_num, $tyre_id, $price, $stock_listing, $qty_remain)
