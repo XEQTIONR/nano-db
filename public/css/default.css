@@ -1,0 +1,132 @@
+html, body {
+    background-color: #fff;
+    color: black;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 100;
+    /*height: 100vh;*/
+    margin: 0;
+}
+
+.full-height {
+    height: auto;
+    margin-top: 30vh;
+}
+
+.flex-center {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.position-ref {
+    position: relative;
+}
+
+.top-right {
+    position: absolute;
+    right: 10px;
+    top: 18px;
+}
+
+.content {
+    text-align: center;
+    width: 100%;
+}
+
+.title {
+    font-size: 84px;
+}
+
+.title span{
+  color: orange;
+}
+
+.links{
+  /*display : block;
+  width : auto;
+  margin : 0;
+  background-color: teal;*/
+}
+
+.links table
+{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.links > a, td > a, a {
+    color: #636b6f;
+    padding: 0 25px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.links > a:hover, td > a:hover{
+  color: orange;
+}
+
+.m-b-md {
+    margin-bottom: 30px;
+}
+
+.mainMenu{
+  /*width: 100%;*/
+  display : block;
+  margin : 0;
+}
+
+.mainMenu ul{
+  list-style-type: none;
+}
+
+.mainMenuImage{
+  display : block;
+  margin : auto;
+}
+
+.subMenu{
+  width: 100%;
+  background-color: orange;
+  height: auto;
+
+  display: block;
+  margin: 0;
+}
+
+.subMenu ul{
+  margin: 0;
+  color: white;
+  list-style-type: none;
+}
+
+.subMenu li{
+  display: block;
+  width: 33%;
+  float: left;
+}
+
+.subMenu li a{
+  color: #FFF;
+}
+
+.subMenu li a:hover{
+  color: #CCC;
+}
+
+.mainContent{
+  font-weight: 600;
+}
+
+.DBinfo{
+  margin: 75px auto;
+  background-color: #AAA;
+  border-collapse: collapse;
+}
+
+.DBinfo th{
+  background-color: #888;
+  border: 1px solid #AAA;
+}
