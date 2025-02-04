@@ -18,6 +18,7 @@ use App\Http\Controllers\WasteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', [MiscController::class, 'welcome'])->middleware('auth')->name('home');
 
@@ -123,3 +124,12 @@ Auth::routes();
 Route::get('/home', function(){
   return redirect('/');
 });
+
+// Ajax api calls.
+Route::name('api.')
+  ->prefix('/api')
+  ->group(function() {
+    Route::post('/lcs/check', [LcController::class, 'checkLCNumber'])->name('lcs.check');
+    Route::post('/customers', [CustomerController::class, 'apiShow'])->name('customers');
+    Route::post('/customer-update', [CustomerController::class, 'apiUpdate'])->name('customers.update');
+  });
