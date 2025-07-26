@@ -2,16 +2,75 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { type NavItem, type NavCollapseGroup } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { Anchor, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, LoaderPinwheel, PackageCheck, Scroll, Smile } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+const mainNavItems: NavCollapseGroup[] = [
     {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
+        title: 'Letters of Credit',
+        icon: Scroll,
+        links: [
+            { title: "Create a new LC", href: "/lcs/create"},
+            { title: "View all LCs", href: "/lcs"},
+            { title: "Add a proforma invoice", href: "/lcs"},
+        ],
+    },
+    {
+        title: 'Consignments',
+        icon: Anchor,
+        links: [
+            { title: "View consignments", href: "/consignments"},
+            { title: "View containers", href: "/containers"},
+            { title: "Add a consignment", href: "/consignments/create"},
+            { title: "Add a container", href: "/containers/create"},
+            { title: "Add an expense", href: "/expense/create"}
+        ]
+    },
+    {
+        title: 'Orders',
+        icon: PackageCheck,
+        links: [
+            { title: "View consignments", href: "/consignments"},
+            { title: "View containers", href: "/containers"},
+            { title: "Add a consignment", href: "/consignments/create"},
+            { title: "Add a container", href: "/containers/create"},
+            { title: "Add an expense", href: "/expense/create"}
+        ]
+    },
+    {
+        title: 'Payments',
+        icon: HandCoins,
+        links: [
+            { title: "View consignments", href: "/consignments"},
+            { title: "View containers", href: "/containers"},
+            { title: "Add a consignment", href: "/consignments/create"},
+            { title: "Add a container", href: "/containers/create"},
+            { title: "Add an expense", href: "/expense/create"}
+        ]
+    },
+    {
+        title: 'Products',
+        icon: LoaderPinwheel,
+        links: [
+            { title: "View consignments", href: "/consignments"},
+            { title: "View containers", href: "/containers"},
+            { title: "Add a consignment", href: "/consignments/create"},
+            { title: "Add a container", href: "/containers/create"},
+            { title: "Add an expense", href: "/expense/create"}
+        ]
+    },
+    {
+        title: 'Reports',
+        icon: ChartColumnIncreasing,
+        links: [
+            { title: "View consignments", href: "/consignments"},
+            { title: "View containers", href: "/containers"},
+            { title: "Add a consignment", href: "/consignments/create"},
+            { title: "Add a container", href: "/containers/create"},
+            { title: "Add an expense", href: "/expense/create"}
+        ]
     },
 ];
 
@@ -29,6 +88,8 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+
+    const page = usePage()
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -44,7 +105,12 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems.map(item => {
+                    if (item.links.some(link => link.href === page.url)) {
+                        item.isActive = true
+                    }
+                    return item
+                })} />
             </SidebarContent>
 
             <SidebarFooter>

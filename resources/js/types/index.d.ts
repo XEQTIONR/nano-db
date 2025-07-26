@@ -15,6 +15,13 @@ export interface NavGroup {
     items: NavItem[];
 }
 
+export interface NavCollapseGroup {
+    title: string;
+    icon?: LucideIcon | null;
+    links: NavItem[];
+    isActive?: boolean
+}
+
 export interface NavItem {
     title: string;
     href: string;
