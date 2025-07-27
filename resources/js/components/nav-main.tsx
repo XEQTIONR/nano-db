@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/tooltip"
 
 
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, LayoutGrid } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { useSidebar } from '@/components/ui/sidebar';
@@ -26,7 +26,7 @@ import { useSidebar } from '@/components/ui/sidebar';
 export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     const page = usePage();
     const iconSize = 16;
-    const iconStroke = 1.6;
+    const iconStroke = 2;
     const colorClasses = "text-neutral-800 dark:text-neutral-100"
     const [current, setCurrent] = useState(-1);
 
@@ -42,11 +42,11 @@ function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, i
         open={item.isActive ?? (current == index)}
         onOpenChange={(opened) => setCurrent((opened ? index : -1))}
     >
-        <SidebarMenuItem className="my-1">
+        <SidebarMenuItem>
             <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <span><item.icon className={colorClasses} size={iconSize}  strokeWidth={iconStroke} /></span>}
-                    {<span className={"overflow-x-visible text-nowrap " + colorClasses}>{item.title}</span>}
+                    {<span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>{item.title}</span>}
                     <ChevronRight className={"ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 "
                         + colorClasses
                     } />
@@ -116,11 +116,30 @@ function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <SidebarGroupLabel>Platform</SidebarGroupLabel>
-            <SidebarMenu className={"flex flex-col " + (!open ? "md:hidden" : "")}>
+            <SidebarMenu className={"flex flex-col mt-6 " + (!open ? "md:hidden" : "")}>
+                <SidebarMenuItem>
+                    <Link href="/dashboard">
+                        <SidebarMenuButton tooltip="Dashboard">
+                            <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
+                            <span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>Dashboard</span>
+                        </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
                 { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
             </SidebarMenu>
             <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col bg-transparent border-none shadow-none" : "")} asChild={false}>
+                    <MenubarMenu>
+                        <MenubarTrigger className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                            <Tooltip>
+                                <TooltipTrigger>
+                                    <Link href="/dashboard">
+                                        <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
+                                    </Link>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">Dashboard</TooltipContent>
+                            </Tooltip>
+                        </MenubarTrigger>
+                    </MenubarMenu>
                     { items.map((item) => (<SidebarHoveringMenuItem item={item} />)) }
             </Menubar>
         </SidebarGroup>
