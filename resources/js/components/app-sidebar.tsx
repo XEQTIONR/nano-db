@@ -4,33 +4,32 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Anchor, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, LoaderPinwheel, PackageCheck, Scroll, Smile } from 'lucide-react';
+import { Anchor, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavCollapseGroup[] = [
     {
-        title: 'Letters of Credit',
-        icon: Scroll,
+        title: 'Bank',
+        icon: Landmark,
         links: [
-            { title: "Create New", href: "/lcs/create"},
-            { title: "View All", href: "/lcs"},
-            { title: "Add Proforma Invoice", href: "/lcs"},
+            { title: "Letter of Credit", href: "/lcs"},
+            { title: "Proforma Invoice", href: "/lcs/proforma"},
         ],
     },
     {
         title: 'Consignments',
         icon: Anchor,
         links: [
-            { title: "View consignments", href: "/consignments"},
-            { title: "View containers", href: "/containers"},
-            { title: "Add a consignment", href: "/consignments/create"},
-            { title: "Add a container", href: "/containers/create"},
-            { title: "Add an expense", href: "/expense/create"}
+            { title: "View Consignments", href: "/consignments"},
+            { title: "View Containers", href: "/containers"},
+            { title: "Add Consignment", href: "/consignments/create"},
+            { title: "Add Container", href: "/containers/create"},
+            { title: "Add Expense", href: "/expense/create"}
         ]
     },
     {
         title: 'Orders',
-        icon: PackageCheck,
+        icon: Layers,
         links: [
             { title: "View consignments", href: "/consignments"},
             { title: "View containers", href: "/containers"},
@@ -53,6 +52,17 @@ const mainNavItems: NavCollapseGroup[] = [
     {
         title: 'Products',
         icon: LoaderPinwheel,
+        links: [
+            { title: "View consignments", href: "/consignments"},
+            { title: "View containers", href: "/containers"},
+            { title: "Add a consignment", href: "/consignments/create"},
+            { title: "Add a container", href: "/containers/create"},
+            { title: "Add an expense", href: "/expense/create"}
+        ]
+    },
+    {
+        title: 'Customers',
+        icon: Smile,
         links: [
             { title: "View consignments", href: "/consignments"},
             { title: "View containers", href: "/containers"},

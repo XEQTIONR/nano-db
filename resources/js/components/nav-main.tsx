@@ -19,17 +19,19 @@ import {
 
 
 import { ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useSidebar } from '@/components/ui/sidebar';
 
 export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     const page = usePage();
+    const iconSize = 16;
+    const iconStroke = 1.6;
+    const colorClasses = "text-neutral-800 dark:text-neutral-100"
+    const [current, setCurrent] = useState(-1);
 
-    const [current, setCurrent] = useState(-1)
 
-
-    const { open } = useSidebar()
+    const { open } = useSidebar();
 
 function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, index: number}) {
     return (
@@ -43,9 +45,11 @@ function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, i
         <SidebarMenuItem className="my-1">
             <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                    {<span className="overflow-x-visible text-nowrap">{item.title}</span>}
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    {item.icon && <span><item.icon className={colorClasses} size={iconSize}  strokeWidth={iconStroke} /></span>}
+                    {<span className={"overflow-x-visible text-nowrap " + colorClasses}>{item.title}</span>}
+                    <ChevronRight className={"ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 "
+                        + colorClasses
+                    } />
                 </SidebarMenuButton>
             </CollapsibleTrigger>
             <CollapsibleContent>
@@ -67,27 +71,45 @@ function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, i
     </Collapsible>)
 }
 
-function SidebarMenubarMenuItem({ item }: {item: NavCollapseGroup}) {
-    return (<MenubarMenu>
-        <Tooltip>
-            <TooltipTrigger>
-                <MenubarTrigger className="py-[9px]  border dark:border-neutral-900 dark:hover:bg-neutral-800">
-                    {item.icon && <item.icon width={16} height={16} />}
-                    
-                </MenubarTrigger>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-                <p>{item.title}</p>
-            </TooltipContent>
-        </Tooltip>
-        <MenubarContent>
-        {
-            item.links.map((link) => (<MenubarItem disabled={page.url === link.href}>
-                <Link href={link.href}>
-                    <span className="overflow-x-visible text-nowrap">{link.title}</span>
-                </Link>
-            </MenubarItem>))
+function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
+    const elem = useRef<HTMLButtonElement>(null);
+    const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (elem.current) {
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function() {
+                    const state = (elem.current?.getAttribute('data-state'))
+                    if (isOpen != (state === 'open')) {
+                        setIsOpen(state === 'open') 
+                    }
+                });
+            });
+            observer.observe(elem.current, {attributes: true})
+
+            return () => observer.disconnect()
         }
+    }, [isOpen])
+    return (<MenubarMenu>
+        <MenubarTrigger ref={elem} className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            {
+                !isOpen 
+                    ? (<Tooltip>
+                        <TooltipTrigger>{item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />}</TooltipTrigger>
+                        <TooltipContent side="right">{item.title}</TooltipContent>
+                    </Tooltip>)
+                    : (item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />)
+            }
+        </MenubarTrigger>
+        <MenubarContent side="right">
+            <MenubarItem disabled><span className="text-xs uppercase font-thin tracking-widest">{item.title}</span></MenubarItem>
+            {
+                item.links.map((link) => (<MenubarItem disabled={page.url === link.href}>
+                    <Link href={link.href}>
+                        <span className="overflow-x-visible text-nowrap text-sm">{link.title}</span>
+                    </Link>
+                </MenubarItem>))
+            }
         </MenubarContent>
     </MenubarMenu>)
 }
@@ -98,8 +120,8 @@ function SidebarMenubarMenuItem({ item }: {item: NavCollapseGroup}) {
             <SidebarMenu className={"flex flex-col " + (!open ? "md:hidden" : "")}>
                 { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
             </SidebarMenu>
-            <Menubar className={"hidden " + (!open ? "md:flex flex-col bg-transparent border-0" : "")} asChild={false}>
-                    { items.map((item) => (<SidebarMenubarMenuItem item={item} />)) }
+            <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col bg-transparent border-none shadow-none" : "")} asChild={false}>
+                    { items.map((item) => (<SidebarHoveringMenuItem item={item} />)) }
             </Menubar>
         </SidebarGroup>
     );
