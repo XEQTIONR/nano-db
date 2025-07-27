@@ -12,9 +12,9 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Letters of Credit',
         icon: Scroll,
         links: [
-            { title: "Create a new LC", href: "/lcs/create"},
-            { title: "View all LCs", href: "/lcs"},
-            { title: "Add a proforma invoice", href: "/lcs"},
+            { title: "Create New", href: "/lcs/create"},
+            { title: "View All", href: "/lcs"},
+            { title: "Add Proforma Invoice", href: "/lcs"},
         ],
     },
     {
