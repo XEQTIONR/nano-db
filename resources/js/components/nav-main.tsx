@@ -1,31 +1,22 @@
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
-import { type NavItem, type NavCollapseGroup } from '@/types';
+import { type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@radix-ui/react-collapsible';
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 import {
   Menubar,
-  MenubarCheckboxItem,
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 import { ChevronRight } from 'lucide-react';
 import { useState } from 'react';
@@ -53,7 +44,7 @@ function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, i
             <CollapsibleTrigger asChild>
                 <SidebarMenuButton tooltip={item.title}>
                     {item.icon && <item.icon />}
-                    { open && <span className="overflow-x-visible text-nowrap">{item.title}</span>}
+                    {<span className="overflow-x-visible text-nowrap">{item.title}</span>}
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
             </CollapsibleTrigger>
@@ -76,82 +67,40 @@ function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, i
     </Collapsible>)
 }
 
-function SidebarDropdownMenuItem ({ item }: {item: NavCollapseGroup}) {
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger>
-                <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
-                </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="right" sideOffset={20} align="end">
-                <DropdownMenuLabel>{item.title}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {
-                    item.links.map((link) => (
-                        <DropdownMenuItem>
-                                <Link href={link.href}>
-                                    <span className="overflow-x-visible text-nowrap">{link.title}</span>
-                                </Link>
-                        </DropdownMenuItem>
-                    ))
-                }
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
-}
-
-function SidebarMenu3Item({ item }: {item: NavCollapseGroup}) {
-    return (
-      <MenubarMenu>
-        <MenubarTrigger className="py-[9px] bg-red-900 border border-neutral-900 flex justify-end">
-            {item.icon && <item.icon width={16} height={16} />}
-            
-        </MenubarTrigger>
+function SidebarMenubarMenuItem({ item }: {item: NavCollapseGroup}) {
+    return (<MenubarMenu>
+        <Tooltip>
+            <TooltipTrigger>
+                <MenubarTrigger className="py-[9px]  border dark:border-neutral-900 dark:hover:bg-neutral-800">
+                    {item.icon && <item.icon width={16} height={16} />}
+                    
+                </MenubarTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+                <p>{item.title}</p>
+            </TooltipContent>
+        </Tooltip>
         <MenubarContent>
-          <MenubarItem>
-            New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem>
-            New Window <MenubarShortcut>⌘N</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem disabled>New Incognito Window</MenubarItem>
-          <MenubarSeparator />
-          <MenubarSub>
-            <MenubarSubTrigger>Share</MenubarSubTrigger>
-            <MenubarSubContent>
-              <MenubarItem>Email link</MenubarItem>
-              <MenubarItem>Messages</MenubarItem>
-              <MenubarItem>Notes</MenubarItem>
-            </MenubarSubContent>
-          </MenubarSub>
-          <MenubarSeparator />
-          <MenubarItem>
-            Print... <MenubarShortcut>⌘P</MenubarShortcut>
-          </MenubarItem>
+        {
+            item.links.map((link) => (<MenubarItem disabled={page.url === link.href}>
+                <Link href={link.href}>
+                    <span className="overflow-x-visible text-nowrap">{link.title}</span>
+                </Link>
+            </MenubarItem>))
+        }
         </MenubarContent>
-      </MenubarMenu>
-   )
+    </MenubarMenu>)
 }
 
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
-                {
-                    open
-                    ? (<SidebarMenu className="flex flex-col">
-                        { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
-                    </SidebarMenu>)
-                    : (<>
-                        {/* <SidebarMenu className="flex flex-col ">
-                            { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
-                        </SidebarMenu> */}
-                        <Menubar className="flex flex-col bg-transparent border-0" asChild={false}>
-                            { items.map((item) => (<SidebarMenu3Item item={item} />)) }
-                        </Menubar>
-                    </>)
-                    
-                }
+            <SidebarMenu className={"flex flex-col " + (!open ? "md:hidden" : "")}>
+                { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
+            </SidebarMenu>
+            <Menubar className={"hidden " + (!open ? "md:flex flex-col bg-transparent border-0" : "")} asChild={false}>
+                    { items.map((item) => (<SidebarMenubarMenuItem item={item} />)) }
+            </Menubar>
         </SidebarGroup>
     );
 }
