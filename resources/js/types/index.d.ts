@@ -48,3 +48,19 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface LetterOfCredit {
+    lc_num: string;
+    date_issued: string;
+    date_expiry: string;
+    applicant: string;
+    beneficiary: string;
+    currency_code: string;
+    exchange_rate: number;
+    foreign_amount: number;
+    local_amount: number;
+    foreign_expense: number;
+    domestic_expense: number;
+    total_expense: number;
+    created_at: string;
+}

@@ -116,9 +116,9 @@ function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <SidebarMenu className={"flex flex-col mt-6 " + (!open ? "md:hidden" : "")}>
+            <SidebarMenu className={"flex flex-col mt-4 " + (!open ? "md:hidden" : "")}>
                 <SidebarMenuItem>
-                    <Link href="/dashboard">
+                    <Link href={route('dashboard')}>
                         <SidebarMenuButton tooltip="Dashboard">
                             <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
                             <span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>Dashboard</span>
@@ -127,12 +127,12 @@ function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
                 </SidebarMenuItem>
                 { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
             </SidebarMenu>
-            <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col bg-transparent border-none shadow-none" : "")} asChild={false}>
+            <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col items-start bg-transparent p-0 border-none shadow-none" : "")} asChild={false}>
                     <MenubarMenu>
                         <MenubarTrigger className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <Link href="/dashboard">
+                                    <Link href={route('dashboard')}>
                                         <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
                                     </Link>
                                 </TooltipTrigger>
