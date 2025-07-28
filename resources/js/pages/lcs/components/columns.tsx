@@ -35,9 +35,14 @@ export const columns: ColumnDef<LetterOfCredit>[] = [
     accessorKey: "foreign_amount",
     header: () => <div className="text-right">Foreign Amount</div>,
     cell: ({ row }) => {
+        let code: string = row.getValue("currency_code")
+
+        if (code.toUpperCase() === "RMB") {
+          code = "CNY"
+        }
         const amount = parseFloat(row.getValue("foreign_amount"))
         return <div className="text-right">{(new Intl.NumberFormat("en-IN", 
-            { style: "currency", currency: row.getValue("currency_code"), currencyDisplay: "narrowSymbol" })
+            { style: "currency", currency: code, currencyDisplay: "narrowSymbol" })
             .format(amount))}</div>
     }
   },
