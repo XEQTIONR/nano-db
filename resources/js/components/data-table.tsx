@@ -30,14 +30,14 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="overflow-hidden rounded-md border">
+    <div className="overflow-y-scroll max-h-[84vh] rounded-md border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
-                  <TableHead className="font-bold dark:text-white" key={header.id}>
+                  <TableHead className="font-bold dark:text-white bg-white dark:bg-neutral-950 sticky top-0 z-50" key={header.id}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(

@@ -15,7 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('lcs', function () {
-        $data = LetterOfCreditResource::collection(LetterOfCredit::paginate(10));
+        $data = LetterOfCreditResource::collection(LetterOfCredit::paginate(100));
         return Inertia::render('lcs/index', ['lcs' => $data]);
     })->name('lcs.index');
 });
