@@ -18,11 +18,15 @@ import { DataTableProps } from "@/components/ui/data-table/types"
 export function DataTable<TData, TValue>({
   columns,
   data,
+  meta,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
+    rowCount: meta.total
+
   })
 
   return (

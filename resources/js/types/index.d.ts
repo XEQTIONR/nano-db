@@ -38,6 +38,20 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface PaginationLinkData {
+    active: boolean;
+    url: string;
+    label: string
+}
+
+export interface PaginationMeta {
+    total: number;
+    current_page: number;
+    from: number;
+    to: number;
+    links: PaginationLinkData[]
+}
+
 export interface User {
     id: number;
     name: string;

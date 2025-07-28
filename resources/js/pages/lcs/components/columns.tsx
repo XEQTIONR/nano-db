@@ -63,7 +63,7 @@ export const columns: ColumnDef<LetterOfCredit>[] = [
   },
   {
     accessorKey: "created_at",
-    header: () => <div className="text-center">Create On</div>,
+    header: () => <div className="text-center">Created On</div>,
     cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
   },
 ]
