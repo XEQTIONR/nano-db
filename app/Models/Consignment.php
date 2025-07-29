@@ -26,7 +26,7 @@ class Consignment extends Model
 
     public function letterOfCredit(): BelongsTo
     {
-        return $this->belongsTo(LetterOfCredit::class, 'lc', 'lc_num');
+        return $this->belongsTo(LetterOfCredit::class, 'lc');
     }
 
 

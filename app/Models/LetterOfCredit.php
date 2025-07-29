@@ -43,7 +43,7 @@ class LetterOfCredit extends Model
 
      public function consignments()
      {
-         return $this->hasMany(Consignment::class, 'lc', 'lc_num');   
+         return $this->hasMany(Consignment::class, 'lc');   
      }
 
      protected function localAmount(): Attribute
