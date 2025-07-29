@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LetterOfCreditController;
+use App\Http\Controllers\TyreController;
 use App\Http\Resources\LetterOfCreditResource;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/lcs/create', [LetterOfCreditController::class, 'create'])->name('lcs.create');
     Route::get('/lcs/{lc}', [LetterOfCreditController::class, 'show'])->name('lcs.show');
     Route::post('/lcs', [LetterOfCreditController::class, 'store'])->name('lcs.store');
+    
+    Route::get('/tyres', [TyreController::class, 'index'])->name('tyres.index');
 
 });
 

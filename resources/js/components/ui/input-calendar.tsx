@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function InputCalendar({id, placeholder} : {id: string, placeholder?: string}) {
+export function InputCalendar({id, placeholder,} : {id: string, placeholder?: string}) {
   const [date, setDate] = useState<Date|undefined>()
 
   const calendarX = useRef(null)
@@ -35,10 +35,10 @@ export function InputCalendar({id, placeholder} : {id: string, placeholder?: str
         <div
             id={id}
             data-empty={!date}
-            className="dark:bg-neutral-900 hover:cursor-pointer rounded-md border py-1 pl-3 pr-1.5 flex justify-between items-center text-left text-sm font-normal data-[empty=true]:text-muted-foreground w-[280px]"
+            className="dark:bg-neutral-900 hover:cursor-pointer rounded-md border py-1 pl-3 pr-1.5 flex justify-between items-center text-left text-sm font-normal data-[empty=true]:text-muted-foreground w-full md:w-[280px]"
         >
             {date ? format(date, "PPP") : <span>{placeholder ?? "Pick a date" }</span>}
-            <div className="rounded-sm p-1.5 dark:hover:text-white dark:hover:bg-neutral-700">
+            <div className="rounded-sm p-1.5 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700">
             {
                 date 
                 ? <X ref={calendarX} onClick={clearAndClose} size={14} /> 

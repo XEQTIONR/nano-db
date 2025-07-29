@@ -78,3 +78,11 @@ export interface LetterOfCredit {
     total_expense: number;
     created_at: string;
 }
+
+export interface Tyre {
+    id: number;
+    brand: string;
+    size: string;
+    pattern: string;
+    lisi: string;
+}

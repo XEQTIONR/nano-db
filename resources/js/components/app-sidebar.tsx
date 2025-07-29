@@ -12,8 +12,8 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Bank',
         icon: Landmark,
         links: [
-            { title: "Letter of Credit", href: "/lcs"},
-            { title: "Proforma Invoice", href: "/lcs/create"},
+            { title: "Letter of Credit", href: route('lcs.index')},
+            { title: "Proforma Invoice", href: route('lcs.create')},
         ],
     },
     {
@@ -53,11 +53,9 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Products',
         icon: LoaderPinwheel,
         links: [
-            { title: "View consignments", href: "/consignments"},
-            { title: "View containers", href: "/containers"},
-            { title: "Add a consignment", href: "/consignments/create"},
-            { title: "Add a container", href: "/containers/create"},
-            { title: "Add an expense", href: "/expense/create"}
+            { title: "View catalog", href: route('tyres.index')},
+            { title: "View stock", href: "/containers"},
+            { title: "Add a product", href: "/products/create"},
         ]
     },
     {
