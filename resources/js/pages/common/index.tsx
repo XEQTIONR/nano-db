@@ -5,6 +5,7 @@ import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols } from '../consignments/components/columns';
+import { columns as containerCols } from '../containers/components/columns';
 import {
   Pagination,
   PaginationContent,
@@ -13,7 +14,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination"
-
 import { PaginationMeta } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -44,6 +44,9 @@ export default function Index<T>({ items, link, title, type } : {
             break;
         case "consignment":
             cols = consignmentCols;
+            break;
+        case "container":
+            cols = containerCols;
             break;
         case "tyre":
         default: 

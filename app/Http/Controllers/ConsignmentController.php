@@ -14,15 +14,13 @@ class ConsignmentController extends Controller
      */
     public function index()
     {
-        $data = ConsignmentResource::collection(Consignment::with('letterOfCredit')->paginate(50));
+        $data = ConsignmentResource::collection(Consignment::with(['letterOfCredit'])->paginate(50));
 
         return Inertia::render('common/index', [
             'items' => $data,
             'link' => route('consignments.index'),
             'title' => 'Consignments',
             'type' => 'consignment',
-        ]);
-        return $data;
-        return Consignment::limit(10)->get();        
+        ]);  
     }
 }
