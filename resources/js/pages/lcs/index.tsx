@@ -23,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 
-export default function LCIndex({ lcs } : { lcs : { data: LetterOfCredit[], links: { prev: string | undefined, next: string | undefined,}, meta: PaginationMeta } }) {
+export default function Index({ lcs } : { lcs : { data: LetterOfCredit[], links: { prev: string | undefined, next: string | undefined,}, meta: PaginationMeta } }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="LCs" />

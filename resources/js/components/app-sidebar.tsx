@@ -13,7 +13,7 @@ const mainNavItems: NavCollapseGroup[] = [
         icon: Landmark,
         links: [
             { title: "Letter of Credit", href: "/lcs"},
-            { title: "Proforma Invoice", href: "/lcs/proforma"},
+            { title: "Proforma Invoice", href: "/lcs/create"},
         ],
     },
     {

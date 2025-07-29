@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Resources\LetterOfCreditResource;
-use App\Models\LetterOfCredit;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,10 +14,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('lcs', function () {
-        $data = LetterOfCreditResource::collection(LetterOfCredit::paginate(100));
-        return Inertia::render('lcs/index', ['lcs' => $data]);
-    })->name('lcs.index');
+    Route::get('/lcs', [LetterOfCreditController::class, 'index'])->name('lcs.index');
+    Route::get('/lcs/create', [LetterOfCreditController::class, 'create'])->name('lcs.create');
+    Route::get('/lcs/{lc}', [LetterOfCreditController::class, 'show'])->name('lcs.show');
+    Route::post('/lcs', [LetterOfCreditController::class, 'store'])->name('lcs.store');
+
 });
 
 require __DIR__.'/settings.php';
