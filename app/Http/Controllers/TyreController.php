@@ -15,7 +15,12 @@ class TyreController extends Controller
     public function index()
     {
         $data =  TyreResource::collection(Tyre::paginate(50));
-        return Inertia::render('tyres/index', ['tyres' => $data]);
+        return Inertia::render('common/index', [
+            'items' => $data,
+            'link' => route('tyres.index'),
+            'title' => 'Tyres',
+            'type' => 'tyre',
+        ]);
     }
 
     /**

@@ -1,12 +1,12 @@
 import AppLayout from '@/layouts/app-layout';
-import { Tyre, type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
-import { columns } from "./components/columns";
+import { columns as tyreCols } from "@/pages/tyres/components/columns";
+import { columns as lcCols } from "@/pages/lcs/components/columns";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -17,36 +17,61 @@ import { PaginationMeta } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Tyres',
-        href: route('tyres.index'),
+        title: '',
+        href: '',
     },
 ];
 
 
-export default function Index({ tyres } : { tyres : { data: Tyre[], links: { prev: string | undefined, next: string | undefined,}, meta: PaginationMeta } }) {
+export default function Index<T>({ items, link, title, type } : { 
+    items: { 
+        data: T[], 
+        links: { 
+            prev: string | undefined,
+            next: string | undefined
+        },
+        meta: PaginationMeta
+    }
+    link: string
+    title: string
+    type: string 
+}) {
+    let cols = []
+    switch (type) {
+        case "lc":
+            cols = lcCols;
+            break;
+        case "tyre":
+        default: 
+            cols = tyreCols
+    }
+
+    breadcrumbs[0].title = title
+    breadcrumbs[0].href = link
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Tyres" />
+            <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
-                <DataTable columns={columns} data={tyres.data} meta={tyres.meta} />
+                <DataTable columns={cols} data={items.data} meta={items.meta} />
 
                 <div className="flex justify-between w-full">
                     <div className="shrink-0 text-sm">
-                        Showing { tyres.meta.from } to { tyres.meta.to } of <span className="font-semibold">{ tyres.meta.total }</span>
+                        Showing { items.meta.from } to { items.meta.to } of <span className="font-semibold">{ items.meta.total }</span>
                     </div>
                     <div>
                         <Pagination className="justify-end">
                             <PaginationContent >
                                 {
-                                    tyres.meta.links.map(({url, label}, index) => {
+                                    items.meta.links.map(({url, label}, index) => {
                                         return (
                                         <PaginationItem>
                                             { index == 0 
                                                 && <PaginationPrevious key={index} href={url ?? "#"} /> }
-                                            { index == (tyres.meta.links.length - 1) 
+                                            { index == (items.meta.links.length - 1) 
                                                 && <PaginationNext key={index} href={url ?? "#"} /> }
-                                            { (index > 0 && index < (tyres.meta.links.length - 1))
-                                                && <PaginationLink isActive={parseInt(label) == tyres.meta.current_page} href={url}>{label}</PaginationLink> 
+                                            { (index > 0 && index < (items.meta.links.length - 1))
+                                                && <PaginationLink isActive={parseInt(label) == items.meta.current_page} href={url}>{label}</PaginationLink> 
                                             } 
                                         </PaginationItem>
                                     )})

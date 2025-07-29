@@ -15,7 +15,12 @@ class LetterOfCreditController extends Controller
     public function index()
     {
         $data = LetterOfCreditResource::collection(LetterOfCredit::paginate(100));
-        return Inertia::render('lcs/index', ['lcs' => $data]);
+        return Inertia::render('common/index', [
+            'items' => $data,
+            'link' => route('lcs.index'),
+            'title' => 'Letters of Credit',
+            'type' => 'lc',
+        ]);
     }
 
     /**

@@ -14,7 +14,7 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <Separator className="mr-3" orientation="vertical" />
                 <div className="w-full grow flex items-center justify-between">
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
-                    <Button className="hover:cursor-pointer"   size="sm"><Plus /> New Letter</Button>
+                    <Button className="hover:cursor-pointer"   size="sm"><Plus /> Create</Button>
                 </div>
             </div>
         </header>
