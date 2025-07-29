@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Controllers\TyreController;
 use App\Http\Resources\LetterOfCreditResource;
@@ -21,6 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/lcs', [LetterOfCreditController::class, 'store'])->name('lcs.store');
     
     Route::get('/tyres', [TyreController::class, 'index'])->name('tyres.index');
+
+    Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
 
 });
 

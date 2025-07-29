@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols } from "@/pages/lcs/components/columns";
+import { columns as consignmentCols } from '../consignments/components/columns';
 import {
   Pagination,
   PaginationContent,
@@ -40,6 +41,9 @@ export default function Index<T>({ items, link, title, type } : {
     switch (type) {
         case "lc":
             cols = lcCols;
+            break;
+        case "consignment":
+            cols = consignmentCols;
             break;
         case "tyre":
         default: 

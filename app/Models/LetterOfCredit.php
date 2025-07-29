@@ -9,6 +9,10 @@ class LetterOfCredit extends Model
 {
      protected $table = 'lcs';
 
+     protected $primaryKey = 'lc_num';
+
+     public $incrementing = false;
+
      protected $fillable = [
         'lc_num',
         'date_issued',
@@ -35,6 +39,11 @@ class LetterOfCredit extends Model
             'domestic_expense' => 'float',
             'exchange_rate' => 'float',
         ];
+     }
+
+     public function consignments()
+     {
+         return $this->hasMany(Consignment::class, 'lc', 'lc_num');   
      }
 
      protected function localAmount(): Attribute
