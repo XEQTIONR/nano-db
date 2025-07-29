@@ -34,19 +34,22 @@ export default function Create() {
 
     const [show, setShow] = useState(true);
     const [exists, setExists] = useState(true);
-
+    const [current, setCurrent] = useState(0)
     const fn = () => {
-        if (show) {
-            setShow(false)
-            setTimeout(() => setExists(false), 250)
-        } else {
-            setExists(true)
-            setTimeout(() => setShow(true), 1)
-        }
+        // if (show) {
+        //     setShow(false)
+        //     setTimeout(() => setExists(false), 250)
+        // } else {
+        //     setExists(true)
+        //     setTimeout(() => setShow(true), 1)
+        // }
+        setShow(false)
+        setCurrent((current+1) %2)
+        setTimeout(() => setShow(true), 1)
     }
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="LCs" />
+            <Head title={"" + current} />
             <div className="flex flex-col h-full items-start rounded-xl p-4">
                 <div className="w-full flex gap-10 items-center">
                     <div className="flex items-center gap-4">
@@ -73,11 +76,11 @@ export default function Create() {
                 </div>
                 <div className="w-full pt-5 flex">
                     {
-                        !exists && (
+                        current == 0 && (
                                 <Card 
                                 className={cn(
                                     "w-1/2 max-w-3xl transition-all relative",
-                                    //show ? "opacity-100 -left-0" : "opacity-0 -left-16"
+                                    show ? "opacity-100 -right-0" : "opacity-0 -right-16"
                                 )
                                 }>
                                 <CardHeader>
@@ -216,7 +219,7 @@ export default function Create() {
                             </Card>)
                     }
                     {
-                        exists && (<Card
+                        current == 1 && (<Card
                         className={cn(
                             "w-1/2 max-w-3xl  transition-all relative",
                             show ? "opacity-100 -right-0" : "opacity-0 -right-16"
