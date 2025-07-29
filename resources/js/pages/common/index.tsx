@@ -6,6 +6,7 @@ import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols } from '../consignments/components/columns';
 import { columns as containerCols } from '../containers/components/columns';
+import { columns as customerCols } from '../customers/components/columns';
 import {
   Pagination,
   PaginationContent,
@@ -40,14 +41,17 @@ export default function Index<T>({ items, link, title, type } : {
     let cols = []
     switch (type) {
         case "lc":
-            cols = lcCols;
-            break;
+            cols = lcCols
+            break
         case "consignment":
-            cols = consignmentCols;
-            break;
+            cols = consignmentCols
+            break
         case "container":
-            cols = containerCols;
-            break;
+            cols = containerCols
+            break
+        case "customer":
+            cols = customerCols
+            break
         case "tyre":
         default: 
             cols = tyreCols

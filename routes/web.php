@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Controllers\TyreController;
 use App\Http\Resources\LetterOfCreditResource;
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
     
     Route::get('/containers', [ContainerController::class, 'index'])->name('containers.index');
+
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
 
 });
 

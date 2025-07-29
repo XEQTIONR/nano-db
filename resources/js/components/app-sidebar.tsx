@@ -62,11 +62,8 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Customers',
         icon: Smile,
         links: [
-            { title: "View consignments", href: "/consignments"},
+            { title: "View customers", href: route('customers.index')},
             { title: "View containers", href: "/containers"},
-            { title: "Add a consignment", href: "/consignments/create"},
-            { title: "Add a container", href: "/containers/create"},
-            { title: "Add an expense", href: "/expense/create"}
         ]
     },
     {
