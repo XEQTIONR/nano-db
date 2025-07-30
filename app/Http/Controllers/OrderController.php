@@ -14,8 +14,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $data = OrderResource::collection(Order::with(['customer', 'contents'])->paginate(50));
-        //return $data;
+        $data = OrderResource::collection(Order::with(['customer', 'contents', 'payments'])->paginate(50));
+
         return Inertia::render('common/index', [
             'items' => $data,
             'link' => route('orders.index'),

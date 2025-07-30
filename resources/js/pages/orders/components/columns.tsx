@@ -1,3 +1,8 @@
+
+const currencyFormat = (code: string, amount: number) => (new Intl.NumberFormat("en-IN", 
+            { style: "currency", currency: code, currencyDisplay: "narrowSymbol" })
+            .format(amount))
+
 export const columns = [
   {
     accessorKey: "order_num",
@@ -24,16 +29,31 @@ export const columns = [
     header: "# of items",
   },
   {
+    accessorKey: "count_payments",
+    header: "# of payments",
+  },
+  {
     accessorKey: "grand_total",
     header: "Grand Total",
     cell: ({ row }) => {
-
-        const code = 'BDT'
         const amount = parseFloat(row.getValue("grand_total"))
-
-        return <div className="text-right">{(new Intl.NumberFormat("en-IN", 
-            { style: "currency", currency: code, currencyDisplay: "narrowSymbol" })
-            .format(amount))}</div>
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
+  },
+  {
+    accessorKey: "payments_total",
+    header: "Payments Total",
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("payments_total"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
+  },
+  {
+    accessorKey: "balance",
+    header: "Balance",
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("balance"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
     }
   },
   {
