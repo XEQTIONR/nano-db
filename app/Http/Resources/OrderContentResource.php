@@ -22,12 +22,7 @@ class OrderContentResource extends JsonResource
             'qty' => $this->qty,
             'unit_price' => $this->unit_price,
             'item_total' => $this->item_total,
-            $this->mergeWhen($this->relationLoaded('tyre'), [
-                'brand' => $this->tyre->brand,
-                'size' => $this->tyre->size,
-                'lisi' => $this->tyre->lisi,
-                'pattern' => $this->tyre->pattern,
-            ])
+            'tyre' => $this->whenLoaded('tyre'),
         ];
     }
 }

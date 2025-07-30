@@ -14,8 +14,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        //
-        $data = CustomerResource::collection(Customer::paginate(50));
+        $data = CustomerResource::collection(Customer::with(['orders.contents', 'orders.payments'])->paginate(5));
 
         return Inertia::render('common/index', [
             'items' => $data,
