@@ -31,13 +31,14 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Orders',
         icon: Layers,
         links: [
-            { title: "View orders", href: "/orders"},
+            { title: "View orders", href: route('orders.index')},
         ]
     },
     {
         title: 'Payments',
         icon: HandCoins,
         links: [
+            { title: "View payments", href: route('payments.index')},
         ]
     },
     {

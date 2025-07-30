@@ -1,7 +1,5 @@
 
-const currencyFormat = (code: string, amount: number) => (new Intl.NumberFormat("en-IN", 
-            { style: "currency", currency: code, currencyDisplay: "narrowSymbol" })
-            .format(amount))
+import { currencyFormat } from "@/lib/utils"
 
 export const columns = [
   {

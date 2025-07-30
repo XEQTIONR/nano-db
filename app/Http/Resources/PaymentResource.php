@@ -20,7 +20,10 @@ class PaymentResource extends JsonResource
             'payment_amount' => $this->payment_amount,
             'refund_amount' => $this->refund_amount,
             'amount' => $this->amount,
-            'order' => OrderResource::make($this->whenLoaded('order'))
+            'type' => $this->type,
+            'account' => $this->account,
+            'order' => OrderResource::make($this->whenLoaded('order')),
+            'created_at' => $this->created_at->toDateTimeString(),
         ];
     }
 }
