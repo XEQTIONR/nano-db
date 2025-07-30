@@ -16,6 +16,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
         $this->app->bind(StockResource::class, function() {
             $order_contents =  OrderContent::select('tyre_id', DB::raw('SUM(qty) AS ordered_qty'))
                 ->groupBy('order_contents.tyre_id');
