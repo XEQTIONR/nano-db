@@ -36,7 +36,13 @@ class OrderContent extends Model
     public function itemTotal(): Attribute
     {
         return Attribute::make(
-            get: fn(mixed $value, array $attr) => $attr['qty'] * $attr['unit_price']
+            get: function(mixed $value, array $attr) {
+                if ($attr['unit_price'] ?? false) { // guard to protect aggregations
+                    return $attr['qty'] * $attr['unit_price'];
+                }
+
+                return null;
+            }
         );
     }
 }

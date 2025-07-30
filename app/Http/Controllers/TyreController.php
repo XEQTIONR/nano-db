@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StockResource;
 use App\Http\Resources\TyreResource;
 use App\Models\Tyre;
 use Illuminate\Http\Request;
@@ -14,9 +15,12 @@ class TyreController extends Controller
      */
     public function index()
     {
-        $data =  TyreResource::collection(Tyre::paginate(50));
+        $data = resolve(StockResource::class)
+        ->orderByDesc('tyre_id')
+        ->paginate(50);
+
         return Inertia::render('common/index', [
-            'items' => $data,
+            'items' => TyreResource::collection($data),
             'link' => route('tyres.index'),
             'title' => 'Tyres',
             'type' => 'tyre',

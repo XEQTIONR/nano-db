@@ -6,12 +6,9 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
-use App\Http\Resources\LetterOfCreditResource;
-use App\Http\Resources\OrderContentResource;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\PaymentResource;
-use App\Http\Resources\SupplyResource;
+use App\Http\Resources\StockResource;
 use App\Models\ContainerContent;
 use App\Models\Order;
 use App\Models\OrderContent;
@@ -47,27 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 
-    Route::get('/test', function() {
-
-        $orderBy = 'in_stock';
-        $order_contents =  OrderContent::select('tyre_id', DB::raw('SUM(qty) AS ordered_qty'))
-            ->groupBy('order_contents.tyre_id');
-        $container_contents = ContainerContent::select('tyre_id', DB::raw('SUM(qty) AS supplied_qty'))
-            ->groupBy('container_contents.tyre_id');
-
-        $supply = Tyre::joinSub($order_contents, 'order_contents', function($join) {
-            $join->on('order_contents.tyre_id', '=', 'tyres.tyre_id');
-        })->joinSub($container_contents, 'container_contents', function($join) {
-            $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
-        })->select(
-            'tyres.tyre_id','brand', 'size', 'lisi', 'pattern', 'created_at', 'updated_at', 
-            'ordered_qty', 'supplied_qty', DB::raw('supplied_qty - ordered_qty AS in_stock')
-        )
-        ->orderByDesc($orderBy)
-        ->paginate(50);
-        // return $supply;
-        return SupplyResource::collection($supply);
-    });
+    Route::get('/stock', StockController::class)->name('stock.index');
 
 });
 

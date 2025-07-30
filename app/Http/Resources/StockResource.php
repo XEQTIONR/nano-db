@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TyreResource extends JsonResource
+class StockResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,13 +15,15 @@ class TyreResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->tyre_id,
+            'tyre_id' => $this->tyre_id,
             'brand' => $this->brand,
             'size' => $this->size,
-            'pattern' => $this->pattern,
             'lisi' => $this->lisi,
+            'pattern' => $this->pattern,
+            'ordered_qty' => intval($this->ordered_qty),
+            'supplied_qty' => intval($this->supplied_qty),
+            'in_stock' => intval($this->in_stock),
             'created_at' => $this->created_at->toDateTimeString(),
-            'in_stock' => $this->in_stock === null ? null : intval($this->in_stock),
         ];
     }
 }

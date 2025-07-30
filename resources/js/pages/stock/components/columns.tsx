@@ -13,8 +13,8 @@ import { Button } from "@/components/ui/button"
 
 export const columns = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: "tyre_id",
+    header: "Tyre ID",
   },
   {
     accessorKey: "brand",
@@ -34,7 +34,7 @@ export const columns = [
   },
   {
     accessorKey: "in_stock",
-    header: "# in stock",
+    header: "# in stock"
   },
   {
     accessorKey: "created_at",

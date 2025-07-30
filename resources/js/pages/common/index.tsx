@@ -8,7 +8,8 @@ import { columns as consignmentCols } from '@/pages/consignments/components/colu
 import { columns as containerCols } from '@/pages/containers/components/columns';
 import { columns as customerCols } from '@/pages/customers/components/columns';
 import { columns as orderCols } from '@/pages/orders/components/columns';
-import { columns as paymentCols } from '../payments/components/columns';
+import { columns as paymentCols } from '@/pages//payments/components/columns';
+import { columns as stockCols } from '@/pages//stock/components/columns';
 import {
   Pagination,
   PaginationContent,
@@ -60,6 +61,9 @@ export default function Index<T>({ items, link, title, type } : {
             break
         case "payment":
             cols = paymentCols
+            break
+        case "stock":
+            cols = stockCols
             break
         case "tyre":
         default: 
