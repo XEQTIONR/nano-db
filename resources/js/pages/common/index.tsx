@@ -4,12 +4,14 @@ import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols } from "@/pages/lcs/components/columns";
-import { columns as consignmentCols } from '../consignments/components/columns';
-import { columns as containerCols } from '../containers/components/columns';
-import { columns as customerCols } from '../customers/components/columns';
+import { columns as consignmentCols } from '@/pages/consignments/components/columns';
+import { columns as containerCols } from '@/pages/containers/components/columns';
+import { columns as customerCols } from '@/pages/customers/components/columns';
+import { columns as orderCols } from '@/pages/orders/components/columns';
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -52,6 +54,9 @@ export default function Index<T>({ items, link, title, type } : {
         case "customer":
             cols = customerCols
             break
+        case "order":
+            cols = orderCols
+            break
         case "tyre":
         default: 
             cols = tyreCols
@@ -59,7 +64,7 @@ export default function Index<T>({ items, link, title, type } : {
 
     breadcrumbs[0].title = title
     breadcrumbs[0].href = link
-
+    console.log(items);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={title} />
@@ -74,15 +79,31 @@ export default function Index<T>({ items, link, title, type } : {
                         <Pagination className="justify-end">
                             <PaginationContent >
                                 {
-                                    items.meta.links.map(({url, label}, index) => {
+                                    items.meta.links.map((paginationItem, index) => {
+                                        if (index == 0) {
+                                            return (<PaginationItem><PaginationPrevious key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
+                                        } else if (index == (items.meta.links.length - 1)) {
+                                            return (<PaginationItem><PaginationNext key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
+                                        } else if (paginationItem.label == "..." && paginationItem.url == null) {
+                                            return (<PaginationItem><PaginationEllipsis key={index} /></PaginationItem>)
+                                        } else {
+                                            return (<PaginationItem>
+                                                <PaginationLink isActive={ parseInt(paginationItem.label) == items.meta.current_page} href={paginationItem.url}>
+                                                        {paginationItem.label}
+                                                </PaginationLink>
+                                            </PaginationItem>)
+                                        }
+
                                         return (
                                         <PaginationItem>
                                             { index == 0 
-                                                && <PaginationPrevious key={index} href={url ?? "#"} /> }
+                                                && <PaginationPrevious key={index} href={item.url ?? "#"} /> }
                                             { index == (items.meta.links.length - 1) 
-                                                && <PaginationNext key={index} href={url ?? "#"} /> }
+                                                && <PaginationNext key={index} href={item.url ?? "#"} /> }
                                             { (index > 0 && index < (items.meta.links.length - 1))
-                                                && <PaginationLink isActive={parseInt(label) == items.meta.current_page} href={url}>{label}</PaginationLink> 
+                                                && <PaginationLink isActive={ parseInt(item.label) == items.meta.current_page} href={item.url}>
+                                                        {item.label}
+                                                </PaginationLink> 
                                             } 
                                         </PaginationItem>
                                     )})

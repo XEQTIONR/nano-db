@@ -4,8 +4,13 @@ use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LetterOfCreditController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TyreController;
 use App\Http\Resources\LetterOfCreditResource;
+use App\Http\Resources\OrderContentResource;
+use App\Http\Resources\OrderResource;
+use App\Models\Order;
+use App\Models\OrderContent;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,6 +36,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
 
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+    Route::get('/contents', function() {
+        // return OrderContentResource::make(OrderContent::with('tyre')->first());
+        return OrderResource::make(Order::with('contents')->find(216));
+    });
 });
 
 require __DIR__.'/settings.php';

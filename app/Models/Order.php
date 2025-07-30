@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Order extends Model
+{
+    protected $primaryKey = "Order_num";
+
+    protected $fillable = [
+        'discount_percent',
+        'discount_amount',
+        'tax_percentage',
+        'tax_amount',
+        'commission',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'discount_percent' => 'float',
+            'discount_amount' => 'float',
+            'tax_percentage' => 'float',
+            'tax_amount' => 'float',
+            'commission' => 'float',
+            'order_on' => 'date',
+        ];
+    } 
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function contents(): HasMany
+    {
+        return $this->hasMany(OrderContent::class, 'Order_num');
+    }
+}

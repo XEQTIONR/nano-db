@@ -31,22 +31,13 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Orders',
         icon: Layers,
         links: [
-            { title: "View consignments", href: "/consignments"},
-            { title: "View containers", href: "/containers"},
-            { title: "Add a consignment", href: "/consignments/create"},
-            { title: "Add a container", href: "/containers/create"},
-            { title: "Add an expense", href: "/expense/create"}
+            { title: "View orders", href: "/orders"},
         ]
     },
     {
         title: 'Payments',
         icon: HandCoins,
         links: [
-            { title: "View consignments", href: "/consignments"},
-            { title: "View containers", href: "/containers"},
-            { title: "Add a consignment", href: "/consignments/create"},
-            { title: "Add a container", href: "/containers/create"},
-            { title: "Add an expense", href: "/expense/create"}
         ]
     },
     {
@@ -63,18 +54,12 @@ const mainNavItems: NavCollapseGroup[] = [
         icon: Smile,
         links: [
             { title: "View customers", href: route('customers.index')},
-            { title: "View containers", href: "/containers"},
         ]
     },
     {
         title: 'Reports',
         icon: ChartColumnIncreasing,
         links: [
-            { title: "View consignments", href: "/consignments"},
-            { title: "View containers", href: "/containers"},
-            { title: "Add a consignment", href: "/consignments/create"},
-            { title: "Add a container", href: "/containers/create"},
-            { title: "Add an expense", href: "/expense/create"}
         ]
     },
 ];
