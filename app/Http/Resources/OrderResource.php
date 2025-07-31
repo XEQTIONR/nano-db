@@ -42,9 +42,8 @@ class OrderResource extends JsonResource
                     + $this->tax_amount - $this->discount_amount,
                 'count' => $this->contents->reduce($countFn, 0),
             ]),
-
-            $this->mergeWhen($this->relationLoaded('payments'), [
-                'payments' => PaymentResource::collection($this->payments),
+            'payments' => PaymentResource::collection($this->whenLoaded('payments')),
+            $this->mergeWhen($this->relationLoaded('payments'), [ 
                 'count_payments' => $this->payments->count(),
                 'payments_total' => $this->payments->reduce($paymentsTotalFn, 0),
             ]),

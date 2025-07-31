@@ -41,7 +41,7 @@ const perPageOptions: number[] = [
 ]
 
 
-export default function Index<T>({ items, link, title, type } : { 
+export default function Index<T>({ items, link, sortBy, sortDir, title, type, } : { 
     items: { 
         data: T[], 
         links: { 
@@ -51,6 +51,8 @@ export default function Index<T>({ items, link, title, type } : {
         meta: PaginationMeta
     }
     link: string
+    sortBy: string
+    sortDir: 'asc' | 'desc'
     title: string
     type: string 
 }) {
@@ -84,13 +86,13 @@ export default function Index<T>({ items, link, title, type } : {
 
     breadcrumbs[0].title = title
     breadcrumbs[0].href = link
-    console.log(items);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 
-                <DataTable columns={cols} data={items.data} meta={items.meta} />
+                <DataTable columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
 
                 <div className="flex justify-between w-full">
                     <div className="shrink-0 text-sm flex items-center gap-7">

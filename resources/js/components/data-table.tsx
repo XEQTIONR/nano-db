@@ -14,21 +14,46 @@ import {
 } from "@/components/ui/table"
 
 import { DataTableProps } from "@/components/ui/data-table/types"
+import { useState } from "react"
+
+import { SortingState } from "@tanstack/react-table"
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   meta,
+  sortBy,
+  sortDir,
 }: DataTableProps<TData, TValue>) {
+
+  const [sorting, setSorting] = useState<SortingState>(() => {
+    if (sortBy) {
+      return [
+        {
+          id: sortBy,
+          desc: sortDir == 'desc'
+        }
+      ]
+    }
+
+    return []
+  })
+
+  
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
-    rowCount: meta.total
+    manualSorting: true,
+    rowCount: meta.total,
+    state: {
+      sorting
+    }
 
   })
-
+  console.log('sorting: ', sorting)
   return (
     <div className="overflow-y-scroll max-h-[83vh] rounded-md border">
       <Table>
@@ -38,7 +63,8 @@ export function DataTable<TData, TValue>({
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead className="font-bold dark:text-white bg-white dark:bg-neutral-950 sticky top-0 z-50" key={header.id}>
-                    {header.isPlaceholder
+                    {
+                      header.isPlaceholder
                       ? null
                       : flexRender(
                           header.column.columnDef.header,

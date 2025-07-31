@@ -6,41 +6,45 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, ArrowUpDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 import { currencyFormat } from "@/lib/utils"
+import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
+import { ColumnDef } from "@tanstack/react-table"
 
 export const columns = [
   {
     accessorKey: "transaction_id",
-    header: "Transaction ID",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="transaction_id" label="Transaction ID" config={v} />
   },
   {
     accessorKey: "order_num",
-    header: "Order",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order" config={v} />
   },
   {
     accessorKey: "type",
-    header: "Type",
+    header: (v) => <DataTableCustomColumnHeader colKey="type" label="Type" config={v} />
   },
   {
     accessorKey: "account",
-    header: "Account",
+    header: (v) => <DataTableCustomColumnHeader colKey="account" justify="center" label="Account"  config={v}/>
   },
   {
       accessorKey: "amount",
-      header: () => <div className="text-right">Amount</div>,
+      header: (v) => {
+        return <DataTableCustomColumnHeader justify="end" colKey="amount" label="Amount"  config={v}/>
+      },
       cell: ({ row }) => {
           const amount = parseFloat(row.getValue("amount"))
           return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
       }
-    },
+  },
   
   {
     accessorKey: "created_at",
-    header: () => <div className="text-center">Created On</div>,
+    header: (v) => <DataTableCustomColumnHeader colKey="created_at" justify="center" label="Created On" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
   },
   {
