@@ -12,9 +12,14 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = OrderResource::collection(Order::with(['customer', 'contents', 'payments'])->paginate(50));
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $data = OrderResource::collection(Order::with(['customer', 'contents', 'payments'])
+            ->paginate($perPage)
+            ->withQueryString()
+        );
 
         return Inertia::render('common/index', [
             'items' => $data,

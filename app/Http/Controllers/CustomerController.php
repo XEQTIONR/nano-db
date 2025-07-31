@@ -16,8 +16,10 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = intval($request->input('perPage') ?? 50);
+
         $contents = OrderContent::select('Order_num', DB::raw('SUM(qty * unit_price) AS subtotal'))->groupBy('Order_num');
 
         $payments = Payment::select('Order_num', DB::raw('SUM(payment_amount - refund_amount) AS payment'))->groupBy('Order_num');
@@ -41,7 +43,7 @@ class CustomerController extends Controller
             DB::raw('SUM((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) AS grand_total'),
             DB::raw('SUM(IFNULL(payment, 0)) AS payment_total'),
             DB::raw('SUM(((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) - IFNULL(payment, 0)) AS balance')
-        )->paginate(50);
+        )->paginate($perPage)->withQueryString();
 
         return Inertia::render('common/index', [
             'items' => CustomerResource::collection($data),

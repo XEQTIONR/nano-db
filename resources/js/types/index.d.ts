@@ -50,6 +50,7 @@ export interface PaginationMeta {
     from: number;
     to: number;
     links: PaginationLinkData[]
+    per_page: number;
 }
 
 export interface User {

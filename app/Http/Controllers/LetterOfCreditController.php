@@ -12,9 +12,15 @@ class LetterOfCreditController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = LetterOfCreditResource::collection(LetterOfCredit::paginate(100));
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $data = LetterOfCreditResource::collection(
+            LetterOfCredit::paginate($perPage)
+                ->withQueryString()
+        );
+        
         return Inertia::render('common/index', [
             'items' => $data,
             'link' => route('lcs.index'),

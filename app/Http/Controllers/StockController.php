@@ -17,13 +17,16 @@ class StockController extends Controller
      */
     public function __invoke(Request $request)
     {
+        $perPage = intval($request->input('perPage') ?? 50);
+
         $orderBy = 'in_stock';
         
         $query = resolve(StockResource::class);
 
         $supply = $query->whereRaw('(supplied_qty - ordered_qty) > 0')
-        ->orderByDesc($orderBy)
-        ->paginate(50);
+            ->orderByDesc($orderBy)
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('common/index', [
             'items' => StockResource::collection($supply),

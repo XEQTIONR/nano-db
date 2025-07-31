@@ -12,9 +12,15 @@ class ContainerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = ContainerResource::collection(Container::with('consignment')->paginate(50));
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $data = ContainerResource::collection(
+            Container::with('consignment')
+                ->paginate($perPage)
+                ->withQueryString()
+        );
 
         return Inertia::render('common/index', [
             'items' => $data,

@@ -1,3 +1,4 @@
+import { router } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
@@ -20,13 +21,24 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination"
 import { PaginationMeta } from '@/types';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: '',
         href: '',
     },
-];
+]
+
+const perPageOptions: number[] = [
+    25, 50, 100, 500
+]
 
 
 export default function Index<T>({ items, link, title, type } : { 
@@ -77,11 +89,40 @@ export default function Index<T>({ items, link, title, type } : {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
+                
                 <DataTable columns={cols} data={items.data} meta={items.meta} />
 
                 <div className="flex justify-between w-full">
-                    <div className="shrink-0 text-sm">
-                        Showing { items.meta.from } to { items.meta.to } of <span className="font-semibold">{ items.meta.total }</span>
+                    <div className="shrink-0 text-sm flex items-center gap-7">
+                        <div>
+                            Showing { items.meta.from } to { items.meta.to } of <span className="font-semibold">{ items.meta.total }</span>
+                        </div>
+                        <div className="flex gap-3 items-center">
+                            <Select
+                                defaultValue={items.meta.per_page.toString()}
+                                onValueChange={(val) => {
+                                    const url = new URL(window.location.href)
+
+                                    url.searchParams.set('perPage', val)
+                                    url.searchParams.set('page', '1')
+
+                                    router.get(url)
+                                }}
+                            >
+                                <SelectTrigger className="w-20">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                {
+                                    perPageOptions.includes(items.meta.per_page)
+                                    ? perPageOptions.map(perPage => <SelectItem value={perPage.toString()}>{perPage}</SelectItem>)
+                                    : [items.meta.per_page, ... perPageOptions].sort((a, b) => a-b)
+                                        .map(perPage => <SelectItem value={perPage.toString()}>{perPage}</SelectItem>)
+                                }
+                                </SelectContent>
+                            </Select>
+                            <span>per page</span>
+                        </div>
                     </div>
                     <div>
                         <Pagination className="justify-end">
@@ -101,20 +142,7 @@ export default function Index<T>({ items, link, title, type } : {
                                                 </PaginationLink>
                                             </PaginationItem>)
                                         }
-
-                                        return (
-                                        <PaginationItem>
-                                            { index == 0 
-                                                && <PaginationPrevious key={index} href={item.url ?? "#"} /> }
-                                            { index == (items.meta.links.length - 1) 
-                                                && <PaginationNext key={index} href={item.url ?? "#"} /> }
-                                            { (index > 0 && index < (items.meta.links.length - 1))
-                                                && <PaginationLink isActive={ parseInt(item.label) == items.meta.current_page} href={item.url}>
-                                                        {item.label}
-                                                </PaginationLink> 
-                                            } 
-                                        </PaginationItem>
-                                    )})
+                                    })
                                 }
                             </PaginationContent>
                         </Pagination>

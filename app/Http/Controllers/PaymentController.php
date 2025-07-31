@@ -12,9 +12,11 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = PaymentResource::collection(Payment::paginate(50));
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $data = PaymentResource::collection(Payment::paginate($perPage)->withQueryString());
 
         return Inertia::render('common/index', [
             'items' => $data,

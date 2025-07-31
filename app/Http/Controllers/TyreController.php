@@ -13,11 +13,14 @@ class TyreController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = intval($request->input('perPage') ?? 50);
+
         $data = resolve(StockResource::class)
-        ->orderByDesc('tyre_id')
-        ->paginate(50);
+            ->orderByDesc('tyre_id')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('common/index', [
             'items' => TyreResource::collection($data),

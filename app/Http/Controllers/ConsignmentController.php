@@ -12,9 +12,15 @@ class ConsignmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = ConsignmentResource::collection(Consignment::with(['letterOfCredit'])->paginate(50));
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $data = ConsignmentResource::collection(
+            Consignment::with(['letterOfCredit'])
+            ->paginate($perPage)
+            ->withQueryString()
+        );
 
         return Inertia::render('common/index', [
             'items' => $data,
