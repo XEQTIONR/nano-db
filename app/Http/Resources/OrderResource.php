@@ -31,6 +31,11 @@ class OrderResource extends JsonResource
             'tax_percentage' => $this->tax_percentage,
             'tax_amount' => $this->tax_amount,
             'contents' => OrderContentResource::collection($this->whenLoaded('contents')),
+            'customer' => (new CustomerResource($this->whenLoaded('customer'))),
+            $this->mergeWhen($this->relationLoaded('customer'), [
+                'customer_name' => $this->customer->name,
+            ]),
+
             $this->mergeWhen($this->relationLoaded('contents'), [
                 'sub_total' => $this->contents->reduce($subTotalFn, 0),
                 'grand_total' => ($this->contents->reduce($subTotalFn, 0) * (1 + $delta))

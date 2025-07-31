@@ -1,3 +1,4 @@
+import { currencyFormat } from "@/lib/utils"
 import { 
   DropdownMenu, 
   DropdownMenuTrigger, 
@@ -21,12 +22,37 @@ export const columns = [
     header: "Name",
   },
   {
-    accessorKey: "address",
-    header: "Address",
-  },
-  {
     accessorKey: "phone",
     header: "Phone #",
+  },
+  {
+    accessorKey: "num_orders",
+    header: "# of orders",
+    cell: ({ row }) => <div className="text-center">{ row.getValue("num_orders") }</div>
+  },
+  {
+    accessorKey: "grand_total",
+    header: () => <div className="text-right">Lifetime Value</div>,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("grand_total"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
+  },
+  {
+    accessorKey: "payment_total",
+    header: () => <div className="text-right">Total Paid</div>,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("payment_total"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
+  },
+  {
+    accessorKey: "balance",
+    header: () => <div className="text-right">Balance</div>,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("balance"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
   },
   {
     accessorKey: "created_at",

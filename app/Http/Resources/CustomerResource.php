@@ -22,12 +22,13 @@ class CustomerResource extends JsonResource
             'phone' => $this->phone,
             'notes' => $this->notes,
             'created_at' => $this->created_at->toDateTimeString(),
-            'orders' =>  OrderResource::collection($this->whenLoaded('orders')),
-            // $this->mergeWhen($route == 'customers.index', [
-            //     //'orders_total' => $this->orders->reduce(fn($carry, $order) => $carry + $order->grand_total ,0)
-            //     'orders_total' => $this->orders
-            // ]),
-            
+            'route' => $request->route()->getName(),
+            $this->mergeWhen(($request->route()->getName() === 'customers.index'), [
+                'grand_total' => floatval($this->grand_total),
+                'payment_total' => floatval($this->payment_total),
+                'balance' => floatval($this->balance),
+                'num_orders' => floatval($this->num_orders),
+            ])
         ];
     }
 }
