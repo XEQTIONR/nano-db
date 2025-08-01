@@ -2,6 +2,7 @@ import { ArrowUpDown, ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-re
 import { cn } from "@/lib/utils"
 import { router } from '@inertiajs/react'
 import { SortingState, ColumnSort } from "@tanstack/react-table"
+import { Button } from "../button"
 
 export function DataTableCustomColumnHeader({
     label, 
@@ -16,22 +17,21 @@ export function DataTableCustomColumnHeader({
         table: object
     },
 }) {
-    let icon = <ArrowUpDown strokeWidth={2.5} size={17} />
+    let sortParam: ColumnSort | undefined = undefined
+    let icon = <ArrowUpDown strokeWidth={2.2} />
+
     if (config) {
         const st :{sorting: SortingState} =  config.table.getState()
-        const sortParam: ColumnSort | undefined = st.sorting.find(({ id }) => id == colKey)
+        sortParam = st.sorting.find(({ id }) => id == colKey)
         
         if (sortParam) {
-            icon = sortParam.desc
-                ? <ArrowDownWideNarrow strokeWidth={2.5} size={17} />
-                : <ArrowDownNarrowWide strokeWidth={2.5} size={17} />
+            icon = sortParam.desc ? <ArrowDownWideNarrow strokeWidth={2.2} /> : <ArrowDownNarrowWide strokeWidth={2.2} />
         }
     }
-
     const toggleSorting = () => {
         if (config) {
             const st :{sorting: SortingState} =  config.table.getState()
-            const sortParam: ColumnSort | undefined = st.sorting.find(({ id }) => id == colKey)
+            sortParam = st.sorting.find(({ id }) => id == colKey)
 
             let dir = 'asc'
 
@@ -54,10 +54,15 @@ export function DataTableCustomColumnHeader({
         "justify-"+justify
     )}>
         {label}
-        <span className="text-neutral-200 dark:hover:text-neutral-300 dark:text-neutral-700 cursor-pointer"
+        <Button variant="ghost" size="icon" 
+            className={cn(
+                config && sortParam
+                ? "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 dark:text-neutral-500 cursor-pointer"
+                : "text-neutral-300 hover:text-neutral-800 dark:text-neutral-700 dark:hover:text-neutral-200 cursor-pointer"
+            )}
             onClick={toggleSorting}
         >
             { icon }
-        </span>
+        </Button>
     </div>)
 }
