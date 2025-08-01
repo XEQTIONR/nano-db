@@ -19,12 +19,14 @@ class StockController extends Controller
     {
         $perPage = intval($request->input('perPage') ?? 50);
 
-        $orderBy = 'in_stock';
+        $sortBy = $request->input('sortBy') ?? 'in_stock';
+
+        $sortDir = $request->input('sortDir') ?? 'desc';
         
         $query = resolve(StockResource::class);
 
         $supply = $query->whereRaw('(supplied_qty - ordered_qty) > 0')
-            ->orderByDesc($orderBy)
+            ->orderBy($sortBy, $sortDir)
             ->paginate($perPage)
             ->withQueryString();
 
@@ -33,6 +35,8 @@ class StockController extends Controller
             'link' => route('stock.index'),
             'title' => 'Inventory',
             'type' => 'stock',
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir
         ]);
     }
 }

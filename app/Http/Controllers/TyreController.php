@@ -17,16 +17,30 @@ class TyreController extends Controller
     {
         $perPage = intval($request->input('perPage') ?? 50);
 
+        $sortBy = $request->input('sortBy') ?? 'in_stock';
+
+        $sortDir = $request->input('sortDir') ?? 'desc';
+
+        if ($sortBy == 'id') {
+            $sortBy = 'tyre_id';
+        }
+
         $data = resolve(StockResource::class)
-            ->orderByDesc('tyre_id')
+            ->orderBy($sortBy, $sortDir)
             ->paginate($perPage)
             ->withQueryString();
+
+        if ($sortBy == 'tyre_id') {
+            $sortBy = 'id';
+        }
 
         return Inertia::render('common/index', [
             'items' => TyreResource::collection($data),
             'link' => route('tyres.index'),
             'title' => 'Tyres',
             'type' => 'tyre',
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir
         ]);
     }
 
