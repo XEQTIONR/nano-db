@@ -2,9 +2,15 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import { Separator } from "@/components/ui/separator"
-import { Plus } from 'lucide-react';
+import { Filter, FilterX, Plus, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     return (
@@ -14,7 +20,34 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <Separator className="mr-3" orientation="vertical" />
                 <div className="w-full grow flex items-center justify-between">
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
-                    <Button className="hover:cursor-pointer"   size="sm"><Plus /> Create</Button>
+                    <div className="flex items-center gap-2 justify-end">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button className="hover:cursor-pointer text-xs" size="icon" variant="destructive"> <FilterX /> </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Remove filters</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button className="hover:cursor-pointer" size="icon" variant="ghost"><Filter /></Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Filter</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button className="hover:cursor-pointer" size="icon" variant="ghost"><Plus /></Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Add new</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        
+                        
+                    </div>
                 </div>
             </div>
         </header>
