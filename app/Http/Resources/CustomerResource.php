@@ -28,6 +28,7 @@ class CustomerResource extends JsonResource
                 'payment_total' => floatval($this->payment_total),
                 'balance' => floatval($this->balance),
                 'num_orders' => floatval($this->num_orders),
+                'total_commission' => floatval($this->total_commission)
             ])
         ];
     }

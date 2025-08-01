@@ -44,9 +44,10 @@ class CustomerController extends Controller
             'customers.notes',
             'customers.created_at',
             DB::raw('COUNT(orders.Order_num) AS num_orders'),
+            DB::raw('SUM(orders.commission) AS total_commission'),
             DB::raw('SUM((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) AS grand_total'),
             DB::raw('SUM(IFNULL(payment, 0)) AS payment_total'),
-            DB::raw('SUM(((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) - IFNULL(payment, 0)) AS balance')
+            DB::raw('SUM(((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) - IFNULL(payment, 0) - commission ) AS balance')
         )->orderBy($sortBy, $sortDir)
         ->paginate($perPage)->withQueryString();
 

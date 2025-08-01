@@ -48,6 +48,14 @@ export const columns = [
     }
   },
   {
+    accessorKey: "total_commission",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="total_commission" label="Total Commision" config={v} />,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("total_commission"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
+  },
+  {
     accessorKey: "balance",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="balance" justify="end" label="Balance" config={v} />,
     cell: ({ row }) => {
