@@ -16,7 +16,10 @@ import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-h
 export const columns = [
   {
     accessorKey: "bol",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="bol" label="Bill of lading #" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="bol" label="Bill of lading #" config={v} />,
+    cell: ({ row }) => {
+      return <div className="text-center">{row.getValue("bol")}</div>
+    }
   },
   {
     accessorKey: "value",

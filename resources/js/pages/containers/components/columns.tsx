@@ -1,3 +1,5 @@
+import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
+import { Button } from "@/components/ui/button"
 import { 
   DropdownMenu, 
   DropdownMenuTrigger, 
@@ -7,30 +9,29 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 export const columns = [
   {
     accessorKey: "container_num",
-    header: "Container #",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="container_num" label="Container #" config={v} />
   },
   {
     accessorKey: "bol",
-    header: "Bill of Lading #",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="bol" label="Bill of lading #" config={v} />
   },
   {
     accessorKey: "lc_num",
-    header: "LC #",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="lc_num" label="LC #" config={v} />
   },
   {
     accessorKey: "land_date",
-    header: "Landed On",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="land_date" label="Landed On" config={v} />
   },
   {
     accessorKey: "created_at",
-    header: () => <div className="text-center">Created On</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" justify="center" label="Created On" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
   },
   {
