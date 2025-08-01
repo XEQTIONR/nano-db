@@ -6,13 +6,12 @@ import {
   DropdownMenuContent,
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, ArrowUpDown } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 import { currencyFormat } from "@/lib/utils"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
-import { ColumnDef } from "@tanstack/react-table"
 
 export const columns = [
   {

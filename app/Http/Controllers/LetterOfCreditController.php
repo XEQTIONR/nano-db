@@ -16,16 +16,38 @@ class LetterOfCreditController extends Controller
     {
         $perPage = intval($request->input('perPage') ?? 50);
 
-        $data = LetterOfCreditResource::collection(
-            LetterOfCredit::paginate($perPage)
+        $sortBy = $request->input('sortBy') ?? 'created_at';
+
+        $sortDir = $request->input('sortDir') ?? 'desc';
+
+        if ($sortBy == 'local_amount') {
+            $data = LetterOfCreditResource::collection(
+            LetterOfCredit::orderByRaw('foreign_amount * exchange_rate '. $sortDir)
+                ->paginate($perPage)
                 ->withQueryString()
-        );
+            );
+        } elseif ($sortBy == 'total_expense') {
+            $data = LetterOfCreditResource::collection(
+            LetterOfCredit::orderByRaw('(foreign_expense * exchange_rate) + domestic_expense '. $sortDir)
+                ->paginate($perPage)
+                ->withQueryString()
+            );
+        } else {
+            $data = LetterOfCreditResource::collection(
+            LetterOfCredit::orderBy($sortBy, $sortDir)
+                ->paginate($perPage)
+                ->withQueryString()
+            );
+        }
+        
         
         return Inertia::render('common/index', [
             'items' => $data,
             'link' => route('lcs.index'),
             'title' => 'Letters of Credit',
             'type' => 'lc',
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir
         ]);
     }
 
