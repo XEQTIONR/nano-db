@@ -64,11 +64,12 @@ class OrderController extends Controller
                 'orders.tax_amount',
                 'orders.commission',
                 'orders.created_at',
+                DB::raw('SUM(commission) AS total_commission'),
                 DB::raw('IFNULL(num_items, 0) AS num_items'),
                 DB::raw('IFNULL(count_payments, 0) AS count_payments'),
                 DB::raw('SUM((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) AS grand_total'),
                 DB::raw('SUM(IFNULL(payment, 0)) AS payments_total'),
-                DB::raw('SUM(((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) - IFNULL(payment, 0)) AS balance')
+                DB::raw('SUM(((subtotal * (1+((tax_percentage - discount_percent)/100))) - discount_amount + tax_amount) - IFNULL(payment, 0) - commission) AS balance')
             )
             ->orderBy($sortBy, $sortDir)
             ->paginate($perPage)

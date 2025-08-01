@@ -19,10 +19,6 @@ export const columns = [
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_name" label="Customer" config={v} />
   },
   {
-    accessorKey: "commission",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="commission" label="Commission paid" config={v} />
-  },
-  {
     accessorKey: "count",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count" label="# of items" config={v} />
   },
@@ -43,6 +39,14 @@ export const columns = [
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="payments_total" label="Total Paid" config={v} />,
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("payments_total"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
+  },
+  {
+    accessorKey: "commission",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="commission" label="Commission paid" config={v} />,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("commission"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
     }
   },
