@@ -8,17 +8,19 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
+
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 export const columns = [
   {
     accessorKey: "bol",
-    header: "Bill of Lading #",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="bol" label="Bill of lading #" config={v} />
   },
   {
     accessorKey: "value",
-    header: () => <div className="text-right">Foreign Amount</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="end" colKey="value" label="Foreign Amount" config={v} />,
     cell: ({ row }) => {
 
         let code: string = row.original.currency_code
@@ -35,27 +37,40 @@ export const columns = [
   },
   {
     accessorKey: "exchange_rate",
-    header: "Rate",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="exchange_rate" label="Rate" config={v} />,
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("exchange_rate"))
-        return amount.toFixed(2)
+        return <div className="text-center">{amount.toFixed(2)}</div>
     }
   },
   {
     accessorKey: "tax",
-    header: "Tax",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="end" colKey="tax" label="Tax" config={v} />,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("tax"))
+
+        return <div className="text-right">{(new Intl.NumberFormat("en-IN", 
+            { style: "currency", currency: 'BDT', currencyDisplay: "narrowSymbol" })
+            .format(amount))}</div>
+    }
   },
   {
     accessorKey: "land_date",
-    header: "Land Date",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="land_date" label="Land Date" config={v} />,
+    cell: ({row}) => {
+      return <div className="text-center">{row.getValue("land_date")}</div>
+    }
   },
   {
     accessorKey: "lc_num",
-    header: "LC #",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="lc_num" label="LC #" config={v} />,
+    cell: ({row}) => {
+      return <div className="text-center">{row.getValue("lc_num")}</div>
+    }
   },
   {
     accessorKey: "created_at",
-    header: () => <div className="text-center">Created On</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="created_at" label="Created On" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
   },
   {

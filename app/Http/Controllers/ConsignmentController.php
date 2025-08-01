@@ -16,17 +16,32 @@ class ConsignmentController extends Controller
     {
         $perPage = intval($request->input('perPage') ?? 50);
 
+        $sortBy = $request->input('sortBy') ?? 'created_at';
+
+        $sortDir = $request->input('sortDir') ?? 'desc';
+
+        if ($sortBy == 'lc_num') {
+            $sortBy = 'lc';
+        }
+
         $data = ConsignmentResource::collection(
             Consignment::with(['letterOfCredit'])
-            ->paginate($perPage)
-            ->withQueryString()
+                ->orderBy($sortBy, $sortDir)
+                ->paginate($perPage)
+                ->withQueryString()
         );
+
+        if ($sortBy == 'lc') {
+            $sortBy = 'lc_num';
+        }
 
         return Inertia::render('common/index', [
             'items' => $data,
             'link' => route('consignments.index'),
             'title' => 'Consignments',
             'type' => 'consignment',
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir,
         ]);  
     }
 }
