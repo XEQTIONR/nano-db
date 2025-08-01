@@ -1,4 +1,6 @@
+import { Button } from "@/components/ui/button"
 import { currencyFormat } from "@/lib/utils"
+import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
 import { 
   DropdownMenu, 
   DropdownMenuTrigger, 
@@ -8,31 +10,30 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
 export const columns = [
   {
     accessorKey: "id",
-    header: "ID",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id" label="ID" config={v} />
   },
   {
     accessorKey: "name",
-    header: "Name",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="name" label="Name" config={v} />
   },
   {
     accessorKey: "phone",
-    header: "Phone #",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="phone" label="Phone #" config={v} />
   },
   {
     accessorKey: "num_orders",
-    header: "# of orders",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="num_orders" justify="center" label="# of orders" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue("num_orders") }</div>
   },
   {
     accessorKey: "grand_total",
-    header: () => <div className="text-right">Lifetime Value</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="grand_total" justify="end" label="Lifetime Value" config={v} />,
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("grand_total"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
@@ -40,7 +41,7 @@ export const columns = [
   },
   {
     accessorKey: "payment_total",
-    header: () => <div className="text-right">Total Paid</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="payment_total" justify="end" label="Total Paid" config={v} />,
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("payment_total"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
@@ -48,7 +49,7 @@ export const columns = [
   },
   {
     accessorKey: "balance",
-    header: () => <div className="text-right">Balance</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="balance" justify="end" label="Balance" config={v} />,
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("balance"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
@@ -56,7 +57,7 @@ export const columns = [
   },
   {
     accessorKey: "created_at",
-    header: () => <div className="text-center">Created On</div>,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" justify="center" label="Created On" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
   },
   {
