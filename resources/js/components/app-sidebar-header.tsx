@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { Filter, FilterX, Plus } from 'lucide-react';
 
+import { router } from '@inertiajs/react';
 
 export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?: BreadcrumbItemType[], controls?: ReactNode }) {
     return (
@@ -33,13 +34,25 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
 }
 
 export function AppSidebarHeaderControls({ filters } : { filters: string[]}) {
+    console.log('AppSidebarHeaderControls', filters)
     return (
         <div className="flex items-center gap-2 justify-end">
             {
                 filters.length > 0 && 
                 (<Tooltip>
                     <TooltipTrigger asChild>
-                        <Button className="hover:cursor-pointer text-xs" size="icon" variant="destructive"> <FilterX /> </Button>
+                        <Button 
+                            className="hover:cursor-pointer text-xs" 
+                            size="icon" 
+                            variant="destructive"
+                            onClick={() => {
+                                const url = new URL(window.location.href)
+                                url.searchParams.delete('filters')
+                                router.get(url)
+                            }}
+                        >
+                            <FilterX />
+                        </Button>
                     </TooltipTrigger>
                     <TooltipContent>
                         <p>Remove filters</p>

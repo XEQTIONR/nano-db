@@ -16,7 +16,7 @@ class OrderIndexResource extends JsonResource
     {
         return [
             'order_num' => $this->Order_num,
-            'order_on' => $this->order_on->toDateString(),
+            'order_on' => $this->order_on,
             'customer_id' => $this->customer_id,
             'customer_name' => $this->name,
             'discount_percent' => $this->discount_percent,
@@ -29,7 +29,7 @@ class OrderIndexResource extends JsonResource
             'balance' => floatval($this->balance),
             'count' => $this->num_items,
             'count_payments' => $this->count_payments,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at,
         ];
     }
 }

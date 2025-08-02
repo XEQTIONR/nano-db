@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Arr;
+
 class FilterService
 {
     protected static $operators = [
@@ -13,12 +15,18 @@ class FilterService
         'ne' => '<>'
     ];
 
-    public static function parse(string $str) 
+    public static function parse(string $str, array $map) 
     {
         [$field, $op, $param] = explode('.', $str);
 
         $op = self::$operators[$op];
+        $raw = false;
 
-        return [$field, $op, $param];
+        if (!empty($map) && Arr::exists($map, $field)) {
+            $f = $map[$field]['accessor']; // here
+            $raw = $map[$field]['raw']; // here
+        }
+
+        return [$f, $op, $param, $raw];
     }
 }
