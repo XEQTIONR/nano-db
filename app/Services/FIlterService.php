@@ -15,18 +15,21 @@ class FilterService
         'ne' => '<>'
     ];
 
-    public static function parse(string $str, array $map) 
+    public static function parse(string $qStr)
+    {
+        $filters = $qStr != "" ? explode(',', $qStr) : [];
+
+        $filters = collect($filters)->map( fn($f) => self::createWhereClauseParams($f) );
+
+        return $filters;
+    }
+
+    public static function createWhereClauseParams(string $str) 
     {
         [$field, $op, $param] = explode('.', $str);
 
         $op = self::$operators[$op];
-        $raw = false;
 
-        if (!empty($map) && Arr::exists($map, $field)) {
-            $f = $map[$field]['accessor']; // here
-            $raw = $map[$field]['raw']; // here
-        }
-
-        return [$f, $op, $param, $raw];
+        return [$field, $op, $param];
     }
 }
