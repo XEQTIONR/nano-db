@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\OrderContent;
 use App\Models\Payment;
+use App\Services\FilterService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -22,6 +24,12 @@ class OrderController extends Controller
         $sortBy = $request->input('sortBy') ?? 'balance';
 
         $sortDir = $request->input('sortDir') ?? 'desc';
+
+        $filters = $request->input('filters') ?? [];
+
+        $filterP = collect($filters)->map(fn($f) => FilterService::parse($f));
+
+        Log::info($filterP);
 
         $contents = OrderContent::select(
             'Order_num',
@@ -88,6 +96,7 @@ class OrderController extends Controller
             'link' => route('orders.index'),
             'title' => 'Orders',
             'type' => 'order',
+            'filters' => $filters,
             'sortBy' => $sortBy,
             'sortDir' => $sortDir
         ]);

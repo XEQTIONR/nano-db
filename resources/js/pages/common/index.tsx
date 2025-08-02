@@ -29,6 +29,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: '',
@@ -41,7 +43,7 @@ const perPageOptions: number[] = [
 ]
 
 
-export default function Index<T>({ items, link, sortBy, sortDir, title, type, } : { 
+export default function Index<T>({ items, link, sortBy, sortDir, title, type, filters = [] } : { 
     items: { 
         data: T[], 
         links: { 
@@ -55,6 +57,7 @@ export default function Index<T>({ items, link, sortBy, sortDir, title, type, } 
     sortDir: 'asc' | 'desc'
     title: string
     type: string 
+    filters?: string[]
 }) {
     let cols = []
     switch (type) {
@@ -88,7 +91,7 @@ export default function Index<T>({ items, link, sortBy, sortDir, title, type, } 
     breadcrumbs[0].href = link
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls filters={filters} />}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 
