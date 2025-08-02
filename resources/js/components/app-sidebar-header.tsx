@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
@@ -30,8 +31,11 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                             </TooltipContent>
                         </Tooltip>
                         <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button className="hover:cursor-pointer" size="icon" variant="ghost"><Filter /></Button>
+                            <TooltipTrigger>
+                                <Button className="hover:cursor-pointer relative" variant="ghost" size="icon">
+                                    <Filter className="block m-auto" />
+                                    <Badge className="bg-emerald-500 text-emerald-500 font-bold hover:text-black rounded-full w-2 h-2 absolute right-2 top-2  hover:w-5 hover:h-5 hover:right-0 hover:top-0 transition-all duration-300  p-0 text-xs ">5</Badge>
+                                </Button>
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Filter</p>
