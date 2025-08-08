@@ -12,8 +12,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function InputCalendar({id, placeholder, className = ""} : {id: string, placeholder?: string, className?: string}) {
-  const [date, setDate] = useState<Date|undefined>()
+export function InputCalendar({id, placeholder, initialDate = undefined, className = ""} : {id: string, placeholder?: string, initialDate?: string | undefined, className?: string}) {
+  const [date, setDate] = useState<Date|undefined>(() => {
+    if (initialDate != undefined) {
+      return new Date( initialDate )
+    }
+
+    return undefined
+  })
 
   const calendarX = useRef(null)
   const trigger = useRef<HTMLButtonElement>(null)

@@ -85,9 +85,8 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
 }
 
 export function AppSidebarHeaderControls({ filters, filterOptions } : { filters: string[][], filterOptions: FilterConfig[] }) {
-    console.log('AppSidebarHeaderControls filters', filters)
-    console.log('AppSidebarHeaderControls filterOptions', filterOptions)
-    console.log('grouped', Object.groupBy(filterOptions, ({ group }) => group ))
+    console.log('filters', filters)
+    console.log('filterOptions', filterOptions)
 
     const groups = Object.groupBy(filterOptions, ({ group }) => group )
 
@@ -183,7 +182,7 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                         }
                                                         
                                                         {
-                                                            field.inputType == "date" && <InputCalendar id={key} />
+                                                            field.inputType == "date" && <InputCalendar initialDate={transFormFilterParam(field)}  id={key} />
                                                         }
 
                                                         {
