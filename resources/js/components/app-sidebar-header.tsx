@@ -65,6 +65,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import { Combobox } from "./ui/combobox"
+import { InputCalendar } from "./ui/input-calendar"
+import { cn } from "@/lib/utils"
 
 export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?: BreadcrumbItemType[], controls?: ReactNode }) {
     return (
@@ -136,49 +139,63 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                         <SheetDescription>Filter the items based on criteria.</SheetDescription>
                     </SheetHeader>
                     
-                    <Accordion className="" type="multiple">
+                    <Accordion className="" type="single">
                         {
                             Object.entries(groups).map(([key, fields]) => (
                                 <AccordionItem className="" value={key}>
                                     <AccordionTrigger className="px-4">{key}</AccordionTrigger>
-                                     <AccordionContent className="px-4">
-                                        <div className="flex flex-col gap-6 mt-1">
-                                            { fields?.map(({label, key}) => (
-                                                <div className="flex flex-col">
-                                                <Label className="text-xs text-muted-foreground">{label}</Label>
-                                                <div className="w-full flex gap-2">
-                                                    <Input className="mt-1 text-right" placeholder="0.00" />
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button size="icon" variant="ghost">
-                                                                <EllipsisVertical />
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent className="w-56" align="start">
-                                                            <DropdownMenuLabel>Where</DropdownMenuLabel>
-                                                            <DropdownMenuGroup>
-                                                            <DropdownMenuItem disabled>Not Selected</DropdownMenuItem>
-                                                            <DropdownMenuItem>
-                                                                Equals
-                                                                <DropdownMenuShortcut>=</DropdownMenuShortcut>
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem>
-                                                                Doesn't equal
-                                                                <DropdownMenuShortcut>!=</DropdownMenuShortcut>
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem>
-                                                                Greater Than
-                                                                <DropdownMenuShortcut>{">"}</DropdownMenuShortcut>
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem>
-                                                                Less Than
-                                                                <DropdownMenuShortcut>{"<"}</DropdownMenuShortcut>
-                                                            </DropdownMenuItem>
-                                                            </DropdownMenuGroup>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
+                                     <AccordionContent className="pl-4 pr-1.5">
+                                        <div className="flex flex-col gap-6 mt-1 ">
+                                            { fields?.map(({label, key, dataType}) => (
+                                                <div key={key} className="flex flex-col">
+                                                    <Label className="text-xs text-muted-foreground">{label}</Label>
+                                                    <div className="w-full flex gap-2 mt-1  items-center">
+                                                        {
+                                                            dataType == "select" && <Combobox type="multiple" />
+                                                        }
+                                                        
+                                                        {
+                                                            dataType == "date" && <InputCalendar id={key} />
+                                                        }
+
+                                                        {
+                                                            (dataType == "number" ||  dataType == "text")
+                                                            && <Input 
+                                                                    className={cn(dataType == "number" && "text-right")}
+                                                                    placeholder={(dataType == "number") ? "0.00" : ""}
+                                                                />
+                                                        }
+                                                        <DropdownMenu>
+                                                            <DropdownMenuTrigger asChild>
+                                                                <Button size="icon" variant="ghost">
+                                                                    <EllipsisVertical />
+                                                                </Button>
+                                                            </DropdownMenuTrigger>
+                                                            <DropdownMenuContent className="w-56" align="start">
+                                                                <DropdownMenuLabel>Where</DropdownMenuLabel>
+                                                                <DropdownMenuGroup>
+                                                                <DropdownMenuItem disabled>Not Selected</DropdownMenuItem>
+                                                                <DropdownMenuItem>
+                                                                    Equals
+                                                                    <DropdownMenuShortcut>=</DropdownMenuShortcut>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem>
+                                                                    Doesn't equal
+                                                                    <DropdownMenuShortcut>!=</DropdownMenuShortcut>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem>
+                                                                    Greater Than
+                                                                    <DropdownMenuShortcut>{">"}</DropdownMenuShortcut>
+                                                                </DropdownMenuItem>
+                                                                <DropdownMenuItem>
+                                                                    Less Than
+                                                                    <DropdownMenuShortcut>{"<"}</DropdownMenuShortcut>
+                                                                </DropdownMenuItem>
+                                                                </DropdownMenuGroup>
+                                                            </DropdownMenuContent>
+                                                        </DropdownMenu>
+                                                    </div>
                                                 </div>
-                                            </div>
                                             ))}
                                             
                                         </div>

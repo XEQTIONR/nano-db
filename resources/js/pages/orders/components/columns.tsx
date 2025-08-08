@@ -115,7 +115,7 @@ export const filterOptions: FilterConfig[] = [
   {
     key: "order_num",
     label: "Order #",
-    dataType: 'numeric',
+    dataType: 'select',
     group: "Order"
   },
   {
@@ -127,49 +127,49 @@ export const filterOptions: FilterConfig[] = [
   {
     key: "customer_id",
     label: "Customer ID",
-    dataType: 'numeric',
+    dataType: 'select',
     group: "Customer"
   },
   {
     key: "customer_name",
     label: "Customer",
-    dataType: 'string',
+    dataType: 'select',
     group: "Customer"
   },
   {
     key: "count",
     label: "Number of items",
-    dataType: 'numeric',
+    dataType: 'number',
     group: "Order"
   },
   {
     key: "count_payments",
     label: "Number of payments",
-    dataType: 'numeric',
+    dataType: 'number',
     group: "Payments"
   },
   {
     key: "grand_total",
     label: "Grand Total",
-    dataType: 'numeric',
+    dataType: 'number',
     group: "Order"
   },
   {
     key: "payments_total",
     label: "Total Paid",
-    dataType: 'numeric',
+    dataType: 'number',
     group: "Payments"
   },
   {
     key: "commission",
     label: "Commission Paid",
-    dataType: 'numeric',
+    dataType: 'number',
     group: "Payments"
   },
   {
     key: "balance",
     label: "Balance",
-    dataType: 'numeric',
+    dataType: 'number',
     group: "Payments"
   },
   {

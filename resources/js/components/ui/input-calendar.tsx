@@ -4,7 +4,7 @@ import { useRef, useState } from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon, X } from "lucide-react"
 
-//import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function InputCalendar({id, placeholder,} : {id: string, placeholder?: string}) {
+export function InputCalendar({id, placeholder, className = ""} : {id: string, placeholder?: string, className?: string}) {
   const [date, setDate] = useState<Date|undefined>()
 
   const calendarX = useRef(null)
@@ -35,7 +35,13 @@ export function InputCalendar({id, placeholder,} : {id: string, placeholder?: st
         <div
             id={id}
             data-empty={!date}
-            className="dark:bg-neutral-900 hover:cursor-pointer rounded-md border py-1 pl-3 pr-1.5 flex justify-between items-center text-left text-sm font-normal data-[empty=true]:text-muted-foreground w-full md:w-[280px]"
+            className={
+              cn(
+                "dark:bg-neutral-900 hover:cursor-pointer rounded-md border py-1 pl-3 pr-1.5 flex justify-between items-center text-left text-sm font-normal data-[empty=true]:text-muted-foreground w-full",
+                className
+              )
+            }
+
         >
             {date ? format(date, "PPP") : <span>{placeholder ?? "Pick a date" }</span>}
             <div className="rounded-sm p-1.5 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700">
