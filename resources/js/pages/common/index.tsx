@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { FilterConfig, FilterOptions, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
@@ -8,7 +8,7 @@ import { columns as lcCols } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols } from '@/pages/consignments/components/columns';
 import { columns as containerCols } from '@/pages/containers/components/columns';
 import { columns as customerCols } from '@/pages/customers/components/columns';
-import { columns as orderCols } from '@/pages/orders/components/columns';
+import { columns as orderCols, filterOptions as orderFilters } from '@/pages/orders/components/columns';
 import { columns as paymentCols } from '@/pages//payments/components/columns';
 import { columns as stockCols } from '@/pages//stock/components/columns';
 import {
@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/select"
 
 import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
+
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -60,6 +62,7 @@ export default function Index<T>({ items, link, sortBy, sortDir, title, type, fi
     filters?: string[]
 }) {
     let cols = []
+    const filterOptions: FilterConfig[] = orderFilters
     switch (type) {
         case "lc":
             cols = lcCols
@@ -91,7 +94,7 @@ export default function Index<T>({ items, link, sortBy, sortDir, title, type, fi
     breadcrumbs[0].href = link
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls filters={filters} />}>
+        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls filters={filters} filterOptions={filterOptions} />}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 

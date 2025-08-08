@@ -1,11 +1,48 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Breadcrumbs } from '@/components/breadcrumbs'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { FilterConfig, type BreadcrumbItem as BreadcrumbItemType } from '@/types'
 import { Separator } from "@/components/ui/separator"
 
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Tooltip,
   TooltipContent,
@@ -14,9 +51,20 @@ import {
 
 import { Badge } from '@/components/ui/badge';
 
-import { Filter, FilterX, Plus } from 'lucide-react';
+import { EllipsisVertical, Filter, FilterX, Plus, Search } from 'lucide-react';
 
 import { router } from '@inertiajs/react';
+
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?: BreadcrumbItemType[], controls?: ReactNode }) {
     return (
@@ -33,10 +81,14 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     );
 }
 
-export function AppSidebarHeaderControls({ filters } : { filters: string[]}) {
-    console.log('AppSidebarHeaderControls', filters)
+export function AppSidebarHeaderControls({ filters, filterOptions } : { filters: string[], filterOptions: FilterConfig[] }) {
+    console.log('AppSidebarHeaderControls filters', filters)
+    console.log('AppSidebarHeaderControls filterOptions', filterOptions)
+    console.log('grouped', Object.groupBy(filterOptions, ({ group }) => group ))
+
+    const groups = Object.groupBy(filterOptions, ({ group }) => group )
     return (
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex items-end gap-2 justify-end">
             {
                 filters.length > 0 && 
                 (<Tooltip>
@@ -59,23 +111,101 @@ export function AppSidebarHeaderControls({ filters } : { filters: string[]}) {
                     </TooltipContent>
                 </Tooltip>)
             }
-            
-            <Tooltip>
-                <TooltipTrigger>
-                    <Button className="hover:cursor-pointer relative" variant="ghost" size="icon">
-                        <Filter className="block m-auto" />
-                        { 
-                            filters.length > 0 && 
-                            (<Badge className="bg-emerald-500 text-emerald-500 font-bold hover:text-black rounded-full w-2 h-2 absolute right-2 top-2  hover:w-5 hover:h-5 hover:right-0 hover:top-0 transition-all duration-300  p-0 text-xs ">
-                                {filters.length}
-                            </Badge>)
+            <Sheet>
+                <SheetTrigger>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Button className="hover:cursor-pointer relative" variant="ghost" size="icon">
+                                <Filter className="block m-auto" />
+                                { 
+                                    filters.length > 0 && 
+                                    (<Badge className="bg-emerald-500 text-emerald-500 font-bold hover:text-black rounded-full w-2 h-2 absolute right-2 top-2  hover:w-5 hover:h-5 hover:right-0 hover:top-0 transition-all duration-300  p-0 text-xs ">
+                                        {filters.length}
+                                    </Badge>)
+                                }
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Filter</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </SheetTrigger>
+                <SheetContent>
+                    <SheetHeader className="pb-0">
+                        <SheetTitle>Filters</SheetTitle>
+                        <SheetDescription>Filter the items based on criteria.</SheetDescription>
+                    </SheetHeader>
+                    
+                    <Accordion className="" type="multiple">
+                        {
+                            Object.entries(groups).map(([key, fields]) => (
+                                <AccordionItem className="" value={key}>
+                                    <AccordionTrigger className="px-4">{key}</AccordionTrigger>
+                                     <AccordionContent className="px-4">
+                                        <div className="flex flex-col gap-6 mt-1">
+                                            { fields?.map(({label, key}) => (
+                                                <div className="flex flex-col">
+                                                <Label className="text-xs text-muted-foreground">{label}</Label>
+                                                <div className="w-full flex gap-2">
+                                                    <Input className="mt-1 text-right" placeholder="0.00" />
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button size="icon" variant="ghost">
+                                                                <EllipsisVertical />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent className="w-56" align="start">
+                                                            <DropdownMenuLabel>Where</DropdownMenuLabel>
+                                                            <DropdownMenuGroup>
+                                                            <DropdownMenuItem disabled>Not Selected</DropdownMenuItem>
+                                                            <DropdownMenuItem>
+                                                                Equals
+                                                                <DropdownMenuShortcut>=</DropdownMenuShortcut>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem>
+                                                                Doesn't equal
+                                                                <DropdownMenuShortcut>!=</DropdownMenuShortcut>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem>
+                                                                Greater Than
+                                                                <DropdownMenuShortcut>{">"}</DropdownMenuShortcut>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem>
+                                                                Less Than
+                                                                <DropdownMenuShortcut>{"<"}</DropdownMenuShortcut>
+                                                            </DropdownMenuItem>
+                                                            </DropdownMenuGroup>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </div>
+                                            ))}
+                                            
+                                        </div>
+                                     </AccordionContent>
+                                </AccordionItem>
+                            ))
                         }
-                    </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Filter</p>
-                </TooltipContent>
-            </Tooltip>
+                    </Accordion>
+                    {/* <div className="grid flex-1 auto-rows-min gap-6 px-4">
+                        <div className="grid gap-3">
+                            <Label htmlFor="sheet-demo-username">Username</Label>
+                            <Input id="sheet-demo-username" defaultValue="@peduarte" />
+                        </div>
+                        <div className="grid gap-3">
+                            <Label htmlFor="sheet-demo-name">Name</Label>
+                            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+                        </div>
+                        <div className="w-3/4">{JSON.stringify(filterOptions)}</div>
+                    </div> */}
+                    <SheetFooter>
+                        <Button type="submit">Save changes</Button>
+                            <SheetClose asChild>
+                            <Button variant="outline">Close</Button>
+                        </SheetClose>
+                    </SheetFooter>
+                </SheetContent>
+            </Sheet>
             <Tooltip>
                 <TooltipTrigger asChild>
                     <Button className="hover:cursor-pointer" size="icon" variant="ghost"><Plus /></Button>

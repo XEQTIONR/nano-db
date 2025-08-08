@@ -1,30 +1,55 @@
 import { currencyFormat } from "@/lib/utils"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
+import { FilterConfig, FilterOptions } from "@/types"
 
 export const columns = [
   {
     accessorKey: "order_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order #" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order #" config={v} />,
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
   },
   {
     accessorKey: "order_on",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_on" label="Order on" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_on" label="Order on" config={v} />,
+    filterOptions: {
+      dataType: 'date',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
   },
   {
     accessorKey: "customer_id",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_id" label="Customer ID" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_id" label="Customer ID" config={v} />,
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
   },
   {
     accessorKey: "customer_name",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_name" label="Customer" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_name" label="Customer" config={v} />,
+    filterOptions: {
+      dataType: 'string',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
   },
   {
     accessorKey: "count",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count" label="# of items" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count" label="# of items" config={v} />,
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
   },
   {
     accessorKey: "count_payments",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count_payments" label="# of payments" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count_payments" label="# of payments" config={v} />,
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
   },
   {
     accessorKey: "grand_total",
@@ -32,6 +57,10 @@ export const columns = [
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("grand_total"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    },
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
     }
   },
   {
@@ -40,6 +69,10 @@ export const columns = [
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("payments_total"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    },
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
     }
   },
   {
@@ -48,6 +81,10 @@ export const columns = [
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("commission"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    },
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
     }
   },
   {
@@ -56,11 +93,89 @@ export const columns = [
     cell: ({ row }) => {
         const amount = parseFloat(row.getValue("balance"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    },
+    filterOptions: {
+      dataType: 'numeric',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
     }
   },
   {
     accessorKey: "created_at",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" label="Created On" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
+    cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>,
+    filterOptions: {
+      dataType: 'date',
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    }
+  },
+]
+
+
+export const filterOptions: FilterConfig[] = [
+  {
+    key: "order_num",
+    label: "Order #",
+    dataType: 'numeric',
+    group: "Order"
+  },
+  {
+    key: "order_on",
+    label: "Order Date",
+    dataType: 'date',
+    group: "Order"
+  },
+  {
+    key: "customer_id",
+    label: "Customer ID",
+    dataType: 'numeric',
+    group: "Customer"
+  },
+  {
+    key: "customer_name",
+    label: "Customer",
+    dataType: 'string',
+    group: "Customer"
+  },
+  {
+    key: "count",
+    label: "Number of items",
+    dataType: 'numeric',
+    group: "Order"
+  },
+  {
+    key: "count_payments",
+    label: "Number of payments",
+    dataType: 'numeric',
+    group: "Payments"
+  },
+  {
+    key: "grand_total",
+    label: "Grand Total",
+    dataType: 'numeric',
+    group: "Order"
+  },
+  {
+    key: "payments_total",
+    label: "Total Paid",
+    dataType: 'numeric',
+    group: "Payments"
+  },
+  {
+    key: "commission",
+    label: "Commission Paid",
+    dataType: 'numeric',
+    group: "Payments"
+  },
+  {
+    key: "balance",
+    label: "Balance",
+    dataType: 'numeric',
+    group: "Payments"
+  },
+  {
+    key: "created_at",
+    label: "Created At",
+    dataType: 'date',
+    group: "Order"
   },
 ]

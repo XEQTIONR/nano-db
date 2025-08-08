@@ -53,6 +53,13 @@ export interface PaginationMeta {
     per_page: number;
 }
 
+interface FilterConfig {
+    key: string,
+    label: string,
+    dataType: string,
+    group: string
+}
+
 export interface User {
     id: number;
     name: string;
