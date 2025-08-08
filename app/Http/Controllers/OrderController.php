@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Services\FilterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class OrderController extends Controller
@@ -25,8 +26,6 @@ class OrderController extends Controller
         $sortDir = $request->input('sortDir') ?? 'desc';
 
         $filterStr = $request->input('filters') ?? "";
-
-        $filters = $filterStr != "" ? explode(',', $filterStr) : [];
 
         $filters = FilterService::parse($filterStr);
 

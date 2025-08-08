@@ -56,7 +56,8 @@ export interface PaginationMeta {
 interface FilterConfig {
     key: string,
     label: string,
-    dataType: string,
+    dataType: 'float' | 'int' | 'string',
+    inputType: 'select' | 'date' | 'number' | 'text',
     group: string
 }
 

@@ -84,12 +84,40 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     );
 }
 
-export function AppSidebarHeaderControls({ filters, filterOptions } : { filters: string[], filterOptions: FilterConfig[] }) {
+export function AppSidebarHeaderControls({ filters, filterOptions } : { filters: string[][], filterOptions: FilterConfig[] }) {
     console.log('AppSidebarHeaderControls filters', filters)
     console.log('AppSidebarHeaderControls filterOptions', filterOptions)
     console.log('grouped', Object.groupBy(filterOptions, ({ group }) => group ))
 
     const groups = Object.groupBy(filterOptions, ({ group }) => group )
+
+    
+    const transFormFilterParam = (filterOption: FilterConfig) => {
+
+        const key = filterOption.key
+
+        const filter = filters.find((arr) => arr[0] === key)
+
+        if (filter) {
+            switch(filterOption.dataType) {
+                case "int":
+                    return parseFloat(filter[2])
+
+                case "float":
+                    return parseFloat(filter[2])
+
+                case "string":
+                default:
+                    return filter[2]
+            }
+        }
+
+        return undefined
+    } 
+
+    const filter = () => {
+        console.log('filter:')
+    }
     return (
         <div className="flex items-end gap-2 justify-end">
             {
@@ -146,23 +174,24 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                     <AccordionTrigger className="px-4">{key}</AccordionTrigger>
                                      <AccordionContent className="pl-4 pr-1.5">
                                         <div className="flex flex-col gap-6 mt-1 ">
-                                            { fields?.map(({label, key, dataType}) => (
+                                            { fields?.map((field) => (
                                                 <div key={key} className="flex flex-col">
-                                                    <Label className="text-xs text-muted-foreground">{label}</Label>
+                                                    <Label className="text-xs text-muted-foreground">{field.label}</Label>
                                                     <div className="w-full flex gap-2 mt-1  items-center">
                                                         {
-                                                            dataType == "select" && <Combobox type="multiple" />
+                                                            field.inputType == "select" && <Combobox type="multiple" />
                                                         }
                                                         
                                                         {
-                                                            dataType == "date" && <InputCalendar id={key} />
+                                                            field.inputType == "date" && <InputCalendar id={key} />
                                                         }
 
                                                         {
-                                                            (dataType == "number" ||  dataType == "text")
-                                                            && <Input 
-                                                                    className={cn(dataType == "number" && "text-right")}
-                                                                    placeholder={(dataType == "number") ? "0.00" : ""}
+                                                            (field.inputType == "number" ||  field.inputType == "text")
+                                                            && <Input
+                                                                    value={transFormFilterParam(field)} 
+                                                                    className={cn(field.inputType == "number" && "text-right")}
+                                                                    placeholder={(field.inputType == "number") ? "0" : ""}
                                                                 />
                                                         }
                                                         <DropdownMenu>
@@ -216,8 +245,8 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                         <div className="w-3/4">{JSON.stringify(filterOptions)}</div>
                     </div> */}
                     <SheetFooter>
-                        <Button type="submit">Save changes</Button>
-                            <SheetClose asChild>
+                        <Button onClick={filter} type="button">Apply filters</Button>
+                        <SheetClose asChild>
                             <Button variant="outline">Close</Button>
                         </SheetClose>
                     </SheetFooter>

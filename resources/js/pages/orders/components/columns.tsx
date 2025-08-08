@@ -115,67 +115,78 @@ export const filterOptions: FilterConfig[] = [
   {
     key: "order_num",
     label: "Order #",
-    dataType: 'select',
+    inputType: 'select',
+    dataType: 'string',
     group: "Order"
   },
   {
     key: "order_on",
     label: "Order Date",
-    dataType: 'date',
+    inputType: 'date',
+    dataType: 'string',
     group: "Order"
   },
   {
     key: "customer_id",
     label: "Customer ID",
-    dataType: 'select',
+    inputType: 'select',
+    dataType: 'int',
     group: "Customer"
   },
   {
     key: "customer_name",
     label: "Customer",
-    dataType: 'select',
+    inputType: 'select',
+    dataType: 'string',
     group: "Customer"
   },
   {
     key: "count",
     label: "Number of items",
-    dataType: 'number',
+    inputType: 'number',
+    dataType: 'int',
     group: "Order"
   },
   {
     key: "count_payments",
     label: "Number of payments",
-    dataType: 'number',
+    inputType: 'number',
+    dataType: 'int',
     group: "Payments"
   },
   {
     key: "grand_total",
     label: "Grand Total",
-    dataType: 'number',
+    inputType: 'number',
+    dataType: 'float',
     group: "Order"
   },
   {
     key: "payments_total",
     label: "Total Paid",
-    dataType: 'number',
+    inputType: 'number',
+    dataType: 'float',
     group: "Payments"
   },
   {
     key: "commission",
     label: "Commission Paid",
-    dataType: 'number',
+    inputType: 'number',
+    dataType: 'float',
     group: "Payments"
   },
   {
     key: "balance",
     label: "Balance",
-    dataType: 'number',
+    inputType: 'number',
+    dataType: 'float',
     group: "Payments"
   },
   {
     key: "created_at",
     label: "Created At",
-    dataType: 'date',
+    inputType: 'date',
+    dataType: 'float',
     group: "Order"
   },
 ]

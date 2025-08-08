@@ -17,7 +17,7 @@ class FilterService
 
     public static function parse(string $qStr)
     {
-        $filters = $qStr != "" ? explode(',', $qStr) : [];
+        $filters = $qStr != "" ? explode(';', $qStr) : [];
 
         $filters = collect($filters)->map( fn($f) => self::createWhereClauseParams($f) );
 
@@ -26,7 +26,7 @@ class FilterService
 
     public static function createWhereClauseParams(string $str) 
     {
-        [$field, $op, $param] = explode('.', $str);
+        [$field, $op, $param] = explode('.', $str, 3);
 
         $op = self::$operators[$op];
 
