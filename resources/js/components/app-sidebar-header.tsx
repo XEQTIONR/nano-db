@@ -10,7 +10,8 @@ import {
     type BreadcrumbItem as BreadcrumbItemType, 
     type Filter as FilterType, 
     type FilterConfig as FilterConfigType, 
-    type FilterTransformed as FilterTransformedType 
+    type FilterOperator as FilterOperatorType,
+    type FilterTransformed as FilterTransformedType, 
 } from '@/types'
 import { Separator } from "@/components/ui/separator"
 
@@ -23,10 +24,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
+  DropdownMenuCheckboxItem,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import {
   Tooltip,
@@ -124,7 +127,7 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
         filters.map((filter) => trasformFiltersToQuery(filter))
     )
 
-    const updateCurrentFilters = (key: string, value: string | number) => {
+    const updateCurrentFilterValue = (key: string, value: string | number) => {
         const i = currentFilters.findIndex((filter) => filter[0] === key)
 
         if (i == -1) {
@@ -141,6 +144,17 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                 setCurrentFilters(filters)
             }
 
+        }
+    }
+
+    const updateCurrentFilterOperator = (key: string, op: FilterOperatorType) => {
+        const i = currentFilters.findIndex((filter) => filter[0] === key)
+
+        if (i != -1) {
+            const filters = [...currentFilters]
+            filters[i][1] = op
+
+            setCurrentFilters(filters)
         }
     }
 
@@ -213,7 +227,7 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                             field.inputType == "date" 
                                                                 && <InputCalendar 
                                                                         date={currentFilters.find((f) => f[0] === field.key)?.[2].toString()}
-                                                                        onChange={(date) => updateCurrentFilters(field.key, date?.toISOString().split("T")[0] ?? "")}
+                                                                        onChange={(date) => updateCurrentFilterValue(field.key, date?.toISOString().split("T")[0] ?? "")}
                                                                         id={key} 
                                                                     />
                                                         }
@@ -224,14 +238,14 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                                     onChange={({target}) => {
                                                                         switch(field.dataType) {
                                                                             case "int":
-                                                                                updateCurrentFilters(field.key, isNaN(parseInt(target.value)) ? 0 : parseInt(target.value))
+                                                                                updateCurrentFilterValue(field.key, isNaN(parseInt(target.value)) ? 0 : parseInt(target.value))
                                                                                 break
                                                                             case "float":
-                                                                                updateCurrentFilters(field.key, isNaN(parseFloat(target.value)) ? 0 : parseFloat(target.value))
+                                                                                updateCurrentFilterValue(field.key, isNaN(parseFloat(target.value)) ? 0 : parseFloat(target.value))
                                                                                 break
                                                                             case "string":
                                                                             default:
-                                                                                updateCurrentFilters(field.key, target.value)
+                                                                                updateCurrentFilterValue(field.key, target.value)
                                                                         }
                                                                     }}
                                                                     value={currentFilters.find((f) => f[0] === field.key)?.[2]} 
@@ -247,24 +261,51 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent className="w-56" align="start">
                                                                 <DropdownMenuLabel>Where</DropdownMenuLabel>
+                                                                <DropdownMenuSeparator />
                                                                 <DropdownMenuGroup>
-                                                                <DropdownMenuItem disabled>Not Selected</DropdownMenuItem>
-                                                                <DropdownMenuItem>
+                                                                <DropdownMenuCheckboxItem disabled>Not Selected</DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem 
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "eq"} 
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "eq")}
+                                                                >
                                                                     Equals
                                                                     <DropdownMenuShortcut>=</DropdownMenuShortcut>
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                     checked={currentFilters.find(([key]) => key == field.key)?.[1] === "ne"} 
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "ne")}
+                                                                >
                                                                     Doesn't equal
                                                                     <DropdownMenuShortcut>!=</DropdownMenuShortcut>
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "gt"} 
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "gt")}
+                                                                >
                                                                     Greater Than
                                                                     <DropdownMenuShortcut>{">"}</DropdownMenuShortcut>
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "gte"} 
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "gte")}
+                                                                >
+                                                                    Greater Than or Equals
+                                                                    <DropdownMenuShortcut>{">="}</DropdownMenuShortcut>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lt"}
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "lt")}
+                                                                >
                                                                     Less Than
                                                                     <DropdownMenuShortcut>{"<"}</DropdownMenuShortcut>
-                                                                </DropdownMenuItem>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lte"}
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "eq")}
+                                                                >
+                                                                    Less Then or Equals
+                                                                    <DropdownMenuShortcut>{"<="}</DropdownMenuShortcut>
+                                                                </DropdownMenuCheckboxItem>
                                                                 </DropdownMenuGroup>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
