@@ -147,7 +147,7 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
         }
     }
 
-    const updateCurrentFilterOperator = (key: string, op: FilterOperatorType) => {
+    const updateCurrentFilterOperator = (key: string, op: FilterOperatorType | undefined) => {
         const i = currentFilters.findIndex((filter) => filter[0] === key)
 
         if (i != -1) {
@@ -263,7 +263,13 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                                 <DropdownMenuLabel>Where</DropdownMenuLabel>
                                                                 <DropdownMenuSeparator />
                                                                 <DropdownMenuGroup>
-                                                                <DropdownMenuCheckboxItem disabled>Not Selected</DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    disabled={!(currentFilters.find((f) => f[0] === field.key)?.[2])}
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === undefined} 
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, undefined)}
+                                                                >
+                                                                    Not Selected
+                                                                </DropdownMenuCheckboxItem>
                                                                 <DropdownMenuCheckboxItem 
                                                                     checked={currentFilters.find(([key]) => key == field.key)?.[1] === "eq"} 
                                                                     onClick={() => updateCurrentFilterOperator(field.key, "eq")}

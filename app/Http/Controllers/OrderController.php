@@ -79,7 +79,7 @@ class OrderController extends Controller
         }
 
         $data = OrderIndexResource::collection(
-            $query->orderBy($sortBy, $sortDir)->paginate($perPage)
+            $query->orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
         );
 
         $ret = [

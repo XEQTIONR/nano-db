@@ -62,7 +62,7 @@ export interface FilterConfig {
 }
 
 export type Filter = [string, string, string]
-export type FilterTransformed = [string, string, string|number]
+export type FilterTransformed = [string, string|undefined, string|number]
 
 export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne"
 
