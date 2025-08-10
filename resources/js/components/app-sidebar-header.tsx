@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/accordion"
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { FilterConfig, type BreadcrumbItem as BreadcrumbItemType } from '@/types'
+import { FilterConfig, type BreadcrumbItem as BreadcrumbItemType, type Filter as FilterType, type FilterTransformed } from '@/types'
 import { Separator } from "@/components/ui/separator"
 
 import { ReactNode, useState } from 'react'
@@ -64,100 +64,82 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     );
 }
 
-export function AppSidebarHeaderControls({ filters, filterOptions } : { filters: string[][], filterOptions: FilterConfig[] }) {
+export function AppSidebarHeaderControls({ filters, filterOptions } 
+    : { filters: FilterType[], filterOptions: FilterConfig[] }) {
     console.log('filters', filters)
     console.log('filterOptions', filterOptions)
 
     const groups = Object.groupBy(filterOptions, ({ group }) => group )
 
     console.log('groups: ', groups)
-
-    // const transFormFilterParam = (filterOption: FilterConfig) => {
-
-    //     const key = filterOption.key
-
-    //     const [field, op, strVal] : string[] = filters.find((arr) => arr[0] === key) ?? []
-
-
-    //     if (field) {
-    //         switch(filterOption.dataType) {
-    //             case "int":
-    //                 return [field, op, parseFloat(strVal)]
-
-    //             case "float":
-    //                 return [field, op, parseFloat(strVal)]
-
-    //             case "string":
-    //             default:
-    //                 return [field, op, strVal]
-    //         }
-    //     }
-
-    //     return [field, op, undefined]
-    // }
     
-    const trasformFiltersToQuery = ([key, op, val] : [string, string, string]) => {
-
-        // const key = filterOption.key
-        // const val = filterOption.
-        const ret: unknown[] = [key]
+    const trasformFiltersToQuery = ([key, op, val] : FilterType): FilterTransformed => {
+        let op2 = "eq"
+        let val2: number | string = ""
         const filterOption = filterOptions.find((option) => option.key === key)
 
         if (filterOption) {
-
             switch(op) {
                 case "<":
-                    ret.push("lt")
+                    op2 = "lt"
                     break
                 case "<=":
-                    ret.push("lte")
+                    op2 = "lte"
                     break
                 case "=":
-                    ret.push("eq")
+                    op2 = "eq"
                     break
                 case ">=":
-                    ret.push("gte")
+                    op2 = "gte"
                     break
                 case ">":
-                    ret.push("gt")
+                    op2 = "gt"
                     break
                 case "<>":
-                    ret.push("ne")
+                    op2 = "ne"
                     break
             }
 
 
             switch(filterOption.dataType) {
                 case "int":
-                    ret.push(parseInt(val))
+                    val2 = parseInt(val)
                     break
 
                 case "float":
-                    ret.push(parseFloat(val))
+                    val2 = parseFloat(val)
                     break
                     
                 case "string":
                 default:
-                    ret.push(val)
+                    val2 = val
             }
         }
         
 
-        return ret
+        return [key, op2, val2]
 
     }
+    const [lastFilters, setLastFilters] = useState<FilterTransformed[]>(() =>
+       filters.map((filter) => trasformFiltersToQuery(filter))
+    )
 
-    const [currentFilters, setCurrentFilters] = useState(() => {
-        
-        return filters.map((filter) => {
-            const [a, b, c] = filter
-            return trasformFiltersToQuery([a, b, c])
-        })
-    })
+    const [currentFilters, setCurrentFilters] = useState<FilterTransformed[]>(() =>
+        filters.map((filter) => trasformFiltersToQuery(filter))
+    )
 
-    const filter = () => {
-        console.log('filter:')
+    const updateCurrentFilters = (key: string, value: string | number) => {
+        const i = currentFilters.findIndex((f) => f[0] === key)
+
+        if (i == -1) {
+            setCurrentFilters([...currentFilters, [key, 'eq', value]])
+        } else {
+            const c = [...currentFilters]
+            c[i][2] = value
+            setCurrentFilters(c)
+        }
     }
+
 
     return (
         <div className="flex items-end gap-2 justify-end">
@@ -224,12 +206,30 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                         }
                                                         
                                                         {
-                                                            field.inputType == "date" && <InputCalendar initialDate={currentFilters.find((f) => f[0] === field.key)?.[2]}  id={key} />
+                                                            field.inputType == "date" 
+                                                                && <InputCalendar 
+                                                                        date={currentFilters.find((f) => f[0] === field.key)?.[2]}
+                                                                        onChange={ (date) => updateCurrentFilters(field.key, date?.toISOString().split("T")[0] ?? "") }
+                                                                        id={key} 
+                                                                    />
                                                         }
 
                                                         {
                                                             (field.inputType == "number" ||  field.inputType == "text")
                                                             && <Input
+                                                                    onChange={({target}) => {
+                                                                        switch(field.dataType) {
+                                                                            case "int":
+                                                                                updateCurrentFilters(field.key, isNaN(parseInt(target.value)) ? 0 : parseInt(target.value))
+                                                                                break
+                                                                            case "float":
+                                                                                updateCurrentFilters(field.key, isNaN(parseFloat(target.value)) ? 0 : parseFloat(target.value))
+                                                                                break
+                                                                            case "string":
+                                                                            default:
+                                                                                updateCurrentFilters(field.key, target.value)
+                                                                        }
+                                                                    }}
                                                                     value={currentFilters.find((f) => f[0] === field.key)?.[2]} 
                                                                     className={cn(field.inputType == "number" && "text-right")}
                                                                     placeholder={(field.inputType == "number") ? "0" : ""}
@@ -286,7 +286,7 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                         <div className="w-3/4">{JSON.stringify(filterOptions)}</div>
                     </div> */}
                     <SheetFooter>
-                        <Button onClick={filter} type="button">Apply filters</Button>
+                        <Button type="button">Apply filters</Button>
                         <SheetClose asChild>
                             <Button variant="outline">Close</Button>
                         </SheetClose>

@@ -12,11 +12,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function InputCalendar({id, placeholder, initialDate = undefined, className = "", timeZone = "Asia/Dhaka"} 
-  : {id: string, placeholder?: string, initialDate?: string | undefined, className?: string, timeZone?: string}) {
-  const [date, setDate] = useState<Date|undefined>(() => {
-    if (initialDate != undefined) {
-      return new Date( initialDate )
+export function InputCalendar({
+  id, 
+  placeholder, 
+  date = undefined, 
+  className = "", 
+  timeZone = "Asia/Dhaka",
+  onChange = undefined
+} : {
+  id: string, 
+  placeholder?: string, 
+  date?: string | undefined,
+  className?: string, 
+  timeZone?: string
+  onChange?: (date: Date | undefined) => void
+}) {
+  const [currentDate, setCurrentDate] = useState<Date|undefined>(() => {
+    if (date != undefined) {
+      return new Date( date )
     }
 
     return undefined
@@ -26,12 +39,20 @@ export function InputCalendar({id, placeholder, initialDate = undefined, classNa
   const trigger = useRef<HTMLButtonElement>(null)
 
   const clearAndClose = () => {
-    setDate(undefined)
+    setCurrentDate(undefined)
+
+    if (onChange) {
+      onChange(undefined)
+    }
     trigger.current?.click()
   }
 
   const selectAndClose = (date?: Date) => {
-    setDate(date)
+    setCurrentDate(date)
+
+    if (onChange) {
+      onChange(date)
+    }
     trigger.current?.click()
 
   }
@@ -40,7 +61,7 @@ export function InputCalendar({id, placeholder, initialDate = undefined, classNa
       <PopoverTrigger ref={trigger} asChild>
         <div
             id={id}
-            data-empty={!date}
+            data-empty={!currentDate}
             className={
               cn(
                 "dark:bg-neutral-900 hover:cursor-pointer rounded-md border py-1 pl-3 pr-1.5 flex justify-between items-center text-left text-sm font-normal data-[empty=true]:text-muted-foreground w-full",
@@ -49,10 +70,10 @@ export function InputCalendar({id, placeholder, initialDate = undefined, classNa
             }
 
         >
-            {date ? format(date, "PPP") : <span>{placeholder ?? "Pick a date" }</span>}
+            {currentDate ? format(currentDate, "PPP") : <span>{placeholder ?? "Pick a date" }</span>}
             <div className="rounded-sm p-1.5 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-700">
             {
-                date 
+                currentDate 
                 ? <X ref={calendarX} onClick={clearAndClose} size={14} /> 
                 : <CalendarIcon size={14} />
             }
@@ -60,7 +81,12 @@ export function InputCalendar({id, placeholder, initialDate = undefined, classNa
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar timeZone={timeZone} captionLayout="dropdown" mode="single" selected={date} onSelect={(date) => selectAndClose(date)} />
+        <Calendar 
+          timeZone={timeZone} 
+          captionLayout="dropdown" 
+          mode="single" 
+          selected={currentDate} 
+          onSelect={(k) => selectAndClose(k)} />
       </PopoverContent>
     </Popover>
   )

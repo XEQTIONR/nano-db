@@ -53,13 +53,16 @@ export interface PaginationMeta {
     per_page: number;
 }
 
-interface FilterConfig {
+export interface FilterConfig {
     key: string,
     label: string,
     dataType: 'float' | 'int' | 'string',
     inputType: 'select' | 'date' | 'number' | 'text',
     group: string
 }
+
+export type Filter = [string, string, string]
+export type FilterTransformed = [string, string, string|number]
 
 export interface User {
     id: number;
