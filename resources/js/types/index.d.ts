@@ -64,6 +64,8 @@ export interface FilterConfig {
 export type Filter = [string, string, string]
 export type FilterTransformed = [string, string, string|number]
 
+export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne"
+
 export interface User {
     id: number;
     name: string;
