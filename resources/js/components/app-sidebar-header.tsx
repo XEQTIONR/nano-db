@@ -9,40 +9,20 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import { FilterConfig, type BreadcrumbItem as BreadcrumbItemType } from '@/types'
 import { Separator } from "@/components/ui/separator"
 
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
 import {
   Tooltip,
   TooltipContent,
@@ -51,7 +31,7 @@ import {
 
 import { Badge } from '@/components/ui/badge';
 
-import { EllipsisVertical, Filter, FilterX, Plus, Search } from 'lucide-react';
+import { EllipsisVertical, Filter, FilterX, Plus } from 'lucide-react';
 
 import { router } from '@inertiajs/react';
 
@@ -90,33 +70,95 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
 
     const groups = Object.groupBy(filterOptions, ({ group }) => group )
 
+    console.log('groups: ', groups)
+
+    // const transFormFilterParam = (filterOption: FilterConfig) => {
+
+    //     const key = filterOption.key
+
+    //     const [field, op, strVal] : string[] = filters.find((arr) => arr[0] === key) ?? []
+
+
+    //     if (field) {
+    //         switch(filterOption.dataType) {
+    //             case "int":
+    //                 return [field, op, parseFloat(strVal)]
+
+    //             case "float":
+    //                 return [field, op, parseFloat(strVal)]
+
+    //             case "string":
+    //             default:
+    //                 return [field, op, strVal]
+    //         }
+    //     }
+
+    //     return [field, op, undefined]
+    // }
     
-    const transFormFilterParam = (filterOption: FilterConfig) => {
+    const trasformFiltersToQuery = ([key, op, val] : [string, string, string]) => {
 
-        const key = filterOption.key
+        // const key = filterOption.key
+        // const val = filterOption.
+        const ret: unknown[] = [key]
+        const filterOption = filterOptions.find((option) => option.key === key)
 
-        const filter = filters.find((arr) => arr[0] === key)
+        if (filterOption) {
 
-        if (filter) {
+            switch(op) {
+                case "<":
+                    ret.push("lt")
+                    break
+                case "<=":
+                    ret.push("lte")
+                    break
+                case "=":
+                    ret.push("eq")
+                    break
+                case ">=":
+                    ret.push("gte")
+                    break
+                case ">":
+                    ret.push("gt")
+                    break
+                case "<>":
+                    ret.push("ne")
+                    break
+            }
+
+
             switch(filterOption.dataType) {
                 case "int":
-                    return parseFloat(filter[2])
+                    ret.push(parseInt(val))
+                    break
 
                 case "float":
-                    return parseFloat(filter[2])
-
+                    ret.push(parseFloat(val))
+                    break
+                    
                 case "string":
                 default:
-                    return filter[2]
+                    ret.push(val)
             }
         }
+        
 
-        return undefined
-    } 
+        return ret
+
+    }
+
+    const [currentFilters, setCurrentFilters] = useState(() => {
+        
+        return filters.map((filter) => {
+            const [a, b, c] = filter
+            return trasformFiltersToQuery([a, b, c])
+        })
+    })
 
     const filter = () => {
         console.log('filter:')
     }
+
     return (
         <div className="flex items-end gap-2 justify-end">
             {
@@ -182,13 +224,13 @@ export function AppSidebarHeaderControls({ filters, filterOptions } : { filters:
                                                         }
                                                         
                                                         {
-                                                            field.inputType == "date" && <InputCalendar initialDate={transFormFilterParam(field)}  id={key} />
+                                                            field.inputType == "date" && <InputCalendar initialDate={currentFilters.find((f) => f[0] === field.key)?.[2]}  id={key} />
                                                         }
 
                                                         {
                                                             (field.inputType == "number" ||  field.inputType == "text")
                                                             && <Input
-                                                                    value={transFormFilterParam(field)} 
+                                                                    value={currentFilters.find((f) => f[0] === field.key)?.[2]} 
                                                                     className={cn(field.inputType == "number" && "text-right")}
                                                                     placeholder={(field.inputType == "number") ? "0" : ""}
                                                                 />

@@ -12,7 +12,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export function InputCalendar({id, placeholder, initialDate = undefined, className = ""} : {id: string, placeholder?: string, initialDate?: string | undefined, className?: string}) {
+export function InputCalendar({id, placeholder, initialDate = undefined, className = "", timeZone = "Asia/Dhaka"} 
+  : {id: string, placeholder?: string, initialDate?: string | undefined, className?: string, timeZone?: string}) {
   const [date, setDate] = useState<Date|undefined>(() => {
     if (initialDate != undefined) {
       return new Date( initialDate )
@@ -59,7 +60,7 @@ export function InputCalendar({id, placeholder, initialDate = undefined, classNa
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar captionLayout="dropdown" mode="single" selected={date} onSelect={(date) => selectAndClose(date)} />
+        <Calendar timeZone={timeZone} captionLayout="dropdown" mode="single" selected={date} onSelect={(date) => selectAndClose(date)} />
       </PopoverContent>
     </Popover>
   )
