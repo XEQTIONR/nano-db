@@ -86,7 +86,8 @@ export function InputCalendar({
           captionLayout="dropdown" 
           mode="single" 
           selected={currentDate} 
-          onSelect={(k) => selectAndClose(k)} />
+          onSelect={(date) => selectAndClose(date)} 
+        />
       </PopoverContent>
     </Popover>
   )

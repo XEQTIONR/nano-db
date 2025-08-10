@@ -6,7 +6,12 @@ import {
 } from "@/components/ui/accordion"
 import { Breadcrumbs } from '@/components/breadcrumbs'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { FilterConfig, type BreadcrumbItem as BreadcrumbItemType, type Filter as FilterType, type FilterTransformed } from '@/types'
+import { 
+    type BreadcrumbItem as BreadcrumbItemType, 
+    type Filter as FilterType, 
+    type FilterConfig as FilterConfigType, 
+    type FilterTransformed as FilterTransformedType 
+} from '@/types'
 import { Separator } from "@/components/ui/separator"
 
 import { ReactNode, useState } from 'react'
@@ -64,79 +69,78 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     );
 }
 
-export function AppSidebarHeaderControls({ filters, filterOptions } 
-    : { filters: FilterType[], filterOptions: FilterConfig[] }) {
-    console.log('filters', filters)
-    console.log('filterOptions', filterOptions)
+export function AppSidebarHeaderControls({ filters, filterOptions } : { filters: FilterType[], filterOptions: FilterConfigType[] }) {
 
     const groups = Object.groupBy(filterOptions, ({ group }) => group )
-
-    console.log('groups: ', groups)
     
-    const trasformFiltersToQuery = ([key, op, val] : FilterType): FilterTransformed => {
-        let op2 = "eq"
-        let val2: number | string = ""
+    const trasformFiltersToQuery = ([key, op, val] : FilterType): FilterTransformedType => {
+        let operation = "eq"
+        let value: number | string = ""
         const filterOption = filterOptions.find((option) => option.key === key)
 
         if (filterOption) {
             switch(op) {
                 case "<":
-                    op2 = "lt"
+                    operation = "lt"
                     break
                 case "<=":
-                    op2 = "lte"
+                    operation = "lte"
                     break
                 case "=":
-                    op2 = "eq"
+                    operation = "eq"
                     break
                 case ">=":
-                    op2 = "gte"
+                    operation = "gte"
                     break
                 case ">":
-                    op2 = "gt"
+                    operation = "gt"
                     break
                 case "<>":
-                    op2 = "ne"
+                    operation = "ne"
                     break
             }
 
-
             switch(filterOption.dataType) {
                 case "int":
-                    val2 = parseInt(val)
+                    value = parseInt(val)
                     break
-
                 case "float":
-                    val2 = parseFloat(val)
+                    value = parseFloat(val)
                     break
-                    
                 case "string":
                 default:
-                    val2 = val
+                    value = val
             }
         }
         
 
-        return [key, op2, val2]
+        return [key, operation, value]
 
     }
-    const [lastFilters, setLastFilters] = useState<FilterTransformed[]>(() =>
-       filters.map((filter) => trasformFiltersToQuery(filter))
-    )
 
-    const [currentFilters, setCurrentFilters] = useState<FilterTransformed[]>(() =>
+    const lastFilters = filters.map((filter) => trasformFiltersToQuery(filter))
+
+    const [currentFilters, setCurrentFilters] = useState<FilterTransformedType[]>(() =>
         filters.map((filter) => trasformFiltersToQuery(filter))
     )
 
     const updateCurrentFilters = (key: string, value: string | number) => {
-        const i = currentFilters.findIndex((f) => f[0] === key)
+        const i = currentFilters.findIndex((filter) => filter[0] === key)
 
         if (i == -1) {
-            setCurrentFilters([...currentFilters, [key, 'eq', value]])
+            if (value !== "") {
+                setCurrentFilters([...currentFilters, [key, 'eq', value]])
+            }
         } else {
-            const c = [...currentFilters]
-            c[i][2] = value
-            setCurrentFilters(c)
+            const filters = [...currentFilters]
+            filters[i][2] = value
+
+            if (value == "") {
+                setCurrentFilters(filters.filter((_, idx) => idx !== i))
+            } else {
+                setCurrentFilters(filters)
+            }
+
         }
     }
 
@@ -208,8 +212,8 @@ export function AppSidebarHeaderControls({ filters, filterOptions }
                                                         {
                                                             field.inputType == "date" 
                                                                 && <InputCalendar 
-                                                                        date={currentFilters.find((f) => f[0] === field.key)?.[2]}
-                                                                        onChange={ (date) => updateCurrentFilters(field.key, date?.toISOString().split("T")[0] ?? "") }
+                                                                        date={currentFilters.find((f) => f[0] === field.key)?.[2].toString()}
+                                                                        onChange={(date) => updateCurrentFilters(field.key, date?.toISOString().split("T")[0] ?? "")}
                                                                         id={key} 
                                                                     />
                                                         }
@@ -274,20 +278,26 @@ export function AppSidebarHeaderControls({ filters, filterOptions }
                             ))
                         }
                     </Accordion>
-                    {/* <div className="grid flex-1 auto-rows-min gap-6 px-4">
-                        <div className="grid gap-3">
-                            <Label htmlFor="sheet-demo-username">Username</Label>
-                            <Input id="sheet-demo-username" defaultValue="@peduarte" />
-                        </div>
-                        <div className="grid gap-3">
-                            <Label htmlFor="sheet-demo-name">Name</Label>
-                            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
-                        </div>
-                        <div className="w-3/4">{JSON.stringify(filterOptions)}</div>
-                    </div> */}
                     <SheetFooter>
-                        <Button type="button">Apply filters</Button>
-                        <SheetClose asChild>
+                        <Button 
+                            type="button"
+                            onClick={() => {
+                                const url =  new URL(window.location.href)
+                                const filterQuery = 
+                                    currentFilters
+                                        .map((filter: FilterTransformedType) => filter.join("."))
+                                        .join(";")
+                                console.log(filterQuery)
+
+                                url.searchParams.set('filters', filterQuery)
+
+                                router.get(url)
+                                                        
+                            }}
+                        >
+                            Apply filters
+                        </Button>
+                        <SheetClose onClick={() => setCurrentFilters([...lastFilters])} asChild>
                             <Button variant="outline">Close</Button>
                         </SheetClose>
                     </SheetFooter>
