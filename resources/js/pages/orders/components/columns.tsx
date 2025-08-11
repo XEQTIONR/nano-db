@@ -163,8 +163,8 @@ export const filterOptions: FilterConfig[] = [
         
         const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
 
-        return response.data.items.map(({id, name} : {id: number, name: string}) => {
-          return {value: id, label: name}
+        return response.data.items.map(({name} : {name: string}) => {
+          return {value: name, label: name}
         })
       }
     }

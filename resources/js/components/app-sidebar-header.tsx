@@ -11,7 +11,8 @@ import {
     type Filter as FilterType, 
     type FilterConfig as FilterConfigType, 
     type FilterOperator as FilterOperatorType,
-    type FilterTransformed as FilterTransformedType, 
+    type FilterTransformed as FilterTransformedType,
+    type StrOrNum as StrOrNumType, 
 } from '@/types'
 import { Separator } from "@/components/ui/separator"
 
@@ -131,7 +132,7 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
         filters.map((filter) => trasformFiltersToQuery(filter))
     )
 
-    const updateCurrentFilterValue = (key: string, value: string | number) => {
+    const updateCurrentFilterValue = (key: string, value: StrOrNumType | StrOrNumType[]) => {
         const i = currentFilters.findIndex((filter) => filter[0] === key)
 
         if (i == -1) {
