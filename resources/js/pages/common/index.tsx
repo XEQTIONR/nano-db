@@ -7,8 +7,8 @@ import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols } from '@/pages/consignments/components/columns';
 import { columns as containerCols } from '@/pages/containers/components/columns';
-import { columns as customerCols, filterOptions as customerFilters } from '@/pages/customers/components/columns';
-import { columns as orderCols, filterOptions as orderFilters } from '@/pages/orders/components/columns';
+import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
+import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/orders/components/columns';
 import { columns as paymentCols } from '@/pages//payments/components/columns';
 import { columns as stockCols } from '@/pages//stock/components/columns';
 import {
@@ -63,7 +63,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
     filters?: Filter[]
 }) {
     let cols = []
-    let filterOptions: FilterConfig[] = orderFilters
+    let filterConfigs: FilterConfig[] = orderFilters
     switch (type) {
         case "lc":
             cols = lcCols
@@ -76,11 +76,11 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
             break
         case "customer":
             cols = customerCols
-            filterOptions = customerFilters
+            filterConfigs = customerFilters
             break
         case "order":
             cols = orderCols
-            filterOptions = orderFilters
+            filterConfigs = orderFilters
             break
         case "payment":
             cols = paymentCols
@@ -97,7 +97,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
     breadcrumbs[0].href = link
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls apiToken={apiToken} filters={filters} filterOptions={filterOptions} />}>
+        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 

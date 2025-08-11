@@ -53,6 +53,15 @@ export interface PaginationMeta {
     per_page: number;
 }
 
+export type StrOrNum = string | number
+interface Option {
+    value: StrOrNum,
+    label: string,
+}
+export type Filter = [string, string, string]
+export type FilterTransformed = [string, string | undefined, StrOrNum | StrOrNum[] | undefined]
+export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like" | "in"
+
 export interface FilterConfig {
     key: string,
     label: string,
@@ -60,20 +69,8 @@ export interface FilterConfig {
     inputType: 'select' | 'date' | 'number' | 'text',
     group: string,
     getOptions?: (apiToken: string) => ((search: string) => Promise<Option[]>),
+    ops?: FilterOperator[]
 }
-
-type StrOrNum = string | number
-interface Option {
-    value: StrOrNum,
-    label: string,
-}
-
-
-export type Filter = [string, string, string]
-export type FilterTransformed = [string, string | undefined, StrOrNum | StrOrNum[] | undefined]
-
-export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like" | "in"
-
 export interface User {
     id: number;
     name: string;

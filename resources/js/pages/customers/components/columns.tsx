@@ -92,14 +92,13 @@ export const columns = [
   }
 ]
 
-export const filterOptions: FilterConfig[] = [
+export const filterConfigs: FilterConfig[] = [
   {
     key: "id",
     label: "ID",
     inputType: 'select',
     dataType: 'int',
     group: "Customer",
-    //endpoint: Add endpoint here
   },
   {
     key: "name",

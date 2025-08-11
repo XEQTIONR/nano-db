@@ -8,50 +8,26 @@ export const columns = [
   {
     accessorKey: "order_num",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order #" config={v} />,
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "order_on",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_on" label="Order on" config={v} />,
-    filterOptions: {
-      dataType: 'date',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "customer_id",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_id" label="Customer ID" config={v} />,
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne', 'like']
-    }
   },
   {
     accessorKey: "customer_name",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_name" label="Customer" config={v} />,
-    filterOptions: {
-      dataType: 'string',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "count",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count" label="# of items" config={v} />,
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "count_payments",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count_payments" label="# of payments" config={v} />,
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "grand_total",
@@ -60,10 +36,6 @@ export const columns = [
         const amount = parseFloat(row.getValue("grand_total"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
     },
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "payments_total",
@@ -72,10 +44,6 @@ export const columns = [
         const amount = parseFloat(row.getValue("payments_total"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
     },
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "commission",
@@ -84,10 +52,6 @@ export const columns = [
         const amount = parseFloat(row.getValue("commission"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
     },
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "balance",
@@ -96,38 +60,31 @@ export const columns = [
         const amount = parseFloat(row.getValue("balance"))
         return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
     },
-    filterOptions: {
-      dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
   {
     accessorKey: "created_at",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" label="Created On" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>,
-    filterOptions: {
-      dataType: 'date',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-    }
   },
 ]
 
 
-export const filterOptions: FilterConfig[] = [
+export const filterConfigs: FilterConfig[] = [
   {
     key: "order_num",
     label: "Order #",
     inputType: 'select',
     dataType: 'string',
     group: "Order",
-    // endpoint: "/customers"
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "order_on",
     label: "Order Date",
     inputType: 'date',
     dataType: 'string',
-    group: "Order"
+    group: "Order",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "customer_id",
@@ -138,7 +95,7 @@ export const filterOptions: FilterConfig[] = [
     getOptions: (apiToken: string) => {
       return async (search: string) : Promise<Option[]>  => {
         const endpoint = route('api.customers.index', {
-          filters: "id.like." + search // refine this
+          filters: "id.like." + search
         })
         
         const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
@@ -147,7 +104,8 @@ export const filterOptions: FilterConfig[] = [
           return {value: id, label: id.toString()}
         })
       }
-    }
+    },
+    ops: ['eq', 'in']
   },
   {
     key: "customer_name",
@@ -158,7 +116,7 @@ export const filterOptions: FilterConfig[] = [
     getOptions: (apiToken: string) => {
       return async (search: string) : Promise<Option[]>  => {
         const endpoint = route('api.customers.index', {
-          filters: "name.like." + search // refine this
+          filters: "name.like." + search
         })
         
         const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
@@ -167,55 +125,63 @@ export const filterOptions: FilterConfig[] = [
           return {value: name, label: name}
         })
       }
-    }
+    },
+    ops: ['in', 'like']
   },
   {
     key: "count",
     label: "Number of items",
     inputType: 'number',
     dataType: 'int',
-    group: "Order"
+    group: "Order",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "count_payments",
     label: "Number of payments",
     inputType: 'number',
     dataType: 'int',
-    group: "Payments"
+    group: "Payments",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "grand_total",
     label: "Grand Total",
     inputType: 'number',
     dataType: 'float',
-    group: "Order"
+    group: "Order",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "payments_total",
     label: "Total Paid",
     inputType: 'number',
     dataType: 'float',
-    group: "Payments"
+    group: "Payments",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "commission",
     label: "Commission Paid",
     inputType: 'number',
     dataType: 'float',
-    group: "Payments"
+    group: "Payments",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "balance",
     label: "Balance",
     inputType: 'number',
     dataType: 'float',
-    group: "Payments"
+    group: "Payments",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
   {
     key: "created_at",
     label: "Created At",
     inputType: 'date',
     dataType: 'float',
-    group: "Order"
+    group: "Order",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
 ]

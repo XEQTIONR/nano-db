@@ -57,7 +57,6 @@ import {
 import { Combobox } from "./ui/combobox"
 import { InputCalendar } from "./ui/input-calendar"
 import { cn } from "@/lib/utils"
-import axios from 'axios'
 
 export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?: BreadcrumbItemType[], controls?: ReactNode }) {
     return (
@@ -74,16 +73,16 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     );
 }
 
-export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : { apiToken?: string, filters: FilterType[], filterOptions: FilterConfigType[] }) {
+export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : { apiToken?: string, filters: FilterType[], filterConfigs: FilterConfigType[] }) {
 
-    const groups = Object.groupBy(filterOptions, ({ group }) => group )
+    const groups = Object.groupBy(filterConfigs, ({ group }) => group )
     console.log('groups:', groups)
     const trasformFiltersToQuery = ([key, op, val] : FilterType): FilterTransformedType => {
         let operation = "eq"
         let value: number | string = ""
-        const filterOption = filterOptions.find((option) => option.key === key)
+        const filterConfig = filterConfigs.find((option) => option.key === key)
 
-        if (filterOption) {
+        if (filterConfig) {
             switch(op) {
                 case "<":
                     operation = "lt"
@@ -108,7 +107,7 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                     break
             }
 
-            switch(filterOption.dataType) {
+            switch(filterConfig.dataType) {
                 case "int":
                     value = parseInt(val)
                     break
@@ -286,62 +285,91 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                                 >
                                                                     Not Selected
                                                                 </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem 
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "eq"} 
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "eq")}
-                                                                >
-                                                                    Equals
-                                                                    <DropdownMenuShortcut>=</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                     checked={currentFilters.find(([key]) => key == field.key)?.[1] === "ne"} 
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "ne")}
-                                                                >
-                                                                    Doesn't equal
-                                                                    <DropdownMenuShortcut>!=</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "gt"} 
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "gt")}
-                                                                >
-                                                                    Greater Than
-                                                                    <DropdownMenuShortcut>{">"}</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "gte"} 
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "gte")}
-                                                                >
-                                                                    Greater Than or Equals
-                                                                    <DropdownMenuShortcut>{">="}</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lt"}
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "lt")}
-                                                                >
-                                                                    Less Than
-                                                                    <DropdownMenuShortcut>{"<"}</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lte"}
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "lte")}
-                                                                >
-                                                                    Less Than or Equals
-                                                                    <DropdownMenuShortcut>{"<="}</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "like"}
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "like")}
-                                                                >
-                                                                    Like
-                                                                    <DropdownMenuShortcut>{"%%"}</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
-                                                                <DropdownMenuCheckboxItem
-                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "in"}
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "in")}
-                                                                >
-                                                                    In
-                                                                    <DropdownMenuShortcut>{"IN"}</DropdownMenuShortcut>
-                                                                </DropdownMenuCheckboxItem>
+                                                                {
+                                                                    field.ops?.map((op: FilterOperatorType) => {
+                                                                        switch(op) {
+                                                                            case "eq":
+                                                                                return ( 
+                                                                                    <DropdownMenuCheckboxItem 
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "eq"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "eq")}
+                                                                                    >
+                                                                                        Equals
+                                                                                        <DropdownMenuShortcut>=</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>)
+                                                                            case "ne":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem 
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "ne"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "ne")}
+                                                                                    >
+                                                                                        Not Equals
+                                                                                        <DropdownMenuShortcut>!=</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                            case "gt":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem 
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "gt"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "gt")}
+                                                                                    >
+                                                                                        Greater Than
+                                                                                        <DropdownMenuShortcut>=</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                            case "gte":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "gte"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "gte")}
+                                                                                    >
+                                                                                        Greater Than or Equals
+                                                                                        <DropdownMenuShortcut>{">="}</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                            case "lt":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lt"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "lt")}
+                                                                                    >
+                                                                                        Less Than
+                                                                                        <DropdownMenuShortcut>{"<"}</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                            case "lte":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lte"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "lte")}
+                                                                                    >
+                                                                                        Less Than or Equals
+                                                                                        <DropdownMenuShortcut>{">="}</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                            case "like":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "like"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "like")}
+                                                                                    >
+                                                                                        Like
+                                                                                        <DropdownMenuShortcut>{"LIKE"}</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                            case "in":
+                                                                                return (
+                                                                                    <DropdownMenuCheckboxItem
+                                                                                        checked={currentFilters.find(([key]) => key == field.key)?.[1] === "in"} 
+                                                                                        onClick={() => updateCurrentFilterOperator(field.key, "in")}
+                                                                                    >
+                                                                                        In
+                                                                                        <DropdownMenuShortcut>{"IN"}</DropdownMenuShortcut>
+                                                                                    </DropdownMenuCheckboxItem>
+                                                                                )
+                                                                        }
+                                                                    })
+                                                                }
                                                                 </DropdownMenuGroup>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
