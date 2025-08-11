@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { BaseSyntheticEvent, useState } from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -48,11 +48,13 @@ const frameworks: Option[] = [
 ]
 
 export function Combobox({ 
+  getOptions = undefined,
   onSelect = undefined,
   options = frameworks, 
   type = "single",
-  value = undefined 
+  value = undefined, 
 } : { 
+  getOptions?: () => void,
   onSelect?: (x: StrOrNum|StrOrNum[]) => void,
   options?: Option[], 
   type?: "single" | "multiple", 
@@ -97,7 +99,13 @@ export function Combobox({
       </PopoverTrigger>
       <PopoverContent align="end" className="grow p-0  w-[19.7rem]">
         <Command>
-          <CommandInput placeholder="Search" className="h-9" />
+          <CommandInput onInput={(e: BaseSyntheticEvent) => {
+              console.log('e', e)
+              if(getOptions) {
+                console.log('get options exist')
+                getOptions()
+              }
+          }} placeholder="Search" className="h-9" />
           <CommandList>
             <CommandEmpty>No option found.</CommandEmpty>
             <CommandGroup>

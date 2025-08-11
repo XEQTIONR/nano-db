@@ -118,7 +118,7 @@ export const filterOptions: FilterConfig[] = [
     inputType: 'select',
     dataType: 'string',
     group: "Order",
-    //endpoint: Add endpoint here
+    // endpoint: "/customers"
   },
   {
     key: "order_on",
@@ -132,7 +132,8 @@ export const filterOptions: FilterConfig[] = [
     label: "Customer ID",
     inputType: 'select',
     dataType: 'int',
-    group: "Customer"
+    group: "Customer",
+    endpoint: route("api.customers.index")
   },
   {
     key: "customer_name",

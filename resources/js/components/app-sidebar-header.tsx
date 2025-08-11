@@ -56,6 +56,7 @@ import {
 import { Combobox } from "./ui/combobox"
 import { InputCalendar } from "./ui/input-calendar"
 import { cn } from "@/lib/utils"
+import axios from 'axios'
 
 export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?: BreadcrumbItemType[], controls?: ReactNode }) {
     return (
@@ -220,7 +221,20 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                     <Label className="text-xs text-muted-foreground">{field.label}</Label>
                                                     <div className="w-full flex gap-2 mt-1  items-center">
                                                         {
-                                                            field.inputType == "select" && <Combobox type="multiple" />
+                                                            field.inputType == "select" 
+                                                                && <Combobox 
+                                                                        type="multiple"
+                                                                        getOptions={async () => {
+                                                                            if (field.endpoint) {
+                                                                                const result = await axios.get(field.endpoint, {
+                                                                                    headers: {
+                                                                                        Authorization: 'Bearer ' + apiToken
+                                                                                    }
+                                                                                })
+                                                                                console.log('result:', result.data.items)
+                                                                            }
+                                                                        }}
+                                                                    />
                                                         }
                                                         
                                                         {
