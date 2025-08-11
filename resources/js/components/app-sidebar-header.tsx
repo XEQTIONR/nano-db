@@ -227,8 +227,9 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                             field.inputType == "select" 
                                                                 && <Combobox
                                                                         onSelect={(value) => {
-                                                                            console.log('selected', value)}
-                                                                        }
+                                                                            console.log('selected', value)
+                                                                            updateCurrentFilterValue(field.key, value)
+                                                                        }}
                                                                         getOptions={field.getOptions && field.getOptions(apiToken ?? "")} 
                                                                         type="multiple"
                                                                     />
