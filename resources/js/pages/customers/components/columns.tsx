@@ -10,8 +10,8 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
+
+import { FilterConfig } from "@/types"
 
 export const columns = [
   {
@@ -90,4 +90,71 @@ export const columns = [
       )
     },
   }
+]
+
+export const filterOptions: FilterConfig[] = [
+  {
+    key: "id",
+    label: "ID",
+    inputType: 'select',
+    dataType: 'int',
+    group: "Customer",
+    //endpoint: Add endpoint here
+  },
+  {
+    key: "name",
+    label: "Name",
+    inputType: 'select',
+    dataType: 'string',
+    group: "Customer"
+  },
+  {
+    key: "phone",
+    label: "Phone #",
+    inputType: 'text',
+    dataType: 'string',
+    group: "Customer"
+  },
+  {
+    key: "num_orders",
+    label: "# of orders",
+    inputType: 'number',
+    dataType: 'int',
+    group: "Orders"
+  },
+  {
+    key: "grand_total",
+    label: "Grand Total",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Orders"
+  },
+  {
+    key: "payments_total",
+    label: "Total Paid",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Orders"
+  },
+  {
+    key: "commission",
+    label: "Commission Paid",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Orders"
+  },
+  {
+    key: "balance",
+    label: "Balance",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Orders"
+  },
+  {
+    key: "created_at",
+    label: "Created At",
+    inputType: 'date',
+    dataType: 'float',
+    group: "Customer"
+  },
 ]

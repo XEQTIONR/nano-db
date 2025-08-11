@@ -7,7 +7,7 @@ import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols } from '@/pages/consignments/components/columns';
 import { columns as containerCols } from '@/pages/containers/components/columns';
-import { columns as customerCols } from '@/pages/customers/components/columns';
+import { columns as customerCols, filterOptions as customerFilters } from '@/pages/customers/components/columns';
 import { columns as orderCols, filterOptions as orderFilters } from '@/pages/orders/components/columns';
 import { columns as paymentCols } from '@/pages//payments/components/columns';
 import { columns as stockCols } from '@/pages//stock/components/columns';
@@ -63,7 +63,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
     filters?: Filter[]
 }) {
     let cols = []
-    const filterOptions: FilterConfig[] = orderFilters
+    let filterOptions: FilterConfig[] = orderFilters
     switch (type) {
         case "lc":
             cols = lcCols
@@ -76,9 +76,11 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
             break
         case "customer":
             cols = customerCols
+            filterOptions = customerFilters
             break
         case "order":
             cols = orderCols
+            filterOptions = orderFilters
             break
         case "payment":
             cols = paymentCols
