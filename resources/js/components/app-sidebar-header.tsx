@@ -160,6 +160,9 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
             filters[i][1] = op
 
             setCurrentFilters(filters)
+        } else {
+            const filters : FilterTransformedType[] = [ [key, op, undefined] ]
+            setCurrentFilters(filters)
         }
     }
 

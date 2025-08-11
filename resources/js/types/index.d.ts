@@ -70,7 +70,7 @@ interface Option {
 
 
 export type Filter = [string, string, string]
-export type FilterTransformed = [string, string|undefined, StrOrNum | StrOrNum[]]
+export type FilterTransformed = [string, string | undefined, StrOrNum | StrOrNum[] | undefined]
 
 export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like" | "in"
 
