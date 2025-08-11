@@ -72,7 +72,7 @@ interface Option {
 export type Filter = [string, string, string]
 export type FilterTransformed = [string, string|undefined, string|number]
 
-export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne"
+export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like"
 
 export interface User {
     id: number;

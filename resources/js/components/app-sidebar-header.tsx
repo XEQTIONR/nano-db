@@ -312,10 +312,17 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                                 </DropdownMenuCheckboxItem>
                                                                 <DropdownMenuCheckboxItem
                                                                     checked={currentFilters.find(([key]) => key == field.key)?.[1] === "lte"}
-                                                                    onClick={() => updateCurrentFilterOperator(field.key, "eq")}
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "lte")}
                                                                 >
-                                                                    Less Then or Equals
+                                                                    Less Than or Equals
                                                                     <DropdownMenuShortcut>{"<="}</DropdownMenuShortcut>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "like"}
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "like")}
+                                                                >
+                                                                    Like
+                                                                    <DropdownMenuShortcut>{"%%"}</DropdownMenuShortcut>
                                                                 </DropdownMenuCheckboxItem>
                                                                 </DropdownMenuGroup>
                                                             </DropdownMenuContent>

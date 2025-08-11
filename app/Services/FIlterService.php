@@ -12,7 +12,8 @@ class FilterService
         'lte' => '<=',
         'gt' => '>',
         'gte' => '>=',
-        'ne' => '<>'
+        'ne' => '<>',
+        'like' => 'LIKE'
     ];
 
     public static function parse(string $qStr)
@@ -29,6 +30,10 @@ class FilterService
         [$field, $op, $param] = explode('.', $str, 3);
 
         $op = self::$operators[$op];
+
+        if ($op == 'LIKE') {
+            $param = "%$param%";
+        } 
 
         return [$field, $op, $param];
     }

@@ -26,7 +26,7 @@ export const columns = [
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_id" label="Customer ID" config={v} />,
     filterOptions: {
       dataType: 'numeric',
-      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+      ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne', 'like']
     }
   },
   {
@@ -138,7 +138,7 @@ export const filterOptions: FilterConfig[] = [
     getOptions: (apiToken: string) => {
       return async (search: string) : Promise<Option[]>  => {
         const endpoint = route('api.customers.index', {
-          filters: "id.eq." + search
+          filters: "id.like." + search // refine this
         })
         
         const response = await axios.get(endpoint, {
