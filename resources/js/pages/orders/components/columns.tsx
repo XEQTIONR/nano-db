@@ -141,17 +141,11 @@ export const filterOptions: FilterConfig[] = [
           filters: "id.like." + search // refine this
         })
         
-        const response = await axios.get(endpoint, {
-          headers: {
-            Authorization: 'Bearer ' + apiToken
-          }
-        })
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
 
-        const ret = response.data.items.map(({id} : {id: number}) => {
+        return response.data.items.map(({id} : {id: number}) => {
           return {value: id, label: id.toString()}
         })
-
-        return ret
       }
     }
   },
@@ -161,6 +155,19 @@ export const filterOptions: FilterConfig[] = [
     inputType: 'select',
     dataType: 'string',
     group: "Customer",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.customers.index', {
+          filters: "name.like." + search // refine this
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+
+        return response.data.items.map(({id, name} : {id: number, name: string}) => {
+          return {value: id, label: name}
+        })
+      }
+    }
   },
   {
     key: "count",
