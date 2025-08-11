@@ -6,8 +6,10 @@ use App\Http\Resources\StockResource;
 use App\Models\ContainerContent;
 use App\Models\OrderContent;
 use App\Models\Tyre;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +36,26 @@ class AppServiceProvider extends ServiceProvider
                 'tyres.tyre_id','brand', 'size', 'lisi', 'pattern', 'created_at', 'updated_at', 
                 'ordered_qty', 'supplied_qty', DB::raw('supplied_qty - ordered_qty AS in_stock')
             );
+        });
+
+        $this->app->singleton(PersonalAccessToken::class, function() {
+            $user = request()->user();
+                if ($user) {
+
+                    $token = request()->session()->get('apiToken');
+
+                    if ($token) {
+                        return $token;
+                    }
+
+
+                    $token = $user->createToken('default-token')->plainTextToken;
+                    
+                    request()->session()->put('apiToken', $token);
+
+                    return $token;
+                }
+                return null;
         });
     }
 
