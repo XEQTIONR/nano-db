@@ -59,8 +59,15 @@ export interface FilterConfig {
     dataType: 'float' | 'int' | 'string',
     inputType: 'select' | 'date' | 'number' | 'text',
     group: string,
-    endpoint?: string,
+    getOptions?: (apiToken: string) => ((search: string) => Promise<Option[]>),
 }
+
+type StrOrNum = string | number
+interface Option {
+    value: StrOrNum,
+    label: string,
+}
+
 
 export type Filter = [string, string, string]
 export type FilterTransformed = [string, string|undefined, string|number]

@@ -17,12 +17,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-
-type StrOrNum = string | number
-interface Option {
-    value: StrOrNum,
-    label: string,
-}
+import { type StrOrNum, Option } from "@/types"
 
 const frameworks: Option[] = [
   {
@@ -54,7 +49,7 @@ export function Combobox({
   type = "single",
   value = undefined, 
 } : { 
-  getOptions?: () => void,
+  getOptions?: (search: string) => Promise<Option[]>,
   onSelect?: (x: StrOrNum|StrOrNum[]) => void,
   options?: Option[], 
   type?: "single" | "multiple", 
@@ -62,7 +57,8 @@ export function Combobox({
 }) {
   const [open, setOpen] = useState<boolean>(false)
   const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
-  
+  const [localOptions, setLocalOptions] = useState<Option[]>(options)
+
   const setValue = (val: StrOrNum | StrOrNum[]) => {
     setLocalValue(val)
 
@@ -84,10 +80,10 @@ export function Combobox({
           {
             type == "single"
                 ? (localValue
-                    ? options.find((framework) => framework.value === localValue)?.label
+                    ? localOptions.find((framework) => framework.value === localValue)?.label
                     : "Select option ...")
                 : ((Array.isArray(localValue) && localValue.length > 0)
-                    ? localValue.map((v: StrOrNum) => options.find((option) => option.value == v)?.label)
+                    ? localValue.map((v: StrOrNum) => localOptions.find((option) => option.value == v)?.label)
                         .join(", ")
                     : "Select options ...")
 
@@ -99,20 +95,20 @@ export function Combobox({
       </PopoverTrigger>
       <PopoverContent align="end" className="grow p-0  w-[19.7rem]">
         <Command>
-          <CommandInput onInput={(e: BaseSyntheticEvent) => {
-              console.log('e', e)
-              if(getOptions) {
-                console.log('get options exist')
-                getOptions()
+          <CommandInput onInput={async (e: BaseSyntheticEvent) => {
+              if (getOptions) {
+                const opts = await getOptions(e.target.value)
+                console.log('opts:', opts)
+                setLocalOptions(opts)
               }
           }} placeholder="Search" className="h-9" />
           <CommandList>
             <CommandEmpty>No option found.</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => (
+              {localOptions.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value}
+                  value={option.value.toString()} // check if this to string should be here
                   onSelect={(currentValue) => {
                     if (type == "single") {
                         setValue(currentValue === localValue ? "" : currentValue)

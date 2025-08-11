@@ -1,6 +1,8 @@
 import { currencyFormat } from "@/lib/utils"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
 import { FilterConfig } from "@/types"
+import axios from 'axios'
+import { type Option } from "@/types"
 
 export const columns = [
   {
@@ -133,14 +135,32 @@ export const filterOptions: FilterConfig[] = [
     inputType: 'select',
     dataType: 'int',
     group: "Customer",
-    endpoint: route("api.customers.index")
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.customers.index', {
+          filters: "id.eq." + search
+        })
+        
+        const response = await axios.get(endpoint, {
+          headers: {
+            Authorization: 'Bearer ' + apiToken
+          }
+        })
+
+        const ret = response.data.items.map(({id} : {id: number}) => {
+          return {value: id, label: id.toString()}
+        })
+
+        return ret
+      }
+    }
   },
   {
     key: "customer_name",
     label: "Customer",
     inputType: 'select',
     dataType: 'string',
-    group: "Customer"
+    group: "Customer",
   },
   {
     key: "count",

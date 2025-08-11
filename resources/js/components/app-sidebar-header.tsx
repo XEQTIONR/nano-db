@@ -222,18 +222,9 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                     <div className="w-full flex gap-2 mt-1  items-center">
                                                         {
                                                             field.inputType == "select" 
-                                                                && <Combobox 
+                                                                && <Combobox
+                                                                        getOptions={field.getOptions && field.getOptions(apiToken ?? "")} 
                                                                         type="multiple"
-                                                                        getOptions={async () => {
-                                                                            if (field.endpoint) {
-                                                                                const result = await axios.get(field.endpoint, {
-                                                                                    headers: {
-                                                                                        Authorization: 'Bearer ' + apiToken
-                                                                                    }
-                                                                                })
-                                                                                console.log('result:', result.data.items)
-                                                                            }
-                                                                        }}
                                                                     />
                                                         }
                                                         
