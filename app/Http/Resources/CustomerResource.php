@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class CustomerResource extends JsonResource
 {
@@ -21,7 +22,9 @@ class CustomerResource extends JsonResource
             'address' => $this->address,
             'phone' => $this->phone,
             'notes' => $this->notes,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => ($this->created_at instanceof Carbon)
+                ? $this->created_at->toDateTimeString()
+                : (new Carbon($this->created_at))->toDateTimeString(),
             'route' => $request->route()->getName(),
             $this->mergeWhen(($request->route()->getName() === 'customers.index'), [
                 'grand_total' => floatval($this->grand_total),

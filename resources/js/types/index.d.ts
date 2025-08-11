@@ -58,7 +58,8 @@ export interface FilterConfig {
     label: string,
     dataType: 'float' | 'int' | 'string',
     inputType: 'select' | 'date' | 'number' | 'text',
-    group: string
+    group: string,
+    endpoint?: string,
 }
 
 export type Filter = [string, string, string]

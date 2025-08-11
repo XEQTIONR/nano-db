@@ -17,8 +17,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+
+type StrOrNum = string | number
 interface Option {
-    value: string,
+    value: StrOrNum,
     label: string,
 }
 
@@ -45,9 +47,27 @@ const frameworks: Option[] = [
   },
 ]
 
-export function Combobox({ type = "single", options = frameworks } : { type?: "single" | "multiple", options?: Option[] }) {
+export function Combobox({ 
+  onSelect = undefined,
+  options = frameworks, 
+  type = "single",
+  value = undefined 
+} : { 
+  onSelect?: (x: StrOrNum|StrOrNum[]) => void,
+  options?: Option[], 
+  type?: "single" | "multiple", 
+  value?: StrOrNum | StrOrNum[]
+}) {
   const [open, setOpen] = useState<boolean>(false)
-  const [value, setValue] = useState<string | string[]>(type == "single" ? "" : [])
+  const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
+  
+  const setValue = (val: StrOrNum | StrOrNum[]) => {
+    setLocalValue(val)
+
+    if (onSelect) {
+      onSelect(val)
+    }
+  }
   return (
     <Popover open={open} onOpenChange={(isOpen) => {
             setOpen(isOpen)
@@ -61,11 +81,11 @@ export function Combobox({ type = "single", options = frameworks } : { type?: "s
         >
           {
             type == "single"
-                ? (value
-                    ? options.find((framework) => framework.value === value)?.label
+                ? (localValue
+                    ? options.find((framework) => framework.value === localValue)?.label
                     : "Select option ...")
-                : ((value.length > 0 && Array.isArray(value))
-                    ? value.map((v: string) => options.find(({value}) => value == v)?.label)
+                : ((Array.isArray(localValue) && localValue.length > 0)
+                    ? localValue.map((v: StrOrNum) => options.find((option) => option.value == v)?.label)
                         .join(", ")
                     : "Select options ...")
 
@@ -87,13 +107,13 @@ export function Combobox({ type = "single", options = frameworks } : { type?: "s
                   value={option.value}
                   onSelect={(currentValue) => {
                     if (type == "single") {
-                        setValue(currentValue === value ? "" : currentValue)
+                        setValue(currentValue === localValue ? "" : currentValue)
                         setOpen(false)
-                    } else if (Array.isArray(value) && currentValue) { // type == "multiple"
-                        if (value.indexOf(currentValue) == -1 ) {
-                            setValue([...value, currentValue])
+                    } else if (Array.isArray(localValue) && currentValue) { // type == "multiple"
+                        if (localValue.indexOf(currentValue) == -1 ) {
+                            setValue([...localValue, currentValue])
                         } else {
-                            setValue([...value.filter((v) => v !== currentValue)
+                            setValue([...localValue.filter((v) => v !== currentValue)
                             ])
                         }
                     }
@@ -103,7 +123,7 @@ export function Combobox({ type = "single", options = frameworks } : { type?: "s
                   <Check
                     className={cn(
                       "ml-auto",
-                      (type === "single" && value === option.value) || (value.indexOf(option.value) > -1)
+                      (type === "single" && localValue === option.value) || (localValue.indexOf(option.value) > -1)
                         ? "opacity-100" : "opacity-0"
                     )}
                   />

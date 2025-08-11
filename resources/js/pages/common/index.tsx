@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout';
-import { FilterConfig, FilterOptions, type BreadcrumbItem } from '@/types';
+import { Filter, FilterConfig, FilterOptions, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
@@ -45,7 +45,8 @@ const perPageOptions: number[] = [
 ]
 
 
-export default function Index<T>({ items, link, sortBy, sortDir, title, type, filters = [] } : { 
+export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title, type, filters = [] } : { 
+    apiToken? : string
     items: { 
         data: T[], 
         links: { 
@@ -59,7 +60,7 @@ export default function Index<T>({ items, link, sortBy, sortDir, title, type, fi
     sortDir: 'asc' | 'desc'
     title: string
     type: string 
-    filters?: string[]
+    filters?: Filter[]
 }) {
     let cols = []
     const filterOptions: FilterConfig[] = orderFilters
@@ -94,7 +95,7 @@ export default function Index<T>({ items, link, sortBy, sortDir, title, type, fi
     breadcrumbs[0].href = link
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls filters={filters} filterOptions={filterOptions} />}>
+        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls apiToken={apiToken} filters={filters} filterOptions={filterOptions} />}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 

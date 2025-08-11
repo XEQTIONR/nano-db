@@ -117,7 +117,8 @@ export const filterOptions: FilterConfig[] = [
     label: "Order #",
     inputType: 'select',
     dataType: 'string',
-    group: "Order"
+    group: "Order",
+    //endpoint: Add endpoint here
   },
   {
     key: "order_on",
