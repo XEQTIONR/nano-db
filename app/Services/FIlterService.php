@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Arr;
-
+use Illuminate\Support\Str;
 class FilterService
 {
     protected static $operators = [
@@ -13,7 +13,8 @@ class FilterService
         'gt' => '>',
         'gte' => '>=',
         'ne' => '<>',
-        'like' => 'LIKE'
+        'like' => 'LIKE',
+        'in' => 'IN'
     ];
 
     public static function parse(string $qStr)
@@ -33,7 +34,17 @@ class FilterService
 
         if ($op == 'LIKE') {
             $param = "%$param%";
-        } 
+        }
+        
+        if ($op == 'IN') {
+            $param = explode(",", $param);
+
+            if (!is_numeric($param[0])) {
+                foreach ($param as $p) {
+                    $p = "'$p'";
+                }
+            }
+        }
 
         return [$field, $op, $param];
     }

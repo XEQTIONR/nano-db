@@ -102,6 +102,9 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                 case "<>":
                     operation = "ne"
                     break
+                case "in":
+                    operation = "in"
+                    break
             }
 
             switch(filterOption.dataType) {
@@ -223,6 +226,9 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                         {
                                                             field.inputType == "select" 
                                                                 && <Combobox
+                                                                        onSelect={(value) => {
+                                                                            console.log('selected', value)}
+                                                                        }
                                                                         getOptions={field.getOptions && field.getOptions(apiToken ?? "")} 
                                                                         type="multiple"
                                                                     />
@@ -323,6 +329,13 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterOptions } : 
                                                                 >
                                                                     Like
                                                                     <DropdownMenuShortcut>{"%%"}</DropdownMenuShortcut>
+                                                                </DropdownMenuCheckboxItem>
+                                                                <DropdownMenuCheckboxItem
+                                                                    checked={currentFilters.find(([key]) => key == field.key)?.[1] === "in"}
+                                                                    onClick={() => updateCurrentFilterOperator(field.key, "in")}
+                                                                >
+                                                                    In
+                                                                    <DropdownMenuShortcut>{"IN"}</DropdownMenuShortcut>
                                                                 </DropdownMenuCheckboxItem>
                                                                 </DropdownMenuGroup>
                                                             </DropdownMenuContent>

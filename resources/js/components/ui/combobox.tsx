@@ -1,7 +1,8 @@
 
-import { BaseSyntheticEvent, useState } from "react"
+import { useState } from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, debounce } from "@/lib/utils"
+import { useDebouncedCallback } from 'use-debounce';
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -19,45 +20,35 @@ import {
 
 import { type StrOrNum, Option } from "@/types"
 
-const frameworks: Option[] = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
 
 export function Combobox({ 
+  debounceTimeOut = 300, 
   getOptions = undefined,
   onSelect = undefined,
-  options = frameworks, 
+  options = [], 
   type = "single",
-  value = undefined, 
+  value = undefined,
 } : { 
+  debounceTimeOut?: number,
   getOptions?: (search: string) => Promise<Option[]>,
   onSelect?: (x: StrOrNum|StrOrNum[]) => void,
   options?: Option[], 
   type?: "single" | "multiple", 
-  value?: StrOrNum | StrOrNum[]
+  value?: StrOrNum | StrOrNum[],
 }) {
   const [open, setOpen] = useState<boolean>(false)
   const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
   const [localOptions, setLocalOptions] = useState<Option[]>(options)
+
+  const debounced = useDebouncedCallback(
+    async (str) => {
+      if (getOptions) {
+        const opts: Option[] = await getOptions(str)
+        setLocalOptions([...opts])
+      }
+    },
+    debounceTimeOut
+  )
 
   const setValue = (val: StrOrNum | StrOrNum[]) => {
     setLocalValue(val)
@@ -80,7 +71,7 @@ export function Combobox({
           {
             type == "single"
                 ? (localValue
-                    ? localOptions.find((framework) => framework.value === localValue)?.label
+                    ? localOptions.find((item) => item.value === localValue)?.label
                     : "Select option ...")
                 : ((Array.isArray(localValue) && localValue.length > 0)
                     ? localValue.map((v: StrOrNum) => localOptions.find((option) => option.value == v)?.label)
@@ -94,14 +85,12 @@ export function Combobox({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="grow p-0  w-[19.7rem]">
-        <Command>
-          <CommandInput onInput={async (e: BaseSyntheticEvent) => {
-              if (getOptions) {
-                const opts = await getOptions(e.target.value)
-                console.log('opts:', opts)
-                setLocalOptions(opts)
-              }
-          }} placeholder="Search" className="h-9" />
+        <Command shouldFilter={false}>
+          <CommandInput 
+            onValueChange={(str: string) => debounced(str)} 
+            placeholder="Search" 
+            className="h-9"
+          />
           <CommandList>
             <CommandEmpty>No option found.</CommandEmpty>
             <CommandGroup>
@@ -127,7 +116,7 @@ export function Combobox({
                   <Check
                     className={cn(
                       "ml-auto",
-                      (type === "single" && localValue === option.value) || (localValue.indexOf(option.value) > -1)
+                      (type === "single" && localValue === option.value) || (localValue.indexOf(option.value.toString()) > -1)
                         ? "opacity-100" : "opacity-0"
                     )}
                   />
