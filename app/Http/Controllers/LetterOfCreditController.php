@@ -6,8 +6,9 @@ use App\Models\LetterOfCredit;
 use App\Http\Resources\LetterOfCreditResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\Api\LetterOfCreditController as ApiController;
 
-class LetterOfCreditController extends Controller
+class LetterOfCreditController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -20,29 +21,11 @@ class LetterOfCreditController extends Controller
 
         $sortDir = $request->input('sortDir') ?? 'desc';
 
-        if ($sortBy == 'local_amount') {
-            $data = LetterOfCreditResource::collection(
-            LetterOfCredit::orderByRaw('foreign_amount * exchange_rate '. $sortDir)
-                ->paginate($perPage)
-                ->withQueryString()
-            );
-        } elseif ($sortBy == 'total_expense') {
-            $data = LetterOfCreditResource::collection(
-            LetterOfCredit::orderByRaw('(foreign_expense * exchange_rate) + domestic_expense '. $sortDir)
-                ->paginate($perPage)
-                ->withQueryString()
-            );
-        } else {
-            $data = LetterOfCreditResource::collection(
-            LetterOfCredit::orderBy($sortBy, $sortDir)
-                ->paginate($perPage)
-                ->withQueryString()
-            );
-        }
         
+        $data = parent::index($request);
         
         return Inertia::render('common/index', [
-            'items' => $data,
+            ...$data,
             'link' => route('lcs.index'),
             'title' => 'Letters of Credit',
             'type' => 'lc',

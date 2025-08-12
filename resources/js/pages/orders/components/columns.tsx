@@ -139,7 +139,7 @@ export const filterConfigs: FilterConfig[] = [
         })
       }
     },
-    ops: ['in', 'like']
+    ops: ['in']
   },
   {
     key: "count",
@@ -193,7 +193,7 @@ export const filterConfigs: FilterConfig[] = [
     key: "created_at",
     label: "Created At",
     inputType: 'date',
-    dataType: 'float',
+    dataType: 'string',
     group: "Order",
     ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },

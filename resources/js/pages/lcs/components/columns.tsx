@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
+import { type FilterConfig, type Option } from "@/types"
+import axios from 'axios'
 
 export const columns = [
   {
@@ -99,4 +101,84 @@ export const columns = [
       )
     },
   }
+]
+
+export const filterConfigs: FilterConfig[] = [
+  {
+    key: "lc_num",
+    label: "LC #",
+    inputType: 'select',
+    dataType: 'string',
+    group: "Letter of Credit",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.lcs.index', {
+          filters: "lc_num.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+        console.log('response:', response)
+        return response.data.items.map(({lc_num} : {lc_num: string}) => {
+          return {value: lc_num, label: lc_num}
+        })
+      }
+    },
+    ops: ['in']
+  },
+  {
+    key: "date_issued",
+    label: "Order Date",
+    inputType: 'date',
+    dataType: 'string',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "date_expiry",
+    label: "Order Date",
+    inputType: 'date',
+    dataType: 'string',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "exchange_rate",
+    label: "Customer",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "foreign_amount",
+    label: "Foreign Amount",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "local_amount",
+    label: "Local Amount",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "total_expenses",
+    label: "Total Expense",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "created_at",
+    label: "Created At",
+    inputType: 'date',
+    dataType: 'string',
+    group: "Letter of Credit",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
 ]

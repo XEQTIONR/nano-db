@@ -4,7 +4,7 @@ import { Filter, FilterConfig, FilterOptions, type BreadcrumbItem } from '@/type
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
-import { columns as lcCols } from "@/pages/lcs/components/columns";
+import { columns as lcCols, filterConfigs as lcFilters } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols } from '@/pages/consignments/components/columns';
 import { columns as containerCols } from '@/pages/containers/components/columns';
 import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
@@ -67,6 +67,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
     switch (type) {
         case "lc":
             cols = lcCols
+            filterConfigs = lcFilters
             break
         case "consignment":
             cols = consignmentCols
