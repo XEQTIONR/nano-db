@@ -10,6 +10,8 @@ import { MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
 
+import { type FilterConfig, type Option } from "@/types"
+import axios from 'axios'
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
@@ -98,4 +100,89 @@ export const columns = [
       )
     },
   }
+]
+
+export const filterConfigs: FilterConfig[] = [
+  {
+    key: "bol",
+    label: "Bill of lading #",
+    inputType: 'select',
+    dataType: 'string',
+    group: "Consignment",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.consignments.index', {
+          filters: "bol.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+        console.log('response:', response)
+        return response.data.items.map(({bol} : {bol: string}) => {
+          return {value: bol, label: bol}
+        })
+      }
+    },
+    ops: ['in']
+  },
+  {
+    key: "value",
+    label: "Value",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Consignment",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "exchange_rate",
+    label: "Rate",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Consignment",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "tax",
+    label: "Tax",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Consignment",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "land_date",
+    label: "Landed On",
+    inputType: 'date',
+    dataType: 'string',
+    group: "Consignment",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
+  {
+    key: "lc_num",
+    label: "LC #",
+    inputType: 'select',
+    dataType: 'string',
+    group: "Consignment",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.lcs.index', {
+          filters: "lc_num.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+        console.log('response:', response)
+        return response.data.items.map(({lc_num} : {lc_num: string}) => {
+          return {value: lc_num, label: lc_num}
+        })
+      }
+    },
+    ops: ['in']
+  },
+  {
+    key: "created_at",
+    label: "Created At",
+    inputType: 'date',
+    dataType: 'string',
+    group: "Consignment",
+    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  },
 ]

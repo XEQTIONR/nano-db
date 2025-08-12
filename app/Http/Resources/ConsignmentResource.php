@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 class ConsignmentResource extends JsonResource
 {
@@ -19,12 +20,16 @@ class ConsignmentResource extends JsonResource
             'value' => $this->value,
             'exchange_rate' => $this->exchange_rate,
             'tax' => $this->tax,
-            'land_date' => $this->land_date->toDateString(),
+            'land_date' => ($this->land_date instanceof Carbon)
+                ? $this->created_at->toDateString()
+                : (new Carbon($this->created_at))->toDateString(),
             'lc_num' => $this->lc,
             $this->mergeWhen($this->relationLoaded('letterOfCredit'), [
                 'currency_code' => $this->letterOfCredit->currency_code,
             ]),
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => ($this->created_at instanceof Carbon)
+                ? $this->created_at->toDateTimeString()
+                : (new Carbon($this->created_at))->toDateTimeString(),
             
         ];
     }

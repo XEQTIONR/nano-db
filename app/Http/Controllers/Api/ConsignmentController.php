@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Services\FilterService;
+use App\Models\Consignment;
+use App\Http\Resources\ConsignmentResource;
+use Illuminate\Support\Facades\DB;
+
+class ConsignmentController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $sortBy = $request->input('sortBy') ?? 'created_at';
+
+        $sortDir = $request->input('sortDir') ?? 'desc';
+
+        $filterStr = $request->input('filters') ?? "";
+
+        $filters = FilterService::parse($filterStr);
+
+        $query = Consignment::with('letterOfCredit')
+        ->orderBy($sortBy == 'lc_num' ? 'lc' : $sortBy, $sortDir);
+
+        if ($filters->count() > 0) {
+            
+            for ($i=0; $i<$filters->count(); $i++) {
+                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                    $query = $query->whereIn($filters[$i][0] == 'lc_num' ? 'lc' : $filters[$i][0], $filters[$i][2]);
+                } else {
+                    $query = $query->where($filters[$i][0] == 'lc_num' ? 'lc' : $filters[$i][0], $filters[$i][1], $filters[$i][2]);
+                }
+            }
+        }
+
+        $data = ConsignmentResource::collection((
+            $query->paginate($perPage)->withQueryString()
+        ));
+
+        return [
+            'items' => $data,
+            'filters' => $filters,
+        ];
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

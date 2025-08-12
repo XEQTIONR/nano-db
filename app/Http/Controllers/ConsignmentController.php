@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ConsignmentResource;
-use App\Models\Consignment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\Api\ConsignmentController as ApiController;
 
-class ConsignmentController extends Controller
+class ConsignmentController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -24,24 +23,23 @@ class ConsignmentController extends Controller
             $sortBy = 'lc';
         }
 
-        $data = ConsignmentResource::collection(
-            Consignment::with(['letterOfCredit'])
-                ->orderBy($sortBy, $sortDir)
-                ->paginate($perPage)
-                ->withQueryString()
-        );
+        $data = parent::index($request);
 
         if ($sortBy == 'lc') {
             $sortBy = 'lc_num';
         }
 
-        return Inertia::render('common/index', [
-            'items' => $data,
+        return 
+        Inertia::render('common/index', 
+        [
+            ...$data,
             'link' => route('consignments.index'),
             'title' => 'Consignments',
             'type' => 'consignment',
             'sortBy' => $sortBy,
             'sortDir' => $sortDir,
-        ]);  
+        ]
+        )
+        ;  
     }
 }

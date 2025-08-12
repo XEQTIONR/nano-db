@@ -5,7 +5,7 @@ import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
 import { columns as lcCols, filterConfigs as lcFilters } from "@/pages/lcs/components/columns";
-import { columns as consignmentCols } from '@/pages/consignments/components/columns';
+import { columns as consignmentCols, filterConfigs as consignmentFilters } from '@/pages/consignments/components/columns';
 import { columns as containerCols } from '@/pages/containers/components/columns';
 import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
 import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/orders/components/columns';
@@ -71,6 +71,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
             break
         case "consignment":
             cols = consignmentCols
+            filterConfigs = consignmentFilters
             break
         case "container":
             cols = containerCols
