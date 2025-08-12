@@ -26,7 +26,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuCheckboxItem,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
@@ -175,6 +174,31 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
         }
     }
 
+    const mapFilterOperatorLabel = (label?: FilterOperatorType) => {
+
+        if (label) {
+            switch(label) {
+            case "lt":
+                return "<"
+            case "lte":
+                return "<="
+            case "eq":
+                return "="
+            case "gt":
+                return ">"
+            case "gte":
+                return ">="
+            case "ne":
+                return "!="
+            case "like":
+                return "LIKE"
+            case "in":
+                return "IN"
+            }
+        }
+        return undefined
+    }
+
 
     return (
         <div className="flex items-end gap-2 justify-end">
@@ -234,7 +258,16 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
                                         <div className="flex flex-col gap-6 mt-1 ">
                                             { fields?.map((field) => (
                                                 <div key={key} className="flex flex-col">
-                                                    <Label className="text-xs text-muted-foreground">{field.label}</Label>
+                                                    <Label className="text-xs text-muted-foreground">
+                                                        {field.label} 
+                                                        <span className="text-green-500 ml-4">
+                                                        {
+                                                            mapFilterOperatorLabel(
+                                                                currentFilters.find((f) => f[0] === field.key)?.[1]
+                                                            )
+                                                        }
+                                                        </span>
+                                                    </Label>
                                                     <div className="w-full flex gap-2 mt-1  items-center">
                                                         {
                                                             field.inputType == "select" 
@@ -296,7 +329,9 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button size="icon" variant="ghost">
+
                                                                     <EllipsisVertical />
+                                                                    
                                                                 </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent className="w-56" align="start">

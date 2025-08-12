@@ -76,7 +76,7 @@ export const filterConfigs: FilterConfig[] = [
     inputType: 'select',
     dataType: 'string',
     group: "Order",
-    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+    ops: ['in']
   },
   {
     key: "order_on",
@@ -105,7 +105,7 @@ export const filterConfigs: FilterConfig[] = [
         })
       }
     },
-    ops: ['eq', 'in']
+    ops: ['in']
   },
   {
     key: "customer_name",

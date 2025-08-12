@@ -58,13 +58,16 @@ interface Option {
     value: StrOrNum,
     label: string,
 }
+
 export type Filter = [string, string, string]
+export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like" | "in"
+
 export type FilterTransformed = [
     string, 
-    string | undefined,
+    FilterOperator | undefined,
     StrOrNum | StrOrNum[] | undefined
 ]
-export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like" | "in"
+
 
 export interface FilterConfig {
     key: string,
