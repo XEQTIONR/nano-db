@@ -106,11 +106,24 @@ export function Combobox({
                         setValue(currentValue === localValue ? "" : currentValue)
                         setOpen(false)
                     } else if (Array.isArray(localValue) && currentValue) { // type == "multiple"
-                        if (localValue.indexOf(currentValue) == -1 ) {
-                            setValue([...localValue, currentValue])
+                        let cv;
+                        switch (dataType) {
+                          case "float":
+                            cv = parseFloat(currentValue)
+                            break
+                          case "int":
+                            cv = parseInt(currentValue)
+                            break
+                          case "string":
+                          default:
+                            cv = currentValue
+                        }
+                      
+                        if (localValue.indexOf(cv) == -1 ) {
+                            setValue([...localValue, cv])
                             setSelectedOptions([...selectedOptions, option])
                         } else {
-                            setValue([...localValue.filter((v) => v !== currentValue)])
+                            setValue([...localValue.filter((v) => v !== cv)])
                             setSelectedOptions([...selectedOptions.filter(
                               ({value, label}) => !(option.value == value && option.label == label)
                             )])
