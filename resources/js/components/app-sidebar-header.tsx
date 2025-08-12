@@ -44,6 +44,8 @@ import { EllipsisVertical, Filter, FilterX, Plus } from 'lucide-react';
 
 import { router } from '@inertiajs/react';
 
+import { type Option } from "@/types"
+
 import {
   Sheet,
   SheetClose,
@@ -79,7 +81,7 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
     console.log('groups:', groups)
     const trasformFiltersToQuery = ([key, op, val] : FilterType): FilterTransformedType => {
         let operation = "eq"
-        let value: number | string = ""
+        let value: StrOrNumType | StrOrNumType[] = ""
         const filterConfig = filterConfigs.find((option) => option.key === key)
 
         if (filterConfig) {
@@ -109,10 +111,18 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
 
             switch(filterConfig.dataType) {
                 case "int":
-                    value = parseInt(val)
+                    if (Array.isArray(val)) {
+                        value = val.map(v => parseInt(v))
+                    } else {
+                        value = parseInt(val)
+                    }
                     break
                 case "float":
-                    value = parseFloat(val)
+                    if (Array.isArray(val)) {
+                        value = val.map(v => parseFloat(v))
+                    } else {
+                        value = parseFloat(val)
+                    }
                     break
                 case "string":
                 default:
@@ -229,11 +239,26 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
                                                         {
                                                             field.inputType == "select" 
                                                                 && <Combobox
+                                                                        dataType={field.dataType}
+                                                                        value={currentFilters.find((f) => f[0] === field.key)?.[2]}
                                                                         onSelect={(value) => {
-                                                                            console.log('selected', value)
                                                                             updateCurrentFilterValue(field.key, value)
                                                                         }}
                                                                         getOptions={field.getOptions && field.getOptions(apiToken ?? "")} 
+                                                                        options={(() => {
+                                                                            const currentFilter = currentFilters.find((f) => f[0] === field.key)
+                                                                            if (currentFilter) {
+                                                                                const [, , v] = currentFilter
+                                                                                if (Array.isArray(v)) {
+                                                                                    const items: Option[] =v.map(x => {
+                                                                                        return { value: x, label: x.toString()}
+                                                                                    })
+
+                                                                                    return items;
+                                                                                }
+                                                                            }
+                                                                        })()}
+                                                                        // options={}
                                                                         type="multiple"
                                                                     />
                                                         }

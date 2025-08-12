@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn, debounce } from "@/lib/utils"
 import { useDebouncedCallback } from 'use-debounce';
@@ -22,13 +22,15 @@ import { type StrOrNum, Option } from "@/types"
 
 
 export function Combobox({ 
+  dataType = "string",
   debounceTimeOut = 300, 
   getOptions = undefined,
   onSelect = undefined,
   options = [], 
   type = "single",
   value = undefined,
-} : { 
+} : {
+  dataType?: "string" | "float" | "int" 
   debounceTimeOut?: number,
   getOptions?: (search: string) => Promise<Option[]>,
   onSelect?: (x: StrOrNum|StrOrNum[]) => void,
@@ -39,6 +41,7 @@ export function Combobox({
   const [open, setOpen] = useState<boolean>(false)
   const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
   const [localOptions, setLocalOptions] = useState<Option[]>(options)
+  const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
 
   const debounced = useDebouncedCallback(
     async (str) => {
@@ -71,10 +74,10 @@ export function Combobox({
           {
             type == "single"
                 ? (localValue
-                    ? localOptions.find((item) => item.value === localValue)?.label
+                    ? selectedOptions.find((item) => item.value === localValue)?.label
                     : "Select option ...")
                 : ((Array.isArray(localValue) && localValue.length > 0)
-                    ? localValue.map((v: StrOrNum) => localOptions.find((option) => option.value == v)?.label)
+                    ? localValue.map((v: StrOrNum) => selectedOptions.find((option) => option.value == v)?.label ?? v.toString())
                         .join(", ")
                     : "Select options ...")
 
@@ -105,9 +108,12 @@ export function Combobox({
                     } else if (Array.isArray(localValue) && currentValue) { // type == "multiple"
                         if (localValue.indexOf(currentValue) == -1 ) {
                             setValue([...localValue, currentValue])
+                            setSelectedOptions([...selectedOptions, option])
                         } else {
-                            setValue([...localValue.filter((v) => v !== currentValue)
-                            ])
+                            setValue([...localValue.filter((v) => v !== currentValue)])
+                            setSelectedOptions([...selectedOptions.filter(
+                              ({value, label}) => !(option.value == value && option.label == label)
+                            )])
                         }
                     }
                   }}

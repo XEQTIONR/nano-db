@@ -59,7 +59,11 @@ interface Option {
     label: string,
 }
 export type Filter = [string, string, string]
-export type FilterTransformed = [string, string | undefined, StrOrNum | StrOrNum[] | undefined]
+export type FilterTransformed = [
+    string, 
+    string | undefined,
+    StrOrNum | StrOrNum[] | undefined
+]
 export type FilterOperator = "lt" | "lte" | "eq" | "gt" | "gte" | "ne" | "like" | "in"
 
 export interface FilterConfig {
