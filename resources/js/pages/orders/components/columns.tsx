@@ -76,6 +76,19 @@ export const filterConfigs: FilterConfig[] = [
     inputType: 'select',
     dataType: 'string',
     group: "Order",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.orders.index', {
+          filters: "Order_num.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+
+        return response.data.items.map(({order_num} : {order_num: number}) => {
+          return {value: order_num, label: order_num.toString()}
+        })
+      }
+    },
     ops: ['in']
   },
   {
