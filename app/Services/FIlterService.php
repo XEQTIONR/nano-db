@@ -13,8 +13,8 @@ class FilterService
         'gt' => '>',
         'gte' => '>=',
         'ne' => '<>',
-        'like' => 'LIKE',
-        'in' => 'IN'
+        'like' => 'like',
+        'in' => 'in'
     ];
 
     public static function parse(string $qStr)
@@ -32,11 +32,11 @@ class FilterService
 
         $op = self::$operators[$op];
 
-        if ($op == 'LIKE') {
+        if ($op == 'like') {
             $param = "%$param%";
         }
         
-        if ($op == 'IN') {
+        if ($op == 'in') {
             $param = explode(",", $param);
 
             if (!is_numeric($param[0])) {
