@@ -291,7 +291,6 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
                                                                                 }
                                                                             }
                                                                         })()}
-                                                                        // options={}
                                                                         type="multiple"
                                                                     />
                                                         }

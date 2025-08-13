@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ConsignmentController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\LetterOfCreditController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,9 @@ Route::name('api.')->middleware('auth:sanctum')->group(function() {
     
     Route::get('/consignments', [ConsignmentController::class, 'index'])
         ->name('consignments.index');
+
+    Route::get('/payments', [PaymentController::class, 'index'])
+        ->name('payments.index');
 });
 
 

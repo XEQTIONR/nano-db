@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout';
-import { Filter, FilterConfig, FilterOptions, type BreadcrumbItem } from '@/types';
+import { Filter, FilterConfig, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as tyreCols } from "@/pages/tyres/components/columns";
@@ -9,7 +9,7 @@ import { columns as consignmentCols, filterConfigs as consignmentFilters } from 
 import { columns as containerCols } from '@/pages/containers/components/columns';
 import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
 import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/orders/components/columns';
-import { columns as paymentCols } from '@/pages//payments/components/columns';
+import { columns as paymentCols, filterConfigs as paymentFilters } from '@/pages//payments/components/columns';
 import { columns as stockCols } from '@/pages//stock/components/columns';
 import {
   Pagination,
@@ -86,6 +86,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
             break
         case "payment":
             cols = paymentCols
+            filterConfigs = paymentFilters
             break
         case "stock":
             cols = stockCols

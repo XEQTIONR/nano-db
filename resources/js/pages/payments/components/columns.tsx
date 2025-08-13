@@ -73,3 +73,70 @@ export const columns = [
     },
   }
 ]
+
+export const filterConfigs: FilterConfig[] = [
+  {
+    key: "transaction_id",
+    label: "Transaction ID",
+    inputType: 'select',
+    dataType: 'string',
+    group: "Payment",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.payments.index', {
+          filters: "transaction_id.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+        console.log('response:', response)
+        return response.data.items.map(({transaction_id} : {transaction_id: string}) => {
+          return {value: transaction_id, label: transaction_id}
+        })
+      }
+    },
+    ops: ['in']
+  },
+  {
+    key: "order_num",
+    label: "Order #",
+    inputType: 'select',
+    dataType: 'int',
+    group: "Payment",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.orders.index', {
+          filters: "Order_num.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+        return response.data.items.map(({order_num} : {order_num: number}) => {
+          return {value: order_num, label: order_num}
+        })
+      }
+    },
+    ops: ['in']
+  },
+  {
+    key: "type",
+    label: "Type",
+    inputType: 'select',
+    dataType: 'string',
+    group: "Payment",
+    getOptions: (apiToken: string) => async () => [
+      { value: 'unknown', label: 'unknown'},
+      { value: 'deposit', label: 'deposit'},
+      { value: 'cash', label: 'cash'},
+      { value: 'check', label: 'check'},
+    ],
+    ops: ['in']
+  },
+  {
+    key: "amount",
+    label: "Amount",
+    inputType: 'number',
+    dataType: 'float',
+    group: "Payment",
+    ops: ['gt', 'lt', 'gte', 'lte', 'eq', 'ne']
+  },
+  
+]
