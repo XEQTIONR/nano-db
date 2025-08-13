@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ConsignmentController;
+use App\Http\Controllers\Api\ContainerController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\LetterOfCreditController;
 use App\Http\Controllers\Api\OrderController;
@@ -24,6 +25,9 @@ Route::name('api.')->middleware('auth:sanctum')->group(function() {
     
     Route::get('/consignments', [ConsignmentController::class, 'index'])
         ->name('consignments.index');
+
+    Route::get('/containers', [ContainerController::class, 'index'])
+        ->name('containers.index');
 
     Route::get('/payments', [PaymentController::class, 'index'])
         ->name('payments.index');

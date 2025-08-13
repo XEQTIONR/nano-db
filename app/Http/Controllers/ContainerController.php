@@ -6,49 +6,22 @@ use App\Http\Resources\ContainerResource;
 use App\Models\Container;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\Api\ContainerController as ApiController;
 
-class ContainerController extends Controller
+class ContainerController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $perPage = intval($request->input('perPage') ?? 50);
-
-        $sortBy = $request->input('sortBy') ?? 'land_date';
-
-        $sortDir = $request->input('sortDir') ?? 'desc';
-
-        if ($sortBy == 'lc_num') {
-            $sortBy = 'lc';
-        }
-
-        $data = ContainerResource::collection(
-            Container::join('consignments', 'consignments.BOL', '=', 'consignment_containers.BOL')
-                ->select(
-                    'container_num',
-                    'consignments.bol',
-                    'land_date',
-                    'consignments.lc',
-                    'consignment_containers.created_at'
-                )
-                ->orderBy($sortBy, $sortDir)
-                ->paginate($perPage)
-                ->withQueryString()
-        );
-
-        if ($sortBy == 'lc') {
-            $sortBy = 'lc_num';
-        }
+        $data = parent::index($request);
 
         return Inertia::render('common/index', [
-            'items' => $data,
+            ...$data,
             'link' => route('containers.index'),
             'title' => 'Containers',
             'type' => 'container',
-            'sortBy' => $sortBy,
-            'sortDir' => $sortDir
         ]);  
     }
 

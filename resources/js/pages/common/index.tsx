@@ -6,7 +6,7 @@ import { DataTable } from '@/components/data-table';
 import { columns as tyreCols, filterConfigs as tyreFilters } from "@/pages/tyres/components/columns";
 import { columns as lcCols, filterConfigs as lcFilters } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols, filterConfigs as consignmentFilters } from '@/pages/consignments/components/columns';
-import { columns as containerCols } from '@/pages/containers/components/columns';
+import { columns as containerCols, filterConfigs as containerFilters } from '@/pages/containers/components/columns';
 import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
 import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/orders/components/columns';
 import { columns as paymentCols, filterConfigs as paymentFilters } from '@/pages//payments/components/columns';
@@ -75,6 +75,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
             break
         case "container":
             cols = containerCols
+            filterConfigs = containerFilters
             break
         case "customer":
             cols = customerCols
