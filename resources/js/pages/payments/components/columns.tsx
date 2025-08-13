@@ -12,6 +12,9 @@ import { Button } from "@/components/ui/button"
 // You can use a Zod schema here if you want.
 import { currencyFormat } from "@/lib/utils"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
+import { FilterConfig } from "@/types"
+import axios from 'axios'
+import { type Option } from "@/types"
 
 export const columns = [
   {
@@ -27,18 +30,19 @@ export const columns = [
     header: (v) => <DataTableCustomColumnHeader colKey="type" label="Type" config={v} />
   },
   {
-    accessorKey: "account",
-    header: (v) => <DataTableCustomColumnHeader colKey="account" justify="center" label="Account"  config={v}/>
+    accessorKey: "accountDesc",
+    header: (v) => <DataTableCustomColumnHeader colKey="account" justify="center" label="Account"  config={v}/>,
+    cell: ({ row }) => <div className="text-center">{ row.getValue('accountDesc') ?? 'Unknown' }</div>
   },
   {
-      accessorKey: "amount",
-      header: (v) => {
-        return <DataTableCustomColumnHeader justify="end" colKey="amount" label="Amount"  config={v}/>
-      },
-      cell: ({ row }) => {
-          const amount = parseFloat(row.getValue("amount"))
-          return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
-      }
+    accessorKey: "amount",
+    header: (v) => {
+      return <DataTableCustomColumnHeader justify="end" colKey="amount" label="Amount"  config={v}/>
+    },
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("amount"))
+        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+    }
   },
   
   {

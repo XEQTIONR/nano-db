@@ -22,6 +22,9 @@ class PaymentResource extends JsonResource
             'amount' => $this->amount,
             'type' => $this->type,
             'account' => $this->account,
+            $this->mergeWhen($this->relationLoaded('bankAccount') && $this->account > 0, [
+                'accountDesc' => $this->bankAccount?->bank_name . " - " . $this->bankAccount?->account_number
+            ]),
             'order' => OrderResource::make($this->whenLoaded('order')),
             'created_at' => $this->created_at->toDateTimeString(),
         ];

@@ -2,48 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PaymentResource;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\Api\PaymentController as ApiController;
 
-class PaymentController extends Controller
+class PaymentController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $perPage = intval($request->input('perPage') ?? 50);
-
-        $sortBy = $request->input('sortBy') ?? 'transaction_id';
-
-        $sortDir = $request->input('sortDir') ?? 'desc';
-
-        if ($sortBy == 'amount') {
-            $data = 
-            PaymentResource::collection(
-                Payment::with(['order.contents', 'order.customer', 'order.payments'])
-                    ->orderByRaw('payment_amount - refund_amount ' . $sortDir)
-                    ->paginate($perPage)
-                    ->withQueryString()
-            );
-        } else {
-            $data = PaymentResource::collection(
-                Payment::orderBy($sortBy, $sortDir)
-                    ->paginate($perPage)
-                    ->withQueryString()
-            );
-        }
-
+        $data = parent::index($request);
 
         return Inertia::render('common/index', [
-            'items' => $data,
+            ...$data,
             'link' => route('payments.index'),
             'title' => 'Payments',
             'type' => 'payment',
-            'sortBy' => $sortBy,
-            'sortDir' => $sortDir
         ]);
     }
 

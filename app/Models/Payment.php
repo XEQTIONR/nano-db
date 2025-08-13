@@ -33,6 +33,10 @@ class Payment extends Model
         return $this->belongsTo(Order::class, 'Order_num');
     }
 
+    public function bankAccount(): BelongsTo {
+        return $this->belongsTo(BankAccount::class, 'account');
+    }
+
     public function amount(): Attribute
     {
         return Attribute::make( get: function(mixed $val, array $attr) {

@@ -127,7 +127,7 @@ export const filterConfigs: FilterConfig[] = [
   },
   {
     key: "date_issued",
-    label: "Order Date",
+    label: "Date issued",
     inputType: 'date',
     dataType: 'string',
     group: "Letter of Credit",
@@ -135,7 +135,7 @@ export const filterConfigs: FilterConfig[] = [
   },
   {
     key: "date_expiry",
-    label: "Order Date",
+    label: "Expires on",
     inputType: 'date',
     dataType: 'string',
     group: "Letter of Credit",
@@ -143,7 +143,7 @@ export const filterConfigs: FilterConfig[] = [
   },
   {
     key: "exchange_rate",
-    label: "Customer",
+    label: "Exchange rate",
     inputType: 'number',
     dataType: 'float',
     group: "Letter of Credit",
@@ -165,14 +165,14 @@ export const filterConfigs: FilterConfig[] = [
     group: "Letter of Credit",
     ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
   },
-  {
-    key: "total_expenses",
-    label: "Total Expense",
-    inputType: 'number',
-    dataType: 'float',
-    group: "Letter of Credit",
-    ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
-  },
+  // {
+  //   key: "total_expenses",
+  //   label: "Total Expense",
+  //   inputType: 'number',
+  //   dataType: 'float',
+  //   group: "Letter of Credit",
+  //   ops: ['eq', 'lt', 'lte', 'gt', 'gte', 'ne']
+  // },
   {
     key: "created_at",
     label: "Created At",

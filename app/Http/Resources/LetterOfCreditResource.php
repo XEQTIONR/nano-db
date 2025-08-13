@@ -18,10 +18,10 @@ class LetterOfCreditResource extends JsonResource
         return [
             'lc_num' => $this->lc_num,
             'date_issued' => ($this->date_issued instanceof Carbon)
-                ? $this->date_issued->toDateTimeString()
+                ? $this->date_issued->toDateString()
                 :(new Carbon($this->date_issued))->toDateString(),
             'date_expiry' => ($this->date_expiry instanceof Carbon)
-                ? $this->date_expiry->toDateTimeString()
+                ? $this->date_expiry->toDateString()
                 :(new Carbon($this->date_expiry))->toDateString(),
             'applicant' => $this->applicant,
             'beneficiary' => $this->beneficiary,
