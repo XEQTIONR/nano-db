@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Filter, FilterConfig, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
-import { columns as tyreCols } from "@/pages/tyres/components/columns";
+import { columns as tyreCols, filterConfigs as tyreFilters } from "@/pages/tyres/components/columns";
 import { columns as lcCols, filterConfigs as lcFilters } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols, filterConfigs as consignmentFilters } from '@/pages/consignments/components/columns';
 import { columns as containerCols } from '@/pages/containers/components/columns';
@@ -94,6 +94,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
         case "tyre":
         default: 
             cols = tyreCols
+            filterConfigs = tyreFilters
     }
 
     breadcrumbs[0].title = title

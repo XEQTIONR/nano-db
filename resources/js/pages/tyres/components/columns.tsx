@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
+import { FilterConfig } from "@/types"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
@@ -64,4 +65,47 @@ export const columns = [
       )
     },
   }
+]
+
+export const filterConfigs: FilterConfig[] = [
+  {
+    key: "id",
+    label: "ID",
+    inputType: 'number',
+    dataType: 'int',
+    group: "Tyre",
+    ops: ['eq', 'ne', 'gt', 'gte', 'lt', 'lte']
+  },
+  {
+    key: "brand",
+    label: "Brand",
+    inputType: 'text',
+    dataType: 'string',
+    group: "Tyre",
+    ops: ['like']
+  },
+  {
+    key: "size",
+    label: "Size",
+    inputType: 'text',
+    dataType: 'string',
+    group: "Tyre",
+    ops: ['like']
+  },
+  {
+    key: "pattern",
+    label: "Pattern",
+    inputType: 'text',
+    dataType: 'string',
+    group: "Tyre",
+    ops: ['like']
+  },
+  {
+    key: "lisi",
+    label: "Li/Si",
+    inputType: 'text',
+    dataType: 'string',
+    group: "Tyre",
+    ops: ['like']
+  },
 ]

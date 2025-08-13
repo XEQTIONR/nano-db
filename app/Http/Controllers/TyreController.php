@@ -7,40 +7,22 @@ use App\Http\Resources\TyreResource;
 use App\Models\Tyre;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Http\Controllers\Api\TyreController as ApiController;
 
-class TyreController extends Controller
+class TyreController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $perPage = intval($request->input('perPage') ?? 50);
-
-        $sortBy = $request->input('sortBy') ?? 'in_stock';
-
-        $sortDir = $request->input('sortDir') ?? 'desc';
-
-        if ($sortBy == 'id') {
-            $sortBy = 'tyre_id';
-        }
-
-        $data = resolve(StockResource::class)
-            ->orderBy($sortBy, $sortDir)
-            ->paginate($perPage)
-            ->withQueryString();
-
-        if ($sortBy == 'tyre_id') {
-            $sortBy = 'id';
-        }
+        $data = parent::index($request);
 
         return Inertia::render('common/index', [
-            'items' => TyreResource::collection($data),
+            ...$data,
             'link' => route('tyres.index'),
             'title' => 'Tyres',
             'type' => 'tyre',
-            'sortBy' => $sortBy,
-            'sortDir' => $sortDir
         ]);
     }
 
