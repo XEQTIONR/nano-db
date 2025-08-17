@@ -10,6 +10,8 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
+import axios from 'axios'
+import { type Option } from "@/types"
 
 import { FilterConfig } from "@/types"
 
@@ -99,6 +101,20 @@ export const filterConfigs: FilterConfig[] = [
     inputType: 'select',
     dataType: 'int',
     group: "Customer",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.customers.index', {
+          filters: "id.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+
+        return response.data.items.map(({id} : {id: number}) => {
+          return {value: id, label: id.toString()}
+        })
+      }
+    },
+    ops: ['in']
   },
   {
     key: "name",
