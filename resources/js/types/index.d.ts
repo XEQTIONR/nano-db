@@ -90,19 +90,19 @@ export interface User {
 }
 
 export interface LetterOfCredit {
-    lc_num: string;
-    date_issued: string;
-    date_expiry: string;
-    applicant: string;
-    beneficiary: string;
-    currency_code: string;
-    exchange_rate: number;
-    foreign_amount: number;
-    local_amount: number;
-    foreign_expense: number;
-    domestic_expense: number;
-    total_expense: number;
-    created_at: string;
+    lc_num: string
+    date_issued?: Date
+    date_expiry?: Date
+    applicant: string
+    beneficiary: string
+    port_depart: string
+    port_arrive: string
+    currency_code: string
+    rate: number
+    value: number
+    foreign_expense: number
+    domestic_expense: number
+    notes: string
 }
 
 export interface Tyre {

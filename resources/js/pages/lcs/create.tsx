@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from 'react';
 import LetterOfCreditForm from './components/lc-form';
-
+import { LetterOfCredit } from '@/types';
 
 
 export default function Create() {
@@ -39,11 +39,8 @@ export default function Create() {
     ]
     const fn = (prev = false) => {
         setDir(prev)
-
-        
-
         setShow(false)
-        setCurrent((prev ? (current-1) : (current + 1)) % steps.length)
+        setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
         
         if (prev) {
             if ((current - 1) < 0)
@@ -54,12 +51,25 @@ export default function Create() {
             setCurrent((current+1) % steps.length)
         }
         
-        
-        
         setTimeout(() => setShow(true), 1)
     }
 
-    
+    const [lcData, setLcData] = useState<LetterOfCredit>({
+        lc_num: "",
+        date_issued: undefined,
+        date_expiry: undefined,
+        applicant: "",
+        beneficiary: "",
+        port_depart: "",
+        port_arrive: "",
+        currency_code: "",
+        rate: 0,
+        value: 0,
+        foreign_expense: 0,
+        domestic_expense: 0,
+        notes: "",
+    })
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create LC" />
@@ -96,35 +106,20 @@ export default function Create() {
                 <div className="w-full pt-5 flex">
                     {
                         current == 0 && (
-                                <Card 
+                            <Card 
                                 className={cn(
-                                    "w-full md:w-1/2 max-w-3xl transition-all relative",
+                                    "w-full lg:w-1/2 transition-all relative",
                                     show ? "opacity-100" : "opacity-0",
                                     !dir && (show ? "-right-0" : "-right-16"), 
-                                    dir && (show ? "-left-0" : "-left-16"), 
-                                )
-                                }>
-                                <CardHeader>
-                                    <CardTitle>Letter of Credit Information</CardTitle>
-                                    <CardDescription>
-                                        Enter details about your new letter of credit
-                                    </CardDescription>
-                                    <CardAction>
-                                        <Button 
-                                            // onClick={fn}
-                                            variant="secondary">Next Step
-                                            <ChevronRight />
-                                        </Button>
-                                    </CardAction>
-                                </CardHeader>
-                                <CardContent>
-                                    <LetterOfCreditForm />
-                                </CardContent>
+                                    dir && (show ? "-left-0" : "-left-16"), )}
+                            >
+                                <LetterOfCreditForm initialValue={lcData} />
                             </Card>)
                     }
                     {
                         current == 1 
-                        && (<Card className={cn(
+                        && (<Card 
+                                className={cn(
                                     "w-1/2 max-w-3xl transition-all relative",
                                     show ? "opacity-100" : "opacity-0",
                                     !dir && (show ? "-right-0" : "-right-16"), 

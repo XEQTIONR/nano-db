@@ -22,7 +22,7 @@ export function InputCalendar({
 } : {
   id: string, 
   placeholder?: string, 
-  date?: string | undefined,
+  date?: Date | undefined,
   className?: string, 
   timeZone?: string
   onChange?: (date: Date | undefined) => void

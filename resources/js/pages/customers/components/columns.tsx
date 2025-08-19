@@ -121,14 +121,29 @@ export const filterConfigs: FilterConfig[] = [
     label: "Name",
     inputType: 'select',
     dataType: 'string',
-    group: "Customer"
+    group: "Customer",
+    getOptions: (apiToken: string) => {
+      return async (search: string) : Promise<Option[]>  => {
+        const endpoint = route('api.customers.index', {
+          filters: "name.like." + search
+        })
+        
+        const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+
+        return response.data.items.map(({name} : {name: string}) => {
+          return {value: name, label: name.toString()}
+        })
+      }
+    },
+    ops: ['in']
   },
   {
     key: "phone",
     label: "Phone #",
     inputType: 'text',
     dataType: 'string',
-    group: "Customer"
+    group: "Customer",
+    ops: ['like']
   },
   {
     key: "num_orders",
