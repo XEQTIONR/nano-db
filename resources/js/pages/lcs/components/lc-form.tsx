@@ -17,9 +17,9 @@ import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function LetterOfCreditForm ({ initialValue } : { 
+export default function LetterOfCreditForm ({ initialValue, onSubmit } : { 
     initialValue?: LetterOfCredit,
-    // onChange?: (data: LetterOfCredit) => void 
+    onSubmit: (data: LetterOfCredit) => void 
 }) {
 
     const [formData, setFormData] = useState<LetterOfCredit>(() => initialValue ?? {
@@ -41,10 +41,6 @@ export default function LetterOfCreditForm ({ initialValue } : {
     const [errors, setErrors] = useState({})
 
     const sendData = () => {
-        //setFormData(data)
-        // if (onChange) {
-        //     onChange(data)
-        // }
         console.log('sendData:', formData)
         let errs = {...errors}
         if (typeof formData.lc_num != 'string' || formData.lc_num.length === 0) {
@@ -107,6 +103,10 @@ export default function LetterOfCreditForm ({ initialValue } : {
         }
 
         setErrors(errs)
+
+        if (Object.keys(errs).length === 0) {
+            onSubmit(formData)
+        }
     }
 
     return (<>

@@ -103,7 +103,7 @@ export default function Create() {
                     </div>
                     
                 </div>
-                <div className="w-full pt-5 flex">
+                <div className="w-full pt-5 flex gap-4">
                     {
                         current == 0 && (
                             <Card 
@@ -113,8 +113,12 @@ export default function Create() {
                                     !dir && (show ? "-right-0" : "-right-16"), 
                                     dir && (show ? "-left-0" : "-left-16"), )}
                             >
-                                <LetterOfCreditForm initialValue={lcData} />
-                            </Card>)
+                                <LetterOfCreditForm initialValue={lcData} onSubmit={(data) => {
+                                    setLcData(data)
+                                    fn()
+                                }} />
+                            </Card>
+                        )
                     }
                     {
                         current == 1 
@@ -191,6 +195,10 @@ export default function Create() {
                             </CardContent>
                         </Card>)
                     }
+
+                    <Card className="w-1/2">
+                        Something
+                    </Card> 
                 </div>
                 
             </div>
