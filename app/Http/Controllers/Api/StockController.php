@@ -6,6 +6,7 @@ use App\Http\Resources\StockResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\FilterService;
+use Illuminate\Support\Facades\Log;
 
 class StockController extends Controller
 {
@@ -14,6 +15,7 @@ class StockController extends Controller
      */
     public function __invoke(Request $request)
     {
+        Log::info('__invoke');
         $perPage = intval($request->input('perPage') ?? 50);
 
         $sortBy = $request->input('sortBy') ?? 'in_stock';

@@ -19,9 +19,9 @@ import { Label } from "@/components/ui/label"
 import { useState } from 'react';
 import LetterOfCreditForm from './components/lc-form';
 import { LetterOfCredit } from '@/types';
+import StockTable from '@/components/stock-table';
 
-
-export default function Create() {
+export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Create a New Letter of Credit',
@@ -103,7 +103,7 @@ export default function Create() {
                     </div>
                     
                 </div>
-                <div className="w-full pt-5 flex gap-4">
+                <div className="w-full pt-5 flex gap-4 items-start">
                     {
                         current == 0 && (
                             <Card 
@@ -197,7 +197,15 @@ export default function Create() {
                     }
 
                     <Card className="w-1/2">
-                        Something
+                        <CardHeader>
+                            <CardTitle>Current Stock</CardTitle>
+                            <CardDescription>
+                                Products currently available
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <StockTable apiToken={apiToken} />
+                        </CardContent>
                     </Card> 
                 </div>
                 
