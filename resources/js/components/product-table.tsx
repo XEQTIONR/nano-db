@@ -1,0 +1,109 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+import { ChevronLeft, ChevronRight, ChevronFirst, ChevronLast, LoaderCircleIcon } from "lucide-react";
+
+import { Button } from "./ui/button";
+
+import { useEffect, useState } from "react"
+import axios from 'axios';
+import { Tyre } from "@/types";
+
+export default function ProductsTable({ apiToken } : { apiToken: string }) {
+
+
+    const [items, setItems] = useState<Tyre[]>([])
+    const [buttons, setButtons] = useState(null)
+
+    const labels = ['first', 'prev', 'next', 'last']
+    const paginate = (link?: string) => {
+        axios.get(link ?? route('api.tyres.index', {
+            perPage: 20,
+            sortBy: 'tyre_id',
+        }), { headers: { 
+            Authorization: 'Bearer ' + apiToken, 
+            Accept: 'application/json'
+        } })
+            .then((res) => {
+                console.log('api.tyres.index response:', res)
+                setItems(res.data.data)
+                
+                setButtons(res.data.links)
+            })
+            .catch((err) => console.log('api.tyres.index err:', err))
+    }
+    useEffect(() => {
+        paginate()
+    }, [])
+
+    return (
+        <>
+        <Table>
+            {/* <TableCaption>{ apiToken }</TableCaption> */}
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[100px]">ID</TableHead>
+                    <TableHead>Brand</TableHead>
+                    <TableHead>Size</TableHead>
+                    <TableHead>Pattern</TableHead>
+                    <TableHead>Li/Si</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                { items.length === 0 &&
+                <TableRow>
+                    <TableCell colSpan={5}>
+                        
+                            <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} />
+                    </TableCell>
+                </TableRow>
+                }
+            { items.map(({id, brand, size, pattern, lisi}) => (
+                <TableRow>
+                    <TableCell className="font-bold">{id}</TableCell>
+                    <TableCell>{brand}</TableCell>
+                    <TableCell>{size}</TableCell>
+                    <TableCell>{pattern}</TableCell>
+                    <TableCell>{lisi}</TableCell>
+                </TableRow>
+            )) }
+            </TableBody>
+
+        </Table>
+        <div className="w-full flex gap-1 mt-3">
+        {   
+            labels.map(label => {
+                
+                
+            switch(label) {
+                case 'first':
+                    return <Button 
+                        onClick={() => paginate(buttons[label])}
+                        className="cursor-pointer" variant="secondary"><ChevronFirst /></Button>
+                case 'prev':
+                    return <Button 
+                        onClick={() => paginate(buttons[label])}
+                        className="cursor-pointer"  variant="secondary"><ChevronLeft /></Button>
+                case 'next':
+                    return <Button 
+                        onClick={() => paginate(buttons[label])}
+                        className="cursor-pointer"  variant="secondary"><ChevronRight /></Button>
+                case 'last':
+                    return <Button 
+                        onClick={() => paginate(buttons[label])}
+                        className="cursor-pointer"  variant="secondary"><ChevronLast /></Button>
+            }
+            return <Button>{ label }</Button>
+        
+        })
+        }
+        </div>
+        </>
+    )
+}

@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label"
 import { useState } from 'react';
 import LetterOfCreditForm from './components/lc-form';
 import { LetterOfCredit } from '@/types';
-import StockTable from '@/components/stock-table';
+import ProductsTable from '@/components/product-table';
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -195,18 +195,22 @@ export default function Create({apiToken} : {apiToken: string}) {
                             </CardContent>
                         </Card>)
                     }
-
-                    <Card className="w-1/2">
-                        <CardHeader>
-                            <CardTitle>Current Stock</CardTitle>
-                            <CardDescription>
-                                Products currently available
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <StockTable apiToken={apiToken} />
-                        </CardContent>
-                    </Card> 
+                    {
+                        current == 1 && (
+                            <Card className="w-1/2">
+                                <CardHeader>
+                                    <CardTitle>Product Catalog</CardTitle>
+                                    <CardDescription>
+                                        All products
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ProductsTable apiToken={apiToken} />
+                                </CardContent>
+                            </Card>
+                        )
+                    }
+                     
                 </div>
                 
             </div>

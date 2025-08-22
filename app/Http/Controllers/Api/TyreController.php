@@ -8,7 +8,6 @@ use App\Http\Resources\StockResource;
 use App\Http\Resources\TyreResource;
 use App\Services\FilterService;
 
-
 class TyreController extends Controller
 {
     /**
@@ -16,6 +15,8 @@ class TyreController extends Controller
      */
     public function index(Request $request)
     {
+        $accept = $request->header('Accept');
+
         $perPage = intval($request->input('perPage') ?? 50);
 
         $sortBy = $request->input('sortBy') ?? 'in_stock';
@@ -55,11 +56,17 @@ class TyreController extends Controller
             }
         }
 
-        $data = $query->paginate($perPage)->withQueryString();
+        $data =  TyreResource::collection(
+            $query->paginate($perPage)->withQueryString()
+        );
+
+        if ($accept == 'application/json') {
+            return $data;
+        }
 
         return [
             'filters' => $filters,
-            'items' => TyreResource::collection($data),
+            'items' => $data,
             'sortBy' => $sortBy,
             'sortDir' => $sortDir
         ];
