@@ -27,6 +27,7 @@ class LetterOfCreditController extends ApiController
         return Inertia::render('common/index', [
             ...$data,
             'link' => route('lcs.index'),
+            'addLink' => route('lcs.create'),
             'title' => 'Letters of Credit',
             'type' => 'lc',
             'sortBy' => $sortBy,

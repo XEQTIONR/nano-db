@@ -45,7 +45,7 @@ const perPageOptions: number[] = [
 ]
 
 
-export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title, type, filters = [] } : { 
+export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortDir, title, type, filters = [] } : { 
     apiToken? : string
     items: { 
         data: T[], 
@@ -56,6 +56,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
         meta: PaginationMeta
     }
     link: string
+    addLink?: string
     sortBy: string
     sortDir: 'asc' | 'desc'
     title: string
@@ -102,7 +103,7 @@ export default function Index<T>({ apiToken, items, link, sortBy, sortDir, title
     breadcrumbs[0].href = link
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
+        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 

@@ -74,7 +74,7 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     );
 }
 
-export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : { apiToken?: string, filters: FilterType[], filterConfigs: FilterConfigType[] }) {
+export function AppSidebarHeaderControls({ addLink, apiToken, filters, filterConfigs } : { addLink?: string, apiToken?: string, filters: FilterType[], filterConfigs: FilterConfigType[] }) {
 
     const groups = Object.groupBy(filterConfigs, ({ group }) => group )
     console.log('groups:', groups)
@@ -467,14 +467,15 @@ export function AppSidebarHeaderControls({ apiToken, filters, filterConfigs } : 
                     </SheetFooter>
                 </SheetContent>
             </Sheet>
+            { addLink &&
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button className="hover:cursor-pointer" size="icon" variant="ghost"><Plus /></Button>
+                    <Button onClick={() => router.visit(addLink)} className="hover:cursor-pointer" size="icon" variant="ghost"><Plus /></Button>
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Add new</p>
                 </TooltipContent>
-            </Tooltip>
+            </Tooltip>}
         </div>
     )
 }
