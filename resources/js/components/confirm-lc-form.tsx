@@ -50,8 +50,8 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
             </CardAction>
         </CardHeader>
         <CardContent>
-            <form className="flex h-10/12">
-                <div className="w-1/2">
+            <form className="flex flex-wrap h-10/12">
+                <div className="w-full lg:w-1/2">
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Letter of Credit Number</Label>
@@ -115,7 +115,7 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/2">
+                <div className="flex flex-col w-full lg:w-1/2">
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Proforma Invoice Number</Label>

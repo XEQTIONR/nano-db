@@ -13,11 +13,13 @@ import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-h
 // You can use a Zod schema here if you want.
 import { type FilterConfig, type Option } from "@/types"
 import axios from 'axios'
+import { Link } from '@inertiajs/react'
 
 export const columns = [
   {
     accessorKey: "lc_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="lc_num" label="LC #" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="lc_num" label="LC #" config={v} />,
+    cell: ({ row }) => <Link href={route('lcs.show', {lc: row.getValue("lc_num")})}>{row.getValue("lc_num")}</Link>
   },
   {
     accessorKey: "date_issued",

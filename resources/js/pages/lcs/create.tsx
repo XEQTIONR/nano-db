@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { ProformaInvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -21,6 +21,8 @@ import ProductsTable from '@/components/product-table';
 import ProformaInvoiceForm from '@/components/proforma-invoice-form';
 import ConfirmLcForm from '@/components/confirm-lc-form';
 import axios from 'axios';
+
+import { toast } from 'sonner';
 
 
 export default function Create({apiToken} : {apiToken: string}) {
@@ -81,18 +83,32 @@ export default function Create({apiToken} : {apiToken: string}) {
                 ...lcData,
                 date_issued: lcData.date_issued?.toISOString().split("T")[0],
                 date_expiry: lcData.date_expiry?.toISOString().split("T")[0],
-                // exchange_rate: lcData.exchange_rate,
-                // foreign_amount: lcData.foreign_amount,
             },
             items,
         }, {
             headers: {
                 Authorization: 'Bearer ' + apiToken
             }
-        }).then((res) => {
-            console.log('res:', res)
+        }).then(({ status, data }) => {
+            let timerId: NodeJS.Timeout
+            if (status === 201) {
+                toast.success('Letter of credit # ' + data.data.lc_num + ' created', {
+                    action: {
+                        label: 'View',
+                        onClick: () => {
+                            clearTimeout(timerId)
+                            router.visit(route('lcs.show', { lc: data.data.lc_num }))
+                        }
+                    },
+                })
+
+                timerId = setTimeout(() => {
+                    router.visit(route('lcs.show', { lc: data.data.lc_num}))
+                }, 5000)
+            }
         }).catch((err) => {
-            console.log('err:', err)
+            toast.error("Failed to create new letter of credit")
+            console.log(err)
         })
     }
 

@@ -90,10 +90,14 @@ class LetterOfCreditController extends Controller
 
             $lc->items()->saveMany($proformaInvoiceItems);
             DB::commit();
+
+            return new LetterOfCreditResource($lc);
         } catch(Exception $e) {
             Log::info('exception');
             Log::info($e);
             DB::rollBack();
+
+            return;
         }
     }
 
