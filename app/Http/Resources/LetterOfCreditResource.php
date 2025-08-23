@@ -27,6 +27,8 @@ class LetterOfCreditResource extends JsonResource
             'beneficiary' => $this->beneficiary,
             'currency_code' => $this->currency_code,
             'exchange_rate' => $this->exchange_rate,
+            'port_depart' => $this->port_depart,
+            'port_arrive' => $this->port_arrive,
             'foreign_amount' => $this->foreign_amount,
             'local_amount' => $this->local_amount ?? ($this->foreign_amount * $this->exchange_rate),
             'foreign_expense' => $this->foreign_expense,

@@ -53,9 +53,13 @@ class LetterOfCreditController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(LetterOfCredit $lc)
     {
-        //
+        $data = parent::show($lc);
+        //return $data;
+        return Inertia::render('lcs/show', [
+            'letterOfCredit' => $data
+        ]);
     }
 
     /**

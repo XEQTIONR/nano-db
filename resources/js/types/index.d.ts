@@ -98,8 +98,8 @@ export interface LetterOfCredit {
     port_depart: string
     port_arrive: string
     currency_code: string
-    rate: number
-    value: number
+    exchange_rate: number
+    foreign_amount: number
     foreign_expense: number
     domestic_expense: number
     notes: string

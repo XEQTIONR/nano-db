@@ -1,11 +1,7 @@
-import {
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
+import AppLayout from "@/layouts/app-layout"
+import { LetterOfCredit, BreadcrumbItem } from "@/types"
+import { Head } from '@inertiajs/react';
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -16,110 +12,88 @@ import {
   TableCaption
 } from "@/components/ui/table"
 
-import { ChevronRight } from "lucide-react";
-
-import { LetterOfCredit, type ProformaInvoiceItem } from "@/types";
-import { Button } from "./ui/button";
-
-export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
-    lcData: LetterOfCredit,
-    items: ProformaInvoiceItem[],
-    onSubmit?: (data: LetterOfCredit, items: ProformaInvoiceItem[]) => void
+export default function Show({ letterOfCredit } : { 
+    letterOfCredit: {data: LetterOfCredit}
 }) {
-
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: "Letter of Credit # ", //+ letterOfCredit.lc_num,
+            href: "",
+        },
+    ];
     return (
-        <>
-        <CardHeader>
-            <CardTitle>Confirm</CardTitle>
-            <CardDescription>
-                Confirm details about your letter of credit and proforma invoice
-            </CardDescription>
-            <CardAction>
-                <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => {
-                        if (onSubmit) {
-                            onSubmit(lcData, items)
-                        }
-                    }}
-                >
-                    Finish
-                    <ChevronRight />
-                </Button>
-            </CardAction>
-        </CardHeader>
-        <CardContent>
-            <form className="flex h-10/12">
+        letterOfCredit?.data && <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title={breadcrumbs[0].title} />
+            <div className="w-full p-4">
                 <div className="w-1/2">
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Letter of Credit Number</Label>
-                            {lcData.lc_num}
+                            {letterOfCredit.data.lc_num}
                         </div>
                     </div>
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Date Issued</Label>
-                            {lcData.date_issued?.toDateString()}
+                            {letterOfCredit.data.date_issued}
                         </div>
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Date Expired</Label>
-                            {lcData.date_expiry?.toDateString()}
+                            {letterOfCredit.data.date_expiry}
                         </div>
                     </div>
                     <div className="flex flex-col gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Applicant</Label>
-                            {lcData.applicant}
+                            {letterOfCredit.data.applicant}
                         </div>
                     </div>
                     <div className="flex flex-col gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Beneficiary</Label>
-                            {lcData.beneficiary}
+                            {letterOfCredit.data.beneficiary}
                         </div>
                     </div>
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Departing Port</Label>
-                            {lcData.port_depart}
+                            {letterOfCredit.data.port_depart}
                         </div>
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Port of Arrival</Label>
-                            {lcData.port_arrive}
+                            {letterOfCredit.data.port_arrive}
                         </div>
                     </div>
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2 w-1/3">
                             <Label htmlFor="lc_num">Currency</Label>
-                            {lcData.currency_code}
+                            {letterOfCredit.data.currency_code}
                         </div>
                         <div className="grid gap-2 w-1/3">
                             <Label htmlFor="lc_num">Rate</Label>
-                            {lcData.exchange_rate}
+                            {letterOfCredit.data.exchange_rate}
                         </div>
                         <div className="grid gap-2 w-1/3">
                             <Label htmlFor="lc_num">Value</Label>
-                            {lcData.foreign_amount}
+                            {letterOfCredit.data.foreign_amount}
                         </div>
                     </div>
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Foreign Expense</Label>
-                            {lcData.foreign_expense}
+                            {letterOfCredit.data.foreign_expense}
                         </div>
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Domestic Expense</Label>
-                            {lcData.domestic_expense}
+                            {letterOfCredit.data.domestic_expense}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/2">
+                {/* <div className="flex flex-col w-1/2">
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Proforma Invoice Number</Label>
-                            {lcData.invoice_no}
+                            {letterOfCredit.invoice_no}
                         </div>
                     </div>
                     <Table className="">
@@ -153,10 +127,8 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                         }
                         </TableBody>
                     </Table>
-                </div>
-                
-            </form>
-        </CardContent>
-        </>
+                </div> */}
+            </div>
+        </AppLayout> 
     )
 }

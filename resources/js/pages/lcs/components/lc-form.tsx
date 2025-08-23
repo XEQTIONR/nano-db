@@ -31,14 +31,28 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
         port_depart: "",
         port_arrive: "",
         currency_code: "",
-        rate: 0,
-        value: 0,
+        exchange_rate: 0,
+        foreign_amount: 0,
         foreign_expense: 0,
         domestic_expense: 0,
         notes: "",
     })
 
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState<{
+        lc_num?: string,
+        date_issued?: string,
+        date_expiry?: string,
+        applicant?: string,
+        beneficiary?: string,
+        port_depart?: string,
+        port_arrive?: string,
+        currency_code?: string,
+        exchange_rate?: string,
+        foreign_amount?: string,
+        foreign_expense?: string,
+        domestic_expense?: string,
+        notes?: string,
+    }>({})
 
     const sendData = () => {
         console.log('sendData:', formData)
@@ -78,12 +92,12 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
             errs = {...errs, currency_code: "The currency code must be 3 letters long"}
         }
 
-        if (typeof formData.rate != 'number' || formData.rate <= 0) {
-            errs = {...errs, rate: "The exchange rate must be a number greater than 0"}
+        if (typeof formData.exchange_rate != 'number' || formData.exchange_rate <= 0) {
+            errs = {...errs, exchange_rate: "The exchange rate must be a number greater than 0"}
         }
 
-        if (typeof formData.value != 'number' || formData.value <= 0) {
-            errs = {...errs, value: "The LC value must be a number greater than 0"}
+        if (typeof formData.foreign_amount != 'number' || formData.foreign_amount <= 0) {
+            errs = {...errs, foreign_amount: "The LC value must be a number greater than 0"}
         }
 
         if (typeof formData.foreign_expense != 'number') {
@@ -269,53 +283,53 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                 {errors?.currency_code && <InputError message={errors.currency_code} />}
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Label className={cn(errors?.rate && "text-red-400")} htmlFor="exchange_rate">Rate</Label>
+                                <Label className={cn(errors?.exchange_rate && "text-red-400")} htmlFor="exchange_rate">Rate</Label>
                                 <Input
                                     className={cn(
-                                        errors?.rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
+                                        errors?.exchange_rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
                                         "text-right"
                                     )}
                                     onChange={(event) => {
                                         const v = {...errors}
-                                        delete v.rate
+                                        delete v.exchange_rate
                                         setErrors({ ...v })
                                         setFormData({
                                             ...formData,
-                                            rate: (isNaN(parseFloat(event.target.value))) ? 0 : parseFloat(event.target.value)
+                                            exchange_rate: (isNaN(parseFloat(event.target.value))) ? 0 : parseFloat(event.target.value)
                                         })
                                     }}
                                     type="number"
-                                    value={formData.rate}
+                                    value={formData.exchange_rate}
                                     placeholder="0.00"
                                     id="exchange_rate"
                                     required
                                 />
-                                {errors?.rate && <InputError message={errors.rate} />}
+                                {errors?.exchange_rate && <InputError message={errors.exchange_rate} />}
                             </div>
                         </div>
                         <div className="flex flex-col gap-2 w-full md:w-3/6">
-                            <Label className={cn(errors?.value && "text-red-400")} htmlFor="value">Value (foreign currency)</Label>
+                            <Label className={cn(errors?.foreign_amount && "text-red-400")} htmlFor="value">Value (foreign currency)</Label>
                             <Input
                                 className={cn(
-                                    errors?.value && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
+                                    errors?.foreign_amount && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
                                     "text-right"
                                 )}
                                 onChange={(event) => {
                                     const v = {...errors}
-                                    delete v.value
+                                    delete v.foreign_amount
                                     setErrors({ ...v })
                                     setFormData({
                                         ...formData,
-                                        value: (isNaN(parseFloat(event.target.value))) ? 0 : parseFloat(event.target.value)
+                                        foreign_amount: (isNaN(parseFloat(event.target.value))) ? 0 : parseFloat(event.target.value)
                                     })
                                 }}
                                 type="number"
-                                value={formData.value}
+                                value={formData.foreign_amount}
                                 placeholder="0.00"
                                 id="value"
                                 required
                             />
-                            {errors?.value && <InputError message={errors.value} />}
+                            {errors?.foreign_amount && <InputError message={errors.foreign_amount} />}
                         </div>
                     </div>
                     <div className="w-full flex flex-col md:flex-row justify-start gap-5">
@@ -324,7 +338,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                         <div className="grid gap-2 w-full md:w-1/2">
                             <Label htmlFor="local_value">Amount in local currency</Label>
                             <Input
-                                value={formData.rate * formData.value}
+                                value={formData.exchange_rate * formData.foreign_amount}
                                 className="text-right"
                                 disabled={true}
                                 id="local_value"
