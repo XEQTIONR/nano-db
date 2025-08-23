@@ -28,8 +28,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { usePage } from '@inertiajs/react'
 
 import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
+import { toast } from 'sonner';
 
 
 
@@ -63,6 +65,19 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     type: string 
     filters?: Filter[]
 }) {
+    const { notification } = usePage<{ notification : {
+        message: string
+        link: string
+    }}>().props
+
+    if (notification) {
+        toast.success(notification.message, {
+            action: {
+                label: "View",
+                onClick: () => router.visit(notification.link)
+            }
+        })
+    }
     let cols = []
     let filterConfigs: FilterConfig[] = orderFilters
     switch (type) {

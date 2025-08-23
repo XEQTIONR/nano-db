@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\LetterOfCredit;
-use App\Http\Resources\LetterOfCreditResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Controllers\Api\LetterOfCreditController as ApiController;
-
 class LetterOfCreditController extends ApiController
 {
     /**
@@ -15,15 +13,12 @@ class LetterOfCreditController extends ApiController
      */
     public function index(Request $request)
     {
-        $perPage = intval($request->input('perPage') ?? 50);
-
         $sortBy = $request->input('sortBy') ?? 'created_at';
 
         $sortDir = $request->input('sortDir') ?? 'desc';
 
-        
         $data = parent::index($request);
-        
+
         return Inertia::render('common/index', [
             ...$data,
             'link' => route('lcs.index'),
@@ -48,7 +43,17 @@ class LetterOfCreditController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        $lc = parent::store($request);
+
+        if ($lc) {
+            return redirect(route('lcs.index'))
+                ->with('notification', [
+                    'message' => 'Letter of credit # ' . $lc->lc_num . ' created',
+                    'link' => route('lcs.show', [ 'lc' => $lc ])
+                ]);
+        }
+
+        return redirect()->back();
     }
 
     /**

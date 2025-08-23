@@ -53,6 +53,7 @@ class HandleInertiaRequests extends Middleware
             ],
             'apiToken' => fn() => resolve(PersonalAccessToken::class),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'notification' => $request->session()->get('notification')
         ];
     }
 }

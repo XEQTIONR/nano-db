@@ -20,9 +20,6 @@ import { LetterOfCredit } from '@/types';
 import ProductsTable from '@/components/product-table';
 import ProformaInvoiceForm from '@/components/proforma-invoice-form';
 import ConfirmLcForm from '@/components/confirm-lc-form';
-import axios from 'axios';
-
-import { toast } from 'sonner';
 
 
 export default function Create({apiToken} : {apiToken: string}) {
@@ -75,40 +72,17 @@ export default function Create({apiToken} : {apiToken: string}) {
         foreign_expense: 0,
         domestic_expense: 0,
         notes: "",
+        invoice_no: ""
     })
 
     const submit = (lcData: LetterOfCredit, items: ProformaInvoiceItem[]) => {
-        axios.post(route('api.lcs.store'), {
+        router.post(route('lcs.store'), {
             lc: {
                 ...lcData,
                 date_issued: lcData.date_issued?.toISOString().split("T")[0],
                 date_expiry: lcData.date_expiry?.toISOString().split("T")[0],
             },
             items,
-        }, {
-            headers: {
-                Authorization: 'Bearer ' + apiToken
-            }
-        }).then(({ status, data }) => {
-            let timerId: NodeJS.Timeout
-            if (status === 201) {
-                toast.success('Letter of credit # ' + data.data.lc_num + ' created', {
-                    action: {
-                        label: 'View',
-                        onClick: () => {
-                            clearTimeout(timerId)
-                            router.visit(route('lcs.show', { lc: data.data.lc_num }))
-                        }
-                    },
-                })
-
-                timerId = setTimeout(() => {
-                    router.visit(route('lcs.show', { lc: data.data.lc_num}))
-                }, 5000)
-            }
-        }).catch((err) => {
-            toast.error("Failed to create new letter of credit")
-            console.log(err)
         })
     }
 
@@ -136,10 +110,12 @@ export default function Create({apiToken} : {apiToken: string}) {
                         ))
                     }
                     <div className="flex gap-3">
-                        <Button className="cursor-pointer" onClick={() => fn(true)} variant="secondary">
+                        <Button disabled={current == 0} className="cursor-pointer" onClick={() => fn(true)} variant="secondary">
                         <ChevronLeft />
                         </Button>
-                        <Button className="cursor-pointer" onClick={() => fn(false)} variant="secondary">
+                        <Button disabled={current == (steps.length - 1)} className="cursor-pointer" onClick={() => {
+                            fn(false)
+                        }} variant="secondary">
                             <ChevronRight />
                         </Button>
                     </div>
@@ -188,7 +164,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     ...lcData,
                                     invoice_no: invoiceNum
                                 })
-                                setCurrent(2)
+                                fn()
                             }}
                         />
                     </Card>)
