@@ -104,6 +104,7 @@ export interface LetterOfCredit {
     domestic_expense: number
     notes: string
     invoice_no?: string
+    items?: ProformaInvoiceItem[]
 }
 
 export interface Tyre {
@@ -116,5 +117,5 @@ export interface Tyre {
 
 export type ProformaInvoiceItem = Tyre & {
     qty: number,
-    price: number,
+    unit_price: number,
 }

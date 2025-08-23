@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProformaInvoiceItem extends Model
 {
@@ -18,6 +19,10 @@ class ProformaInvoiceItem extends Model
     protected $casts = [
         'lc_num' => 'string'
     ];
+
+    public function tyre(): BelongsTo {
+        return $this->belongsTo(Tyre::class, 'tyre_id', 'tyre_id');
+    }
 
 
 }

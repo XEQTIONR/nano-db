@@ -36,7 +36,7 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
     const [invoiceNum, setInvoiceNum] = useState<string | undefined>(invoiceNumber)
     const [displayItems, setDisplayItems] = useState<{
         qty: string;
-        price: string;
+        unit_price: string;
         id: number;
         brand: string;
         size: string;
@@ -52,7 +52,7 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
 
     const updatePrice = (idx: number, value: string) => {
         const itms = displayItems
-        itms[idx].price = value
+        itms[idx].unit_price = value
         setDisplayItems([...itms])
     }
 
@@ -66,14 +66,14 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
                     return {
                         ...item,
                         qty: displayItems[i].qty,
-                        price: displayItems[i].price
+                        unit_price: displayItems[i].unit_price
                     }
                 }
 
                 return {
                     ...item,
                     qty: item.qty.toString(),
-                    price: item.price.toString()
+                    unit_price: item.unit_price.toString()
                 }
             })
         
@@ -95,11 +95,11 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
                             return {
                                 ...item,
                                 qty: parseInt(item.qty),
-                                price: parseFloat(item.price)
+                                unit_price: parseFloat(item.unit_price)
                             }
                         })
 
-                        if (itms.every(({qty, price}) => qty > 0 && price > 0) && invoiceNum) {
+                        if (itms.every(({qty, unit_price}) => qty > 0 && unit_price > 0) && invoiceNum) {
                             if (onSubmit) {
                                 onSubmit(invoiceNum, itms)
                             }
@@ -142,7 +142,7 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
                     </TableHeader>
                     <TableBody>
                     { 
-                        displayItems.map(({id, brand, size, pattern, lisi, qty, price}, index) => (
+                        displayItems.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
                             <TableRow>
                                 <TableCell className="font-bold">{index + 1}</TableCell>
                                 <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
@@ -156,15 +156,15 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
                                 <TableCell className="text-right">
                                     <Input 
                                         onChange={({target}) => updatePrice(index, target.value)} 
-                                        className={cn("text-right", showErrors && (!(parseFloat(price) > 0)) && "border-red-400")}
-                                        value={price} 
+                                        className={cn("text-right", showErrors && (!(parseFloat(unit_price) > 0)) && "border-red-400")}
+                                        value={unit_price} 
                                     />
                                 </TableCell>
                                 <TableCell className="text-right">
                                     {
-                                        (isNaN(parseFloat(displayItems[index].price)) || isNaN(parseInt(displayItems[index].qty)))
+                                        (isNaN(parseFloat(displayItems[index].unit_price)) || isNaN(parseInt(displayItems[index].qty)))
                                         ? "0.00" 
-                                        :(parseInt(displayItems[index].qty) * parseFloat(displayItems[index].price)).toFixed(2)
+                                        :(parseInt(displayItems[index].qty) * parseFloat(displayItems[index].unit_price)).toFixed(2)
                                     }
                                 </TableCell>
                                 <TableCell>

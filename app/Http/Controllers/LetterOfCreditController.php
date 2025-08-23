@@ -56,7 +56,7 @@ class LetterOfCreditController extends ApiController
     public function show(LetterOfCredit $lc)
     {
         $data = parent::show($lc);
-        //return $data;
+
         return Inertia::render('lcs/show', [
             'letterOfCredit' => $data
         ]);

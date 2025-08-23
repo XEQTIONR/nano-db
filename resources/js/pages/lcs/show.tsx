@@ -89,11 +89,11 @@ export default function Show({ letterOfCredit } : {
                         </div>
                     </div>
                 </div>
-                {/* <div className="flex flex-col w-1/2">
+                <div className="flex flex-col w-1/2">
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Proforma Invoice Number</Label>
-                            {letterOfCredit.invoice_no}
+                            {letterOfCredit.data.invoice_no}
                         </div>
                     </div>
                     <Table className="">
@@ -102,14 +102,14 @@ export default function Show({ letterOfCredit } : {
                             <TableRow>
                                 <TableHead className="">#</TableHead>
                                 <TableHead>Item</TableHead>
-                                <TableHead>Qty</TableHead>
-                                <TableHead>Price</TableHead>
-                                <TableHead>Sub total</TableHead>
+                                <TableHead className="text-center">Qty</TableHead>
+                                <TableHead className="text-right">Price</TableHead>
+                                <TableHead className="text-right">Sub total</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                         { 
-                            items.map(({id, brand, size, pattern, lisi, qty, price}, index) => (
+                            letterOfCredit.data?.items?.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
                                 <TableRow>
                                     <TableCell className="font-bold">{index + 1}</TableCell>
                                     <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
@@ -117,17 +117,17 @@ export default function Show({ letterOfCredit } : {
                                         {qty} 
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {price}
+                                        {unit_price}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {(qty * price).toFixed(2)}
+                                        {(qty * unit_price).toFixed(2)}
                                     </TableCell>
                                 </TableRow>
                             )) 
                         }
                         </TableBody>
                     </Table>
-                </div> */}
+                </div>
             </div>
         </AppLayout> 
     )

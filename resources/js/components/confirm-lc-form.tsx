@@ -135,7 +135,7 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                         </TableHeader>
                         <TableBody>
                         { 
-                            items.map(({id, brand, size, pattern, lisi, qty, price}, index) => (
+                            items.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
                                 <TableRow>
                                     <TableCell className="font-bold">{index + 1}</TableCell>
                                     <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
@@ -143,10 +143,10 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                                         {qty} 
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {price}
+                                        {unit_price}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {(qty * price).toFixed(2)}
+                                        {(qty * unit_price).toFixed(2)}
                                     </TableCell>
                                 </TableRow>
                             )) 
