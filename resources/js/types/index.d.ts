@@ -103,6 +103,7 @@ export interface LetterOfCredit {
     foreign_expense: number
     domestic_expense: number
     notes: string
+    invoice_no?: string
 }
 
 export interface Tyre {

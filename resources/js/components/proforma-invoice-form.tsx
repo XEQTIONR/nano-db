@@ -24,14 +24,16 @@ import { Input } from "./ui/input";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
-export default function ProformaInvoiceTable({items, updateItems = undefined, onSubmit = undefined} : {
+export default function ProformaInvoiceForm({invoiceNumber, items, updateItems = undefined, onSubmit = undefined} : {
+    invoiceNumber?: string,
     items : ProformaInvoiceItem[],
     updateItems?: (items: Tyre[]) => void
-    onSubmit?: (items: ProformaInvoiceItem[]) => void
+    onSubmit?: (invoiceNum: string, items: ProformaInvoiceItem[]) => void
 }) {
 
     const [currentItems, setCurrentItems] = useState<ProformaInvoiceItem[]>(items)
     const [showErrors, setShowErrors] = useState(false)
+    const [invoiceNum, setInvoiceNum] = useState<string | undefined>(invoiceNumber)
     const [displayItems, setDisplayItems] = useState<{
         qty: string;
         price: string;
@@ -78,16 +80,6 @@ export default function ProformaInvoiceTable({items, updateItems = undefined, on
         setDisplayItems([...itms])
     }, [currentItems])
 
-    const sendData = () => {
-        console.log('sendData:', displayItems.map((item => {
-            return {
-                ...item,
-                qty: parseInt(item.qty),
-                price: parseFloat(item.price)
-            }
-        })))
-    }
-
     return (
         <>
         <CardHeader>
@@ -107,9 +99,9 @@ export default function ProformaInvoiceTable({items, updateItems = undefined, on
                             }
                         })
 
-                        if (itms.every(({qty, price}) => qty > 0 && price > 0)) {
+                        if (itms.every(({qty, price}) => qty > 0 && price > 0) && invoiceNum) {
                             if (onSubmit) {
-                                onSubmit(itms)
+                                onSubmit(invoiceNum, itms)
                             }
                         } else {
                             setShowErrors(true)
@@ -128,9 +120,11 @@ export default function ProformaInvoiceTable({items, updateItems = undefined, on
                     <div className="grid gap-2">
                         <Label htmlFor="lc_num">Invoice Number</Label>
                         <Input
+                            onChange={({target}) => setInvoiceNum( target.value == "" ? undefined : target.value )}
                             id="invoice_no"
                             placeholder="Invoice #"
                             required
+                            className={cn(showErrors && !invoiceNum && "border-red-400")}
                         />
                     </div>
                 </div>

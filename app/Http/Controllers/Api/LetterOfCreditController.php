@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 
 use App\Models\LetterOfCredit;
 use App\Http\Resources\LetterOfCreditResource;
+use App\Models\ProformaInvoiceItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\FilterService;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class LetterOfCreditController extends Controller
 {
@@ -66,7 +69,32 @@ class LetterOfCreditController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $lcData = $request->lc;
+        $items = collect($request->items);
+        Log::info('items');
+        Log::info($items);
+        DB::beginTransaction();
+
+        try {
+            $lc = new LetterOfCredit([
+                ...$lcData
+            ]);
+
+            $proformaInvoiceItems = $items->map(fn($item) => (new ProformaInvoiceItem([
+                'tyre_id' => $item['id'],
+                'qty' => $item['qty'],
+                'unit_price' => $item['price'],
+            ])));
+
+            $lc->save();
+
+            $lc->items()->saveMany($proformaInvoiceItems);
+            DB::commit();
+        } catch(Exception $e) {
+            Log::info('exception');
+            Log::info($e);
+            DB::rollBack();
+        }
     }
 
     /**

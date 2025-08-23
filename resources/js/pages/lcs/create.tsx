@@ -8,19 +8,20 @@ import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useEffect, useState } from 'react';
+
+import { useState } from 'react';
 import LetterOfCreditForm from './components/lc-form';
 import { LetterOfCredit } from '@/types';
 import ProductsTable from '@/components/product-table';
-import ProformaInvoiceTable from '@/components/proforma-invoice-table';
+import ProformaInvoiceForm from '@/components/proforma-invoice-form';
+import ConfirmLcForm from '@/components/confirm-lc-form';
+import axios from 'axios';
+
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -34,18 +35,12 @@ export default function Create({apiToken} : {apiToken: string}) {
     const [dir, setDir] = useState(true);
     const [current, setCurrent] = useState(0)
     const [items, setItems] = useState<Tyre[]>([])
-    const [c, setC] = useState<ProformaInvoiceItem[] | null>(null)
     const steps = [
         'Record Information',
         'Add Proforma Invoice',
         'Confirm'
     ]
 
-    // useEffect(() => {
-    //     if (c !== null) {
-    //         setItems([...c])
-    //     }
-    // }, [c])
     const fn = (prev = false) => {
         setDir(prev)
         setShow(false)
@@ -63,6 +58,7 @@ export default function Create({apiToken} : {apiToken: string}) {
         setTimeout(() => setShow(true), 1)
     }
 
+    const [invoiceItems, setInvoiceItems] = useState<ProformaInvoiceItem[] | null>(null)
     const [lcData, setLcData] = useState<LetterOfCredit>({
         lc_num: "",
         date_issued: undefined,
@@ -78,6 +74,27 @@ export default function Create({apiToken} : {apiToken: string}) {
         domestic_expense: 0,
         notes: "",
     })
+
+    const submit = (lcData: LetterOfCredit, items: ProformaInvoiceItem[]) => {
+        axios.post(route('api.lcs.store'), {
+            lc: {
+                ...lcData,
+                date_issued: lcData.date_issued?.toISOString().split("T")[0],
+                date_expiry: lcData.date_expiry?.toISOString().split("T")[0],
+                exchange_rate: lcData.rate,
+                foreign_amount: lcData.value,
+            },
+            items,
+        }, {
+            headers: {
+                Authorization: 'Bearer ' + apiToken
+            }
+        }).then((res) => {
+            console.log('res:', res)
+        }).catch((err) => {
+            console.log('err:', err)
+        })
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -113,123 +130,105 @@ export default function Create({apiToken} : {apiToken: string}) {
                     
                 </div>
                 <div className="w-full pt-5 flex gap-4 items-start">
-                    {
-                        current == 0 && (
-                            <Card 
-                                className={cn(
-                                    "w-full lg:w-1/2 transition-all relative",
-                                    show ? "opacity-100" : "opacity-0",
-                                    !dir && (show ? "-right-0" : "-right-16"), 
-                                    dir && (show ? "-left-0" : "-left-16"), )}
-                            >
-                                <LetterOfCreditForm initialValue={lcData} onSubmit={(data) => {
-                                    setLcData(data)
-                                    fn()
-                                }} />
-                            </Card>
-                        )
-                    }
-                    {
-                        current == 1 
-                        && (<Card 
-                                className={cn(
-                                    "w-1/2 max-w-3xl transition-all relative",
-                                    show ? "opacity-100" : "opacity-0",
-                                    !dir && (show ? "-right-0" : "-right-16"), 
-                                    dir && (show ? "-left-0" : "-left-16"), 
-                                )}
-                    
+                {
+                    current == 0 && (
+                        <Card 
+                            className={cn(
+                                "w-full lg:w-1/2 transition-all relative",
+                                show ? "opacity-100" : "opacity-0",
+                                !dir && (show ? "-right-0" : "-right-16"), 
+                                dir && (show ? "-left-0" : "-left-16"), )}
                         >
-                            
-                                
-                                    <ProformaInvoiceTable 
-                                        items={c ?? items.map(item => {
-                                            return {
-                                                ...item,
-                                                qty: 0,
-                                                price: 0,
-                                            }
-                                        })}
-                                        updateItems={(itms) => setItems(itms)} 
-                                        onSubmit={(items: ProformaInvoiceItem[]) => {
-                                            setC(items)
-                                        }}
-                                    />
-                        </Card>)
-                    }
-                    {
-                        current == 2 
-                        && (<Card className={cn(
-                                    "w-1/2 max-w-3xl transition-all relative",
-                                    show ? "opacity-100" : "opacity-0",
-                                    !dir && (show ? "-right-0" : "-right-16"), 
-                                    dir && (show ? "-left-0" : "-left-16"), 
-                                )}
-                    
-                        >
+                            <LetterOfCreditForm initialValue={lcData} onSubmit={(data) => {
+                                setLcData(data)
+                                fn()
+                            }} />
+                        </Card>
+                    )
+                }
+                {
+                    current == 1 
+                    && (<Card 
+                            className={cn(
+                                "w-1/2 max-w-3xl transition-all relative",
+                                show ? "opacity-100" : "opacity-0",
+                                !dir && (show ? "-right-0" : "-right-16"), 
+                                dir && (show ? "-left-0" : "-left-16"), 
+                            )}
+                    >
+                        <ProformaInvoiceForm
+                            invoiceNumber={lcData.invoice_no} 
+                            items={invoiceItems ?? items.map(item => {
+                                return {
+                                    ...item,
+                                    qty: 0,
+                                    price: 0,
+                                }
+                            })}
+                            updateItems={(itms) => setItems(itms)} 
+                            onSubmit={(invoiceNum: string, items: ProformaInvoiceItem[]) => {
+                                setInvoiceItems(items)
+                                setLcData({
+                                    ...lcData,
+                                    invoice_no: invoiceNum
+                                })
+                                setCurrent(2)
+                            }}
+                        />
+                    </Card>)
+                }
+                {
+                    current == 2 
+                    && (<Card className={cn(
+                                "w-full transition-all relative",
+                                show ? "opacity-100" : "opacity-0",
+                                !dir && (show ? "-right-0" : "-right-16"), 
+                                dir && (show ? "-left-0" : "-left-16"), 
+                            )}
+                
+                    >
+                        <ConfirmLcForm 
+                            lcData={lcData} 
+                            items={invoiceItems ?? []} 
+                            onSubmit={submit}
+                        />
+                    </Card>)
+                }
+                {
+                    current == 1 && (
+                        <Card className="w-1/2">
                             <CardHeader>
-                                <CardTitle>Confirm</CardTitle>
+                                <CardTitle>Product Catalog</CardTitle>
                                 <CardDescription>
-                                    Enter details about your new letter of credit
+                                    All products
                                 </CardDescription>
-                                <CardAction>
-                                    <Button className="hidden" variant="secondary">Next Step
-                                        <ChevronRight />
-                                    </Button>
-                                </CardAction>
                             </CardHeader>
                             <CardContent>
-                                <form>
-                                    <div className="flex flex-col gap-6">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="lc_num">Letter of Credit Number</Label>
-                                            <Input
-                                                id="lc_num"
-                                                placeholder="F20 | Document Credit Number"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>)
-                    }
-                    {
-                        current == 1 && (
-                            <Card className="w-1/2">
-                                <CardHeader>
-                                    <CardTitle>Product Catalog</CardTitle>
-                                    <CardDescription>
-                                        All products
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <ProductsTable 
-                                        apiToken={apiToken}
-                                        addItem={(item) => {
-                                            setItems([
-                                                ...items,
-                                                item
-                                            ])
+                                <ProductsTable 
+                                    apiToken={apiToken}
+                                    addItem={(item) => {
+                                        setItems([
+                                            ...items,
+                                            item
+                                        ])
 
-                                            if (c) {
-                                                setC([
-                                                    ...c,
-                                                    {
-                                                        ...item,
-                                                        qty: 0,
-                                                        price: 0
-                                                    }
-                                                ])
-                                            }
-                                            
-                                        }} 
-                                    />
-                                </CardContent>
-                            </Card>
-                        )
-                    }
-                     
+                                        if (invoiceItems) {
+                                            setInvoiceItems([
+                                                ...invoiceItems,
+                                                {
+                                                    ...item,
+                                                    qty: 0,
+                                                    price: 0
+                                                }
+                                            ])
+                                        }
+                                        
+                                    }} 
+                                />
+                            </CardContent>
+                        </Card>
+                    )
+                }     
                 </div>
                 
             </div>

@@ -24,6 +24,9 @@ Route::name('api.')->middleware('auth:sanctum')->group(function() {
 
     Route::get('/lcs', [LetterOfCreditController::class, 'index'])
         ->name('lcs.index');
+
+    Route::post('/lcs', [LetterOfCreditController::class, 'store'])
+        ->name('lcs.store');
     
     Route::get('/consignments', [ConsignmentController::class, 'index'])
         ->name('consignments.index');
@@ -37,7 +40,8 @@ Route::name('api.')->middleware('auth:sanctum')->group(function() {
     Route::get('/tyres', [TyreController::class, 'index'])
         ->name('tyres.index');
 
-    Route::get('/stock', StockController::class)->name('stock.index');
+    Route::get('/stock', StockController::class)
+        ->name('stock.index');
 });
 
 

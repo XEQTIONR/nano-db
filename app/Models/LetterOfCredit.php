@@ -32,6 +32,7 @@ class LetterOfCredit extends Model
 
      protected function casts() {
         return [
+            'lc_num' => 'string',
             'date_issued' => 'date',
             'date_expiry' => 'date',
             'foreign_amount' => 'float',
@@ -44,6 +45,11 @@ class LetterOfCredit extends Model
      public function consignments()
      {
          return $this->hasMany(Consignment::class, 'lc');   
+     }
+
+     public function items()
+     {
+         return $this->hasMany(ProformaInvoiceItem::class, 'lc_num', 'lc_num');
      }
 
      protected function localAmount(): Attribute
