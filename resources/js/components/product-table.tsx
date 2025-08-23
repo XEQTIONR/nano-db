@@ -15,7 +15,7 @@ import { useEffect, useState } from "react"
 import axios from 'axios';
 import { Tyre } from "@/types";
 
-export default function ProductsTable({ apiToken, addItem = null } : { 
+export default function ProductsTable({ apiToken, addItem = undefined } : { 
     apiToken: string,
     addItem?: (item: Tyre) => void 
 }) {

@@ -162,7 +162,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 return {
                                     ...item,
                                     qty: 0,
-                                    price: 0,
+                                    unit_price: 0,
                                 }
                             })}
                             updateItems={(itms) => setItems(itms)} 
@@ -218,7 +218,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                 {
                                                     ...item,
                                                     qty: 0,
-                                                    price: 0
+                                                    unit_price: 0
                                                 }
                                             ])
                                         }

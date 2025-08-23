@@ -83,7 +83,7 @@ class LetterOfCreditController extends Controller
             $proformaInvoiceItems = $items->map(fn($item) => (new ProformaInvoiceItem([
                 'tyre_id' => $item['id'],
                 'qty' => $item['qty'],
-                'unit_price' => $item['price'],
+                'unit_price' => $item['unit_price'],
             ])));
 
             $lc->save();
