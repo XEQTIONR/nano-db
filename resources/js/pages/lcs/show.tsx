@@ -11,6 +11,15 @@ import {
   TableRow,
   TableCaption
 } from "@/components/ui/table"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Hash } from "lucide-react";
 
 export default function Show({ letterOfCredit } : { 
     letterOfCredit: {data: LetterOfCredit}
@@ -24,8 +33,8 @@ export default function Show({ letterOfCredit } : {
     return (
         letterOfCredit?.data && <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={breadcrumbs[0].title} />
-            <div className="w-full p-4">
-                <div className="w-1/2">
+            <div className="w-full p-4 flex flex-wrap">
+                <div className="w-full lg:w-1/2 p-2">
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Letter of Credit Number</Label>
@@ -89,15 +98,13 @@ export default function Show({ letterOfCredit } : {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/2">
-                    <div className="flex gap-6 mb-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="lc_num">Proforma Invoice Number</Label>
-                            {letterOfCredit.data.invoice_no}
-                        </div>
-                    </div>
-                    <Table className="">
-                        <TableCaption>Confirm the proforma invoice details</TableCaption>
+                <Card className="flex flex-col w-full lg:w-1/2">
+                    <CardHeader>
+                        <CardTitle>Proforma Invoice</CardTitle>
+                        <CardDescription className="flex items-center gap-1"><Hash size={18} /> {letterOfCredit.data.invoice_no}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                    <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="">#</TableHead>
@@ -127,7 +134,8 @@ export default function Show({ letterOfCredit } : {
                         }
                         </TableBody>
                     </Table>
-                </div>
+                    </CardContent>
+                </Card>
             </div>
         </AppLayout> 
     )

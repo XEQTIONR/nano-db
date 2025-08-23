@@ -17,6 +17,7 @@ class LetterOfCreditResource extends JsonResource
     {
         return [
             'lc_num' => $this->lc_num,
+            'invoice_no' => $this->invoice_no,
             'date_issued' => ($this->date_issued instanceof Carbon)
                 ? $this->date_issued->toDateString()
                 :(new Carbon($this->date_issued))->toDateString(),
