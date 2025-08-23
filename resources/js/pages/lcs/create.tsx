@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import { ProformaInvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
@@ -16,10 +16,11 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LetterOfCreditForm from './components/lc-form';
 import { LetterOfCredit } from '@/types';
 import ProductsTable from '@/components/product-table';
+import ProformaInvoiceTable from '@/components/proforma-invoice-table';
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -32,11 +33,19 @@ export default function Create({apiToken} : {apiToken: string}) {
     const [show, setShow] = useState(true);
     const [dir, setDir] = useState(true);
     const [current, setCurrent] = useState(0)
+    const [items, setItems] = useState<Tyre[]>([])
+    const [c, setC] = useState<ProformaInvoiceItem[] | null>(null)
     const steps = [
         'Record Information',
         'Add Proforma Invoice',
         'Confirm'
     ]
+
+    // useEffect(() => {
+    //     if (c !== null) {
+    //         setItems([...c])
+    //     }
+    // }, [c])
     const fn = (prev = false) => {
         setDir(prev)
         setShow(false)
@@ -131,31 +140,21 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 )}
                     
                         >
-                            <CardHeader>
-                                <CardTitle>Proforma Invoice</CardTitle>
-                                <CardDescription>
-                                    Enter details about your new letter of credit
-                                </CardDescription>
-                                <CardAction>
-                                    <Button className="hidden" variant="secondary">Next Step
-                                        <ChevronRight />
-                                    </Button>
-                                </CardAction>
-                            </CardHeader>
-                            <CardContent>
-                                <form>
-                                    <div className="flex flex-col gap-6">
-                                        <div className="grid gap-2">
-                                            <Label htmlFor="lc_num">Letter of Credit Number</Label>
-                                            <Input
-                                                id="lc_num"
-                                                placeholder="F20 | Document Credit Number"
-                                                required
-                                            />
-                                        </div>
-                                    </div>
-                                </form>
-                            </CardContent>
+                            
+                                
+                                    <ProformaInvoiceTable 
+                                        items={c ?? items.map(item => {
+                                            return {
+                                                ...item,
+                                                qty: 0,
+                                                price: 0,
+                                            }
+                                        })}
+                                        updateItems={(itms) => setItems(itms)} 
+                                        onSubmit={(items: ProformaInvoiceItem[]) => {
+                                            setC(items)
+                                        }}
+                                    />
                         </Card>)
                     }
                     {
@@ -205,7 +204,27 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <ProductsTable apiToken={apiToken} />
+                                    <ProductsTable 
+                                        apiToken={apiToken}
+                                        addItem={(item) => {
+                                            setItems([
+                                                ...items,
+                                                item
+                                            ])
+
+                                            if (c) {
+                                                setC([
+                                                    ...c,
+                                                    {
+                                                        ...item,
+                                                        qty: 0,
+                                                        price: 0
+                                                    }
+                                                ])
+                                            }
+                                            
+                                        }} 
+                                    />
                                 </CardContent>
                             </Card>
                         )

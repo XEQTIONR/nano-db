@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { ChevronLeft, ChevronRight, ChevronFirst, ChevronLast, LoaderCircleIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronFirst, ChevronLast, LoaderCircleIcon, RefreshCcw } from "lucide-react";
 
 import { Button } from "./ui/button";
 
@@ -15,11 +15,15 @@ import { useEffect, useState } from "react"
 import axios from 'axios';
 import { Tyre } from "@/types";
 
-export default function ProductsTable({ apiToken } : { apiToken: string }) {
+export default function ProductsTable({ apiToken, addItem = null } : { 
+    apiToken: string,
+    addItem?: (item: Tyre) => void 
+}) {
 
 
     const [items, setItems] = useState<Tyre[]>([])
     const [buttons, setButtons] = useState(null)
+    const [error, setError] = useState(null)
 
     const labels = ['first', 'prev', 'next', 'last']
     const paginate = (link?: string) => {
@@ -31,12 +35,13 @@ export default function ProductsTable({ apiToken } : { apiToken: string }) {
             Accept: 'application/json'
         } })
             .then((res) => {
-                console.log('api.tyres.index response:', res)
                 setItems(res.data.data)
                 
                 setButtons(res.data.links)
             })
-            .catch((err) => console.log('api.tyres.index err:', err))
+            .catch((err) => {
+                setError(err.message)
+            })
     }
     useEffect(() => {
         paginate()
@@ -48,7 +53,7 @@ export default function ProductsTable({ apiToken } : { apiToken: string }) {
             {/* <TableCaption>{ apiToken }</TableCaption> */}
             <TableHeader>
                 <TableRow>
-                    <TableHead className="w-[100px]">ID</TableHead>
+                    <TableHead>ID</TableHead>
                     <TableHead>Brand</TableHead>
                     <TableHead>Size</TableHead>
                     <TableHead>Pattern</TableHead>
@@ -56,26 +61,46 @@ export default function ProductsTable({ apiToken } : { apiToken: string }) {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                { items.length === 0 &&
-                <TableRow>
-                    <TableCell colSpan={5}>
-                        
-                            <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} />
-                    </TableCell>
-                </TableRow>
-                }
-            { items.map(({id, brand, size, pattern, lisi}) => (
-                <TableRow>
-                    <TableCell className="font-bold">{id}</TableCell>
-                    <TableCell>{brand}</TableCell>
-                    <TableCell>{size}</TableCell>
-                    <TableCell>{pattern}</TableCell>
-                    <TableCell>{lisi}</TableCell>
-                </TableRow>
-            )) }
+            {
+                !error && 
+                
+                (
+                    <>
+                        { items.length === 0 &&
+                            <TableRow>
+                                <TableCell colSpan={5}>
+                                    
+                                        <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} />
+                                </TableCell>
+                            </TableRow>
+                        }
+                        { items.map((item) => (
+                            <TableRow onClick={() => {
+                                if (addItem) {
+                                    addItem(item)
+                                }
+                            }}>
+                                <TableCell className="font-bold">{item.id}</TableCell>
+                                <TableCell>{item.brand}</TableCell>
+                                <TableCell>{item.size}</TableCell>
+                                <TableCell>{item.pattern}</TableCell>
+                                <TableCell>{item.lisi}</TableCell>
+                            </TableRow>
+                        )) 
+                        }
+                    </>
+                )
+            }
             </TableBody>
 
         </Table>
+        {error && <div className="w-full my-4 flex flex-col gap-4 items-center">
+            {error}
+            <Button onClick={paginate} variant="secondary">
+                <RefreshCcw />
+                Reload
+            </Button>
+        </div>}
         <div className="w-full flex gap-1 mt-3">
         {   
             labels.map(label => {

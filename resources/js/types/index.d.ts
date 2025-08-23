@@ -112,3 +112,8 @@ export interface Tyre {
     pattern: string;
     lisi: string;
 }
+
+export type ProformaInvoiceItem = Tyre & {
+    qty: number,
+    price: number,
+}
