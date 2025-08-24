@@ -37,7 +37,22 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import { Separator } from '@/components/ui/separator';
 
+
+interface ContainerItemErrors {
+    qty?: string;
+    unit_price?: string;
+    total_tax?: string;
+    total_weight?: string;
+}
+
+type OptionalContainerItemErrors = ContainerItemErrors | undefined
+
+interface ContainerErrors {
+    container_num: string
+    errors: OptionalContainerItemErrors[]
+}
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -70,10 +85,12 @@ export default function Create({apiToken} : {apiToken: string}) {
                 setCurrent((current - 1))
         } else { //
             if (current == 0) {
-                if (validateConsignment(consignment) == 0) {
+                if (validateConsignment() == 0) {
                     console.log('validated consignment')
                     setCurrent(1)
                 }
+            } else if (current == 1) {
+                validateContainers()
             }
         }
         
@@ -103,7 +120,9 @@ export default function Create({apiToken} : {apiToken: string}) {
         land_date?: string
     }>({})
 
-    const validateConsignment = (consignment: Consignment): number => {
+    const [containerErrors, setContainerErrors] = useState<ContainerErrors[]>([])
+
+    const validateConsignment = (): number => {
         let count = 0
         let errors = {...consignmentErrors}
         if (!(consignment.lc.length > 0)) {
@@ -139,10 +158,49 @@ export default function Create({apiToken} : {apiToken: string}) {
         return count
     }
 
+    const validateContainers = () => {
+        const errs: ContainerErrors[] = []
+        containers.forEach(container => {
+            const cErr: ContainerErrors = { 
+                container_num: container, 
+                errors: items
+                    .filter(({container_num}) => container_num == container)
+                    .map((item) => {
+                        const e : OptionalContainerItemErrors = {}
+                        if (typeof item.qty != 'number' || item.qty < 1) {
+                            e.qty = "Quantity must be a number greater than 0"
+                        }
+
+                        if (typeof item.unit_price != 'number' || item.unit_price <= 0) {
+                            e.unit_price = "Price must be greater than 0"
+                        }
+
+                        if (typeof item.total_tax != 'number' || item.total_tax < 0) {
+                            e.total_tax = "Price must be greater than or equal to 0"
+                        }
+
+                        if (typeof item.total_weight != 'number' || item.total_weight < 0) {
+                            e.unit_price = "Price must be greater than or equal to 0"
+                        }
+
+                        if (Object.keys(e).length == 0) {
+                            return undefined
+                        }
+
+                        return e
+                    })
+            
+            }
+            errs.push(cErr) 
+        })
+
+        setContainerErrors(errs)
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Consignments" />
-            <div className="flex flex-col h-full items-start rounded-xl p-4">
+            <div className="flex flex-col h-full md:items-start rounded-xl p-4">
                 <div className="w-full flex gap-10 items-center">
                     {
                         steps.map( (step, index) => (
@@ -174,7 +232,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                     </div>
                     
                 </div>
-                <div className="w-full pt-5 flex gap-4 items-start">
+                <div className="w-full pt-5 flex flex-wrap xl:flex-nowrap gap-4 items-stretch xl:items-start">
                 {
                     current == 0 && (
                         <Card 
@@ -345,7 +403,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                 }
                 {
                     current == 1 
-                    && (<div className="h-full w-1/2 max-w-3xl flex flex-col gap-4">
+                    && (<div className="w-full xl:w-2/3 flex flex-col gap-4">
                         <Card 
                                 className={cn(
                                     "w-full transition-all relative",
@@ -379,6 +437,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         <Input value={containerNum} onChange={({target}) => setContainerNum(target.value)} placeholder="Type Container # and click + button to add a container" />
                                         <Button type="submit" size="icon" variant="outline"><Plus /></Button>
                                     </form>
+                                    <Separator className="mt-4" />
                                     <Collapsible
                                         open={isOpen}
                                         onOpenChange={setIsOpen}
@@ -439,16 +498,16 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         Container # {containers[0]}
                                         </CardTitle>
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="overflow-x-scroll">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
                                                     <TableHead>#</TableHead>
                                                     <TableHead>Item</TableHead>
-                                                    <TableHead>Qty</TableHead>
-                                                    <TableHead>Price</TableHead>
-                                                    <TableHead>Total Tax</TableHead>
-                                                    <TableHead>Total Weight</TableHead>
+                                                    <TableHead className="min-w-28">Qty</TableHead>
+                                                    <TableHead className="min-w-28">Price</TableHead>
+                                                    <TableHead className="min-w-28">Total Tax</TableHead>
+                                                    <TableHead className="min-w-28">Total Weight</TableHead>
                                                     <TableHead></TableHead>
                                                 </TableRow>
                                             </TableHeader>
@@ -544,14 +603,14 @@ export default function Create({apiToken} : {apiToken: string}) {
                 }
                 {
                     current == 1 && (
-                        <Card className="w-1/2">
+                        <Card className="w-full xl:w-1/3">
                             <CardHeader>
                                 <CardTitle>Product Catalog</CardTitle>
                                 <CardDescription>
                                     All products
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="overflow-x-scroll">
                                 <ProductsTable 
                                     apiToken={apiToken}
                                     addItem={(item) => {
