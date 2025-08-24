@@ -51,6 +51,7 @@ type OptionalContainerItemErrors = ContainerItemErrors | undefined
 
 interface ContainerErrors {
     container_num: string
+    isEmptyError?: string
     errors: OptionalContainerItemErrors[]
 }
 export default function Create({apiToken} : {apiToken: string}) {
@@ -71,6 +72,7 @@ export default function Create({apiToken} : {apiToken: string}) {
     ]
 
     const [isOpen, setIsOpen] = useState(false)
+    const [noContainersError, setNoContainersError] = useState<string | undefined>(undefined)
 
     const fn = (prev = false) => {
         console.log('fn')
@@ -90,7 +92,9 @@ export default function Create({apiToken} : {apiToken: string}) {
                     setCurrent(1)
                 }
             } else if (current == 1) {
-                validateContainers()
+                if (validateContainers() == 0) {
+                    setCurrent(2)
+                }
             }
         }
         
@@ -124,6 +128,7 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const validateConsignment = (): number => {
         let count = 0
+        
         let errors = {...consignmentErrors}
         if (!(consignment.lc.length > 0)) {
             errors = {...errors, lc: "An existing letter of credit is required"}
@@ -160,6 +165,15 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const validateContainers = () => {
         const errs: ContainerErrors[] = []
+        let count = 0
+
+        if (containers.length  == 0) {
+            setNoContainersError("Add and fill atleast one container")
+            setContainerErrors([])
+            return 1
+        } else {
+            setNoContainersError(undefined)
+        }
         containers.forEach(container => {
             const cErr: ContainerErrors = { 
                 container_num: container, 
@@ -169,18 +183,22 @@ export default function Create({apiToken} : {apiToken: string}) {
                         const e : OptionalContainerItemErrors = {}
                         if (typeof item.qty != 'number' || item.qty < 1) {
                             e.qty = "Quantity must be a number greater than 0"
+                            count++
                         }
 
                         if (typeof item.unit_price != 'number' || item.unit_price <= 0) {
                             e.unit_price = "Price must be greater than 0"
+                            count++
                         }
 
                         if (typeof item.total_tax != 'number' || item.total_tax < 0) {
                             e.total_tax = "Price must be greater than or equal to 0"
+                            count++
                         }
 
                         if (typeof item.total_weight != 'number' || item.total_weight < 0) {
                             e.unit_price = "Price must be greater than or equal to 0"
+                            count++
                         }
 
                         if (Object.keys(e).length == 0) {
@@ -191,10 +209,17 @@ export default function Create({apiToken} : {apiToken: string}) {
                     })
             
             }
+
+            if (items.filter(({container_num}) => container_num == container).length == 0) {
+                cErr.isEmptyError = "Container # " + container + " is empty"
+                count++
+            }
+
             errs.push(cErr) 
         })
 
         setContainerErrors(errs)
+        return count
     }
 
     return (
@@ -415,7 +440,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <CardHeader>
                                 <CardTitle>Container Information</CardTitle>
                                 <CardDescription>
-                                    Add containers to the consignment
+                                    Add containers to consignment
                                 </CardDescription>
                                 <CardAction>
                                     <Button onClick={() => fn()} variant="secondary">
@@ -432,9 +457,15 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         if (containerNum.length) {
                                             setContainers([containerNum, ...containers])
                                             setContainerNum("")
+                                            setNoContainersError(undefined)
                                         }
                                     }} className="w-full flex gap-4">
-                                        <Input value={containerNum} onChange={({target}) => setContainerNum(target.value)} placeholder="Type Container # and click + button to add a container" />
+                                        <Input
+                                            className={cn(noContainersError && "border-red-400")} 
+                                            value={containerNum} 
+                                            onChange={({target}) => setContainerNum(target.value)} 
+                                            placeholder="Type Container # and click + button to add a container" 
+                                        />
                                         <Button type="submit" size="icon" variant="outline"><Plus /></Button>
                                     </form>
                                     <Separator className="mt-4" />
@@ -455,7 +486,14 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         </div>
                                         {
                                             containers.length > 0 && (<>
-                                                <div onClick={() => setIsOpen(false)} className="rounded-md border px-4 py-2 font-mono text-sm flex justify-between">
+                                                <div 
+                                                    onClick={() => setIsOpen(false)} 
+                                                    className={cn(
+                                                        "rounded-md border px-4 py-2 font-mono text-sm flex justify-between",
+                                                        containerErrors.find(({container_num}) => container_num == containers[0])?.isEmptyError
+                                                            && "border-red-400"
+                                                    )}
+                                                >
                                                     <span># {containers[0]}</span>
                                                     <span>Selected</span>
                                                 </div>
@@ -472,7 +510,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                                             setContainers([selected, ...not])
                                                                             setIsOpen(false)
                                                                         }} 
-                                                                        className="rounded-md border px-4 py-2 font-mono text-sm"
+                                                                        className={cn(
+                                                                            "rounded-md border px-4 py-2 font-mono text-sm",
+                                                                            containerErrors.find(({container_num}) => container_num == item)?.isEmptyError
+                                                                                && "border-red-400"
+                                                                        )}
                                                                     >
                                                                         # {item}
                                                                     </div>
@@ -486,6 +528,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         }
                                         
                                     </Collapsible>
+                                    { noContainersError && <InputError message={noContainersError} />}
+                                    { 
+                                        containerErrors.find(({ isEmptyError }) => isEmptyError !== undefined) &&
+                                        <InputError message={containerErrors.find(({ isEmptyError }) => isEmptyError !== undefined)?.isEmptyError} />
+                                    }
                                 </div>
                             </CardContent>
                         </Card>
@@ -495,8 +542,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>
-                                        Container # {containers[0]}
+                                            Container # {containers[0]}
                                         </CardTitle>
+                                        <CardDescription>
+                                            Add products to container
+                                        </CardDescription>
                                     </CardHeader>
                                     <CardContent className="overflow-x-scroll">
                                         <Table>
@@ -521,7 +571,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                             <TableCell>({item.id}) {item.brand} {item.size} {item.pattern} {item.lisi}</TableCell>
                                                             <TableCell>
                                                                 <Input
-                                                                    type="number" 
+                                                                    type="number"
+                                                                    className={cn(
+                                                                        containerErrors.find((val) => val.container_num == containers[0])?.errors[index]?.qty &&
+                                                                        "border-red-400" 
+                                                                    )}
                                                                     value={item.qty} 
                                                                     onChange={({target}) => {
                                                                         const i = items.findIndex(elem => elem === item)
@@ -534,7 +588,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Input
-                                                                    type="number" 
+                                                                    type="number"
+                                                                    className={cn(
+                                                                        containerErrors.find((val) => val.container_num == containers[0])?.errors[index]?.unit_price &&
+                                                                        "border-red-400" 
+                                                                    )} 
                                                                     value={item.unit_price}
                                                                     onChange={({target}) => {
                                                                         const i = items.findIndex(elem => elem === item)
@@ -546,7 +604,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Input
-                                                                    type="number" 
+                                                                    type="number"
+                                                                    className={cn(
+                                                                        containerErrors.find((val) => val.container_num == containers[0])?.errors[index]?.total_tax &&
+                                                                        "border-red-400" 
+                                                                    )} 
                                                                     value={item.total_tax} 
                                                                     onChange={({target}) => {
                                                                         const i = items.findIndex(elem => elem === item)
@@ -558,7 +620,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Input
-                                                                    type="number" 
+                                                                    type="number"
+                                                                    className={cn(
+                                                                        containerErrors.find((val) => val.container_num == containers[0])?.errors[index]?.total_weight &&
+                                                                        "border-red-400" 
+                                                                    )} 
                                                                     value={item.total_weight} 
                                                                     onChange={({target}) => {
                                                                         const i = items.findIndex(elem => elem === item)
