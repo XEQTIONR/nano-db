@@ -1,10 +1,10 @@
 import axios from 'axios'
 import AppLayout from '@/layouts/app-layout';
-import { Consignment, type BreadcrumbItem } from '@/types';
+import { Consignment, ContainerItem, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronsUpDown, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronsUpDown, ChevronRight, Plus, Trash, X, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
@@ -91,6 +91,9 @@ export default function Create({apiToken} : {apiToken: string}) {
     const [containers, setContainers] = useState<string[]>([])
 
     const [containerNum, setContainerNum] = useState<string>("")
+
+    const [items, setItems] = useState<ContainerItem[]>([])
+    
     const [consignmentErrors, setConsignmentErrors] = useState<{
         lc?: string
         bol?: string
@@ -342,90 +345,189 @@ export default function Create({apiToken} : {apiToken: string}) {
                 }
                 {
                     current == 1 
-                    && (<Card 
-                            className={cn(
-                                "w-1/2 max-w-3xl transition-all relative",
-                                show ? "opacity-100" : "opacity-0",
-                                !dir && (show ? "-right-0" : "-right-16"), 
-                                dir && (show ? "-left-0" : "-left-16"), 
-                            )}
-                    >
-                        <CardHeader>
-                            <CardTitle>Container Information</CardTitle>
-                            <CardDescription>
-                                Add containers to the consignment
-                            </CardDescription>
-                            <CardAction>
-                                <Button onClick={() => fn()} variant="secondary">
-                                    Next Step
-                                    <ChevronRight />
-                                </Button>
-                            </CardAction>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="grid gap-4">
-                                <Label>Container number</Label>
-                                <form onSubmit={(e) => {
-                                    if (containerNum.length) {
+                    && (<div className="h-full w-1/2 max-w-3xl flex flex-col gap-4">
+                        <Card 
+                                className={cn(
+                                    "w-full transition-all relative",
+                                    show ? "opacity-100" : "opacity-0",
+                                    !dir && (show ? "-right-0" : "-right-16"), 
+                                    dir && (show ? "-left-0" : "-left-16"), 
+                                )}
+                        >
+                            <CardHeader>
+                                <CardTitle>Container Information</CardTitle>
+                                <CardDescription>
+                                    Add containers to the consignment
+                                </CardDescription>
+                                <CardAction>
+                                    <Button onClick={() => fn()} variant="secondary">
+                                        Next Step
+                                        <ChevronRight />
+                                    </Button>
+                                </CardAction>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid gap-4">
+                                    <Label>Container number</Label>
+                                    <form onSubmit={(e) => {
                                         e.preventDefault()
-                                        setContainers([containerNum, ...containers])
-                                        setContainerNum("")
-                                    }
-                                }} className="w-full flex gap-4">
-                                    <Input value={containerNum} onChange={({target}) => setContainerNum(target.value)} placeholder="Type Container # and click + button to add a container" />
-                                    <Button type="submit" size="icon" variant="outline"><Plus /></Button>
-                                </form>
-                                <Collapsible
-                                    open={isOpen}
-                                    onOpenChange={setIsOpen}
-                                    className="flex flex-col gap-2"
-                                    >
-                                    <div className="flex items-center justify-between gap-4 px-1">
-                                        <h4 className="text-sm font-semibold">
-                                        {containers.length} containers added
-                                        </h4>
-                                        <CollapsibleTrigger asChild>
-                                        <Button variant="ghost" size="icon" className="size-8">
-                                            <ChevronsUpDown />
-                                        </Button>
-                                        </CollapsibleTrigger>
-                                    </div>
-                                    {
-                                        containers.length > 0 && (<>
-                                            <div onClick={() => setIsOpen(false)} className="rounded-md border px-4 py-2 font-mono text-sm flex justify-between">
-                                                <span># {containers[0]}</span>
-                                                <span>Selected</span>
-                                            </div>
-                                            {
-                                                containers.length > 1 && (
-                                                    <CollapsibleContent className="flex flex-col gap-2">
-                                                        {
-                                                            containers.slice(1).map((item) => (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        const selected = item
-                                                                        const not = containers.filter((val) => item !== val)
+                                        if (containerNum.length) {
+                                            setContainers([containerNum, ...containers])
+                                            setContainerNum("")
+                                        }
+                                    }} className="w-full flex gap-4">
+                                        <Input value={containerNum} onChange={({target}) => setContainerNum(target.value)} placeholder="Type Container # and click + button to add a container" />
+                                        <Button type="submit" size="icon" variant="outline"><Plus /></Button>
+                                    </form>
+                                    <Collapsible
+                                        open={isOpen}
+                                        onOpenChange={setIsOpen}
+                                        className="flex flex-col gap-2"
+                                        >
+                                        <div className="flex items-center justify-between gap-4 px-1">
+                                            <h4 className="text-sm font-semibold">
+                                            {containers.length} containers added
+                                            </h4>
+                                            <CollapsibleTrigger asChild>
+                                            <Button variant="ghost" size="icon" className="size-8">
+                                                <ChevronsUpDown />
+                                            </Button>
+                                            </CollapsibleTrigger>
+                                        </div>
+                                        {
+                                            containers.length > 0 && (<>
+                                                <div onClick={() => setIsOpen(false)} className="rounded-md border px-4 py-2 font-mono text-sm flex justify-between">
+                                                    <span># {containers[0]}</span>
+                                                    <span>Selected</span>
+                                                </div>
+                                                {
+                                                    containers.length > 1 && (
+                                                        <CollapsibleContent className="flex flex-col gap-2">
+                                                            {
+                                                                containers.slice(1).map((item) => (
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            const selected = item
+                                                                            const not = containers.filter((val) => item !== val)
 
-                                                                        setContainers([selected, ...not])
-                                                                        setIsOpen(false)
+                                                                            setContainers([selected, ...not])
+                                                                            setIsOpen(false)
+                                                                        }} 
+                                                                        className="rounded-md border px-4 py-2 font-mono text-sm"
+                                                                    >
+                                                                        # {item}
+                                                                    </div>
+                                                                ))
+                                                            }
+                                                        </CollapsibleContent>
+                                                    )
+                                                }
+                                                
+                                            </>)
+                                        }
+                                        
+                                    </Collapsible>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {
+                            (containers.length > 0) && (
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>
+                                        Container # {containers[0]}
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>#</TableHead>
+                                                    <TableHead>Item</TableHead>
+                                                    <TableHead>Qty</TableHead>
+                                                    <TableHead>Price</TableHead>
+                                                    <TableHead>Total Tax</TableHead>
+                                                    <TableHead>Total Weight</TableHead>
+                                                    <TableHead></TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {
+                                                    items
+                                                        .filter(({container_num}) => container_num == containers[0])
+                                                        .map((item, index) => (
+                                                        <TableRow>
+                                                            <TableCell>{index+1}</TableCell>
+                                                            <TableCell>({item.id}) {item.brand} {item.size} {item.pattern} {item.lisi}</TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    type="number" 
+                                                                    value={item.qty} 
+                                                                    onChange={({target}) => {
+                                                                        const i = items.findIndex(elem => elem === item)
+                                                                        const vals = [...items]
+                                                                        vals[i].qty =  isNaN(parseInt(target.value)) ? 0 : parseInt(target.value)
+                                                                        setItems(vals)
+                                                                    }}
+                                                                />
+
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    type="number" 
+                                                                    value={item.unit_price}
+                                                                    onChange={({target}) => {
+                                                                        const i = items.findIndex(elem => elem === item)
+                                                                        const vals = [...items]
+                                                                        vals[i].unit_price =  isNaN(parseFloat(target.value)) ? 0 : parseFloat(target.value)
+                                                                        setItems(vals)
                                                                     }} 
-                                                                    className="rounded-md border px-4 py-2 font-mono text-sm"
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    type="number" 
+                                                                    value={item.total_tax} 
+                                                                    onChange={({target}) => {
+                                                                        const i = items.findIndex(elem => elem === item)
+                                                                        const vals = [...items]
+                                                                        vals[i].total_tax =  isNaN(parseFloat(target.value)) ? 0 : parseFloat(target.value)
+                                                                        setItems(vals)
+                                                                    }}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    type="number" 
+                                                                    value={item.total_weight} 
+                                                                    onChange={({target}) => {
+                                                                        const i = items.findIndex(elem => elem === item)
+                                                                        const vals = [...items]
+                                                                        vals[i].total_weight =  isNaN(parseFloat(target.value)) ? 0 : parseFloat(target.value)
+                                                                        setItems(vals)
+                                                                    }}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Button
+                                                                    size="icon"
+                                                                    variant="ghost"
+                                                                    onClick={() => setItems(items.filter((i) => i !== item))}
                                                                 >
-                                                                    # {item}
-                                                                </div>
-                                                            ))
-                                                        }
-                                                    </CollapsibleContent>
-                                                )
-                                            }
-                                            
-                                        </>)
-                                    }
-                                    
-                                </Collapsible>
-                            </div>
-                        </CardContent>
-                    </Card>)
+                                                                    <X />
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </CardContent>
+                                </Card>
+                            )
+                        }
+                    </div>)
                 }
                 {
                     current == 2 
@@ -451,7 +553,22 @@ export default function Create({apiToken} : {apiToken: string}) {
                             </CardHeader>
                             <CardContent>
                                 <ProductsTable 
-                                    apiToken={apiToken} 
+                                    apiToken={apiToken}
+                                    addItem={(item) => {
+                                        if(containers.length > 0)
+                                        setItems([
+                                            ...items,
+                                            {
+                                                ...item, 
+                                                qty: 0, 
+                                                unit_price: 0, 
+                                                total_tax: 0, 
+                                                total_weight: 0,
+                                                container_num: containers[0],
+                                                bol: consignment.bol
+                                            }
+                                        ])
+                                    }} 
                                 />
                             </CardContent>
                         </Card>
