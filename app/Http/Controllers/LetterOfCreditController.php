@@ -49,7 +49,9 @@ class LetterOfCreditController extends ApiController
             return redirect(route('lcs.index'))
                 ->with('notification', [
                     'message' => 'Letter of credit # ' . $lc->lc_num . ' created',
-                    'link' => route('lcs.show', [ 'lc' => $lc ])
+                    'link' => route('lcs.show', [ 'lc' => $lc ]),
+                    'selected_value' => $lc->lc_num,
+                    'selected_key' => 'lc_num'
                 ]);
         }
 

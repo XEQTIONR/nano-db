@@ -2,6 +2,8 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  RowSelectionState,
+  TableOptions,
 } from "@tanstack/react-table"
 
 import {
@@ -24,6 +26,8 @@ export function DataTable<TData, TValue>({
   meta,
   sortBy,
   sortDir,
+  primaryKey,
+  selectedValue,
 }: DataTableProps<TData, TValue>) {
 
   const [sorting, setSorting] = useState<SortingState>(() => {
@@ -39,21 +43,30 @@ export function DataTable<TData, TValue>({
     return []
   })
 
-  
-
-  const table = useReactTable({
+  const options : TableOptions<TData> = {
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     manualSorting: true,
     rowCount: meta.total,
+    //getRowId: 
     state: {
       sorting
     }
+  }
 
-  })
-  console.log('sorting: ', sorting)
+  if (primaryKey) {
+    options.getRowId = (row) => row[primaryKey]
+    if (selectedValue) {
+      const obj: RowSelectionState = {}
+      obj[selectedValue] = true
+      options.state.rowSelection = obj
+    }
+  }
+
+  const table = useReactTable(options)
+
   return (
     <div className="overflow-y-scroll max-h-[83vh] rounded-md border">
       <Table>

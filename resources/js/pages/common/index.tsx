@@ -32,6 +32,7 @@ import { usePage } from '@inertiajs/react'
 
 import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
 import { toast } from 'sonner';
+import { useEffect, useState } from 'react';
 
 
 
@@ -68,16 +69,32 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     const { notification } = usePage<{ notification : {
         message: string
         link: string
+        selected_key?: string
+        selected_value?: string
     }}>().props
 
-    if (notification) {
-        toast.success(notification.message, {
-            action: {
-                label: "View",
-                onClick: () => router.visit(notification.link)
-            }
-        })
-    }
+    useEffect(() => {
+        if (notification) {
+            toast.success(notification.message, {
+                action: {
+                    label: "View",
+                    onClick: () => router.visit(notification.link)
+                }
+            })
+        }
+    }, [notification])
+    
+    const [selectedVal, setSelectedVal] = useState<string|number|undefined>(notification?.selected_value)
+    const [selectedKey, setSelectedKey] = useState<string|undefined>(notification?.selected_key)
+
+    useEffect(() => {
+        if (selectedVal && selectedKey) {
+            setTimeout(() => {
+                setSelectedKey(undefined)
+                setSelectedVal(undefined)
+            }, 5000)
+        }
+    }, [selectedVal, selectedKey])
     let cols = []
     let filterConfigs: FilterConfig[] = orderFilters
     switch (type) {
@@ -122,7 +139,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                 
-                <DataTable columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
+                <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
 
                 <div className="flex justify-between w-full">
                     <div className="shrink-0 text-sm flex items-center gap-7">

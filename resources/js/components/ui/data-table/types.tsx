@@ -8,4 +8,6 @@ export interface DataTableProps<TData, TValue> {
   meta: {total: number}
   sortBy?: string
   sortDir?: "asc" | "desc"
+  primaryKey?: string
+  selectedValue?: string | number
 }
