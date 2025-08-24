@@ -42,4 +42,9 @@ class ConsignmentController extends ApiController
         )
         ;  
     }
+
+    public function create()
+    {
+        return Inertia::render('consignments/create');
+    }
 }

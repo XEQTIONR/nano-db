@@ -29,6 +29,7 @@ export function Combobox({
   options = [], 
   type = "single",
   value = undefined,
+  boxWidthClass = "w-[19.7rem]"
 } : {
   dataType?: "string" | "float" | "int" 
   debounceTimeOut?: number,
@@ -37,6 +38,7 @@ export function Combobox({
   options?: Option[], 
   type?: "single" | "multiple", 
   value?: StrOrNum | StrOrNum[],
+  boxWidthClass?: string
 }) {
   const [open, setOpen] = useState<boolean>(false)
   const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
@@ -74,7 +76,7 @@ export function Combobox({
           {
             type == "single"
                 ? (localValue
-                    ? selectedOptions.find((item) => item.value === localValue)?.label
+                    ? localOptions.find((item) => item.value == localValue)?.label
                     : "Select option ...")
                 : ((Array.isArray(localValue) && localValue.length > 0)
                     ? localValue.map((v: StrOrNum) => selectedOptions.find((option) => option.value == v)?.label ?? v.toString())
@@ -87,7 +89,7 @@ export function Combobox({
         </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="grow p-0  w-[19.7rem]">
+      <PopoverContent align="end" className={"grow p-0 " + boxWidthClass}>
         <Command shouldFilter={false}>
           <CommandInput 
             onValueChange={(str: string) => debounced(str)} 

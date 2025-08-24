@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tyres', [TyreController::class, 'index'])->name('tyres.index');
 
     Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
+    Route::get('/consignments/create', [ConsignmentController::class, 'create'])->name('consignments.create');
     
     Route::get('/containers', [ContainerController::class, 'index'])->name('containers.index');
 

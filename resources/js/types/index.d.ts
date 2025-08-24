@@ -107,17 +107,26 @@ export interface LetterOfCredit {
     items?: ProformaInvoiceItem[]
 }
 
+export interface Consignment {
+    lc: string
+    bol: string
+    value: number
+    exchange_rate: number
+    tax: number
+    land_date?: Date
+}
+
 export interface Tyre {
-    id: number;
-    brand: string;
-    size: string;
-    pattern: string;
-    lisi: string;
+    id: number
+    brand: string
+    size: string
+    pattern: string
+    lisi: string
 }
 
 export type ProformaInvoiceItem = Tyre & {
-    qty: number,
-    unit_price: number,
+    qty: number
+    unit_price: number
 }
 
 export interface LetterOfCreditFormErrors {
