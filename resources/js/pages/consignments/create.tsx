@@ -4,7 +4,7 @@ import { Consignment, ContainerItem, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronsUpDown, ChevronRight, Plus, Trash, X, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronsUpDown, ChevronRight, Plus, X, Check, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
@@ -220,6 +220,12 @@ export default function Create({apiToken} : {apiToken: string}) {
 
         setContainerErrors(errs)
         return count
+    }
+
+    const deleteContainer = (containerNum : string) => {
+        setContainers(containers.filter((container) => container !== containerNum ))
+        setItems(items.filter(({container_num}) => container_num !== containerNum))
+        setContainerErrors(containerErrors.filter(({container_num}) => container_num !== containerNum))
     }
 
     return (
@@ -489,13 +495,24 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                 <div 
                                                     onClick={() => setIsOpen(false)} 
                                                     className={cn(
-                                                        "rounded-md border px-4 py-2 font-mono text-sm flex justify-between",
-                                                        containerErrors.find(({container_num}) => container_num == containers[0])?.isEmptyError
-                                                            && "border-red-400"
+                                                        "rounded-md border px-4 py-2 font-mono text-sm flex items-center justify-between",
                                                     )}
                                                 >
                                                     <span># {containers[0]}</span>
-                                                    <span>Selected</span>
+                                                    <div className="flex gap-4 items-center">
+                                                        <Check className="mt-[0.5px]" size={16} />
+                                                        
+                                                        { containerErrors.find(({container_num}) => container_num == containers[0])?.isEmptyError
+                                                            && <TriangleAlert className="stroke-red-400 ml-2" size={16} />
+                                                        }
+                                                        <Button className="cursor-pointer" onClick={(e) => {
+                                                            e.stopPropagation()
+                                                            deleteContainer(containers[0])
+                                                        }} size="icon" variant="ghost">
+                                                            <X />
+                                                        </Button>
+                                                        
+                                                    </div>
                                                 </div>
                                                 {
                                                     containers.length > 1 && (
@@ -510,13 +527,19 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                                             setContainers([selected, ...not])
                                                                             setIsOpen(false)
                                                                         }} 
-                                                                        className={cn(
-                                                                            "rounded-md border px-4 py-2 font-mono text-sm",
-                                                                            containerErrors.find(({container_num}) => container_num == item)?.isEmptyError
-                                                                                && "border-red-400"
-                                                                        )}
+                                                                        className="rounded-md border px-4 py-2 font-mono text-sm  flex items-center justify-between"
                                                                     >
-                                                                        # {item}
+                                                                        <span># {item}</span>
+                                                                        <div className="flex gap-4 items-center">
+                                                                            { containerErrors.find(({container_num}) => container_num == item)?.isEmptyError
+                                                                                && <TriangleAlert className="stroke-red-400" size={16} />}
+                                                                            <Button className="cursor-pointer" onClick={(e) => {
+                                                                                e.stopPropagation()
+                                                                                deleteContainer(item)
+                                                                            }} size="icon" variant="ghost">
+                                                                                <X />
+                                                                            </Button>
+                                                                        </div>
                                                                     </div>
                                                                 ))
                                                             }
@@ -566,7 +589,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                     items
                                                         .filter(({container_num}) => container_num == containers[0])
                                                         .map((item, index) => (
-                                                        <TableRow>
+                                                        <TableRow className="hover:bg-transparent">
                                                             <TableCell>{index+1}</TableCell>
                                                             <TableCell>({item.id}) {item.brand} {item.size} {item.pattern} {item.lisi}</TableCell>
                                                             <TableCell>
@@ -636,6 +659,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Button
+                                                                    className="cursor-pointer"
                                                                     size="icon"
                                                                     variant="ghost"
                                                                     onClick={() => setItems(items.filter((i) => i !== item))}
