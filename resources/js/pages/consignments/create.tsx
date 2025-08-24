@@ -4,7 +4,7 @@ import { Consignment, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronsUpDown, ChevronRight, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
@@ -19,11 +19,24 @@ import { Combobox } from '@/components/ui/combobox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label'
 
-import { use, useState } from 'react';
+import { useState } from 'react';
 import ProductsTable from '@/components/product-table';
 import { InputCalendar } from '@/components/ui/input-calendar';
 import InputError from '@/components/input-error';
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+  TableCaption
+} from "@/components/ui/table"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -35,12 +48,14 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const [show, setShow] = useState(true);
     const [dir, setDir] = useState(true);
-    const [current, setCurrent] = useState(0)
+    const [current, setCurrent] = useState(1)
     const steps = [
         'Add consignment details',
         'Add Containers',
         'Confirm'
     ]
+
+    const [isOpen, setIsOpen] = useState(false)
 
     const fn = (prev = false) => {
         console.log('fn')
@@ -73,6 +88,9 @@ export default function Create({apiToken} : {apiToken: string}) {
         tax: 0,
     })
 
+    const [containers, setContainers] = useState<string[]>([])
+
+    const [containerNum, setContainerNum] = useState<string>("")
     const [consignmentErrors, setConsignmentErrors] = useState<{
         lc?: string
         bol?: string
@@ -332,19 +350,94 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 dir && (show ? "-left-0" : "-left-16"), 
                             )}
                     >
-                        Add Containers a
+                        <CardHeader>
+                            <CardTitle>Container Information</CardTitle>
+                            <CardDescription>
+                                Add containers to the consignment
+                            </CardDescription>
+                            <CardAction>
+                                <Button onClick={() => fn()} variant="secondary">
+                                    Next Step
+                                    <ChevronRight />
+                                </Button>
+                            </CardAction>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid gap-4">
+                                <Label>Container number</Label>
+                                <form onSubmit={(e) => {
+                                    if (containerNum.length) {
+                                        e.preventDefault()
+                                        setContainers([containerNum, ...containers])
+                                        setContainerNum("")
+                                    }
+                                }} className="w-full flex gap-4">
+                                    <Input value={containerNum} onChange={({target}) => setContainerNum(target.value)} placeholder="Type Container # and click + button to add a container" />
+                                    <Button type="submit" size="icon" variant="outline"><Plus /></Button>
+                                </form>
+                                <Collapsible
+                                    open={isOpen}
+                                    onOpenChange={setIsOpen}
+                                    className="flex flex-col gap-2"
+                                    >
+                                    <div className="flex items-center justify-between gap-4 px-1">
+                                        <h4 className="text-sm font-semibold">
+                                        {containers.length} containers added
+                                        </h4>
+                                        <CollapsibleTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="size-8">
+                                            <ChevronsUpDown />
+                                        </Button>
+                                        </CollapsibleTrigger>
+                                    </div>
+                                    {
+                                        containers.length > 0 && (<>
+                                            <div onClick={() => setIsOpen(false)} className="rounded-md border px-4 py-2 font-mono text-sm flex justify-between">
+                                                <span># {containers[0]}</span>
+                                                <span>Selected</span>
+                                            </div>
+                                            {
+                                                containers.length > 1 && (
+                                                    <CollapsibleContent className="flex flex-col gap-2">
+                                                        {
+                                                            containers.slice(1).map((item) => (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        const selected = item
+                                                                        const not = containers.filter((val) => item !== val)
+
+                                                                        setContainers([selected, ...not])
+                                                                        setIsOpen(false)
+                                                                    }} 
+                                                                    className="rounded-md border px-4 py-2 font-mono text-sm"
+                                                                >
+                                                                    # {item}
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </CollapsibleContent>
+                                                )
+                                            }
+                                            
+                                        </>)
+                                    }
+                                    
+                                </Collapsible>
+                            </div>
+                        </CardContent>
                     </Card>)
                 }
                 {
                     current == 2 
                     && (<Card className={cn(
-                                "w-full transition-all relative",
+                                "w-full transition-all relative flex flex-col",
                                 show ? "opacity-100" : "opacity-0",
                                 !dir && (show ? "-right-0" : "-right-16"), 
                                 dir && (show ? "-left-0" : "-left-16"), 
                             )}
                 
                     >
+                        
                     </Card>)
                 }
                 {
