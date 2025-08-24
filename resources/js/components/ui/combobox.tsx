@@ -21,7 +21,8 @@ import {
 import { type StrOrNum, Option } from "@/types"
 
 
-export function Combobox({ 
+export function Combobox({
+  className = "", 
   dataType = "string",
   debounceTimeOut = 300, 
   getOptions = undefined,
@@ -31,6 +32,7 @@ export function Combobox({
   value = undefined,
   boxWidthClass = "w-[19.7rem]"
 } : {
+  className?: string
   dataType?: "string" | "float" | "int" 
   debounceTimeOut?: number,
   getOptions?: (search: string) => Promise<Option[]>,
@@ -66,7 +68,7 @@ export function Combobox({
     <Popover open={open} onOpenChange={(isOpen) => {
             setOpen(isOpen)
     }}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger className={className} asChild>
         <Button
           variant="outline"
           role="combobox"

@@ -19,9 +19,10 @@ import { Combobox } from '@/components/ui/combobox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label'
 
-import { useState } from 'react';
+import { use, useState } from 'react';
 import ProductsTable from '@/components/product-table';
 import { InputCalendar } from '@/components/ui/input-calendar';
+import InputError from '@/components/input-error';
 
 
 export default function Create({apiToken} : {apiToken: string}) {
@@ -42,17 +43,23 @@ export default function Create({apiToken} : {apiToken: string}) {
     ]
 
     const fn = (prev = false) => {
+        console.log('fn')
         setDir(prev)
         setShow(false)
-        setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
+        //setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
         
         if (prev) {
             if ((current - 1) < 0)
                 setCurrent(steps.length - 1)
             else
                 setCurrent((current - 1))
-        } else {
-            setCurrent((current+1) % steps.length)
+        } else { //
+            if (current == 0) {
+                if (validateConsignment(consignment) == 0) {
+                    console.log('validated consignment')
+                    setCurrent(1)
+                }
+            }
         }
         
         setTimeout(() => setShow(true), 1)
@@ -65,6 +72,51 @@ export default function Create({apiToken} : {apiToken: string}) {
         exchange_rate: 0,
         tax: 0,
     })
+
+    const [consignmentErrors, setConsignmentErrors] = useState<{
+        lc?: string
+        bol?: string
+        value?: string
+        exchange_rate?: string
+        tax?: string
+        land_date?: string
+    }>({})
+
+    const validateConsignment = (consignment: Consignment): number => {
+        let count = 0
+        let errors = {...consignmentErrors}
+        if (!(consignment.lc.length > 0)) {
+            errors = {...errors, lc: "An existing letter of credit is required"}
+            count++
+        }
+
+        if (!(consignment.bol.length > 0)) {
+            errors ={...errors, bol: "The bill of lading number is required"}
+            count++
+        }
+
+        if (!(consignment.value > 0)) {
+            errors ={...errors, value: "The consignment value must be greater than 0"}
+            count++
+        }
+
+        if (!(consignment.exchange_rate > 0)) {
+            errors ={...errors, exchange_rate: "The exchange rate must be greater than 0"}
+            count++
+        }
+
+        if (!(consignment.tax >= 0)) {
+            errors ={...errors, tax: "The tax value must be greater than or equal to 0"}
+            count++
+        }
+
+        if (!(consignment.land_date instanceof Date)) {
+            errors ={...errors, land_date: "The land date is required"}
+            count++
+        }
+        setConsignmentErrors(errors)
+        return count
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -117,7 +169,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     Enter details about your new consignment
                                 </CardDescription>
                                 <CardAction>
-                                    <Button variant="secondary">
+                                    <Button onClick={() => fn()} variant="secondary">
                                         Next Step
                                         <ChevronRight />
                                     </Button>
@@ -134,6 +186,9 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                 Select Letter of credit
                                             </Label>
                                             <Combobox
+                                                className={cn(
+                                                    consignmentErrors?.lc && "border-red-400 dark:border-red-400",
+                                                )}
                                                 value={consignment?.lc}
                                                 boxWidthClass="w-full sm:w-sm md:w-md lg:w-lg xl:w-2xl"
                                                 getOptions={async(search: string) => {
@@ -146,24 +201,38 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                         return {value: lc_num, label: lc_num}
                                                     })
                                                 }}
-                                                onSelect={(val) => setConsignment({
-                                                    ...consignment,
-                                                    lc: val.toString()
-                                                })} 
+                                                onSelect={(val) => {
+                                                    const e = {...consignmentErrors}
+                                                    delete e.lc
+                                                    setConsignmentErrors(e)
+                                                    setConsignment({
+                                                        ...consignment,
+                                                        lc: val.toString()
+                                                    })
+                                                }} 
                                             />
-                                            {/* {errors?.lc_num && <InputError message={errors.lc_num} />} */}
+                                            {consignmentErrors?.lc && <InputError message={consignmentErrors.lc} />}
                                         </div>
                                     </div>
                                     <div className="flex gap-6">
                                         <div className="flex w-full flex-col gap-2">
                                             <Label htmlFor="exchange_rate">Bill of Lading Number</Label>
                                             <Input
-                                                onChange={({target}) => setConsignment({ ...consignment, bol: target.value})}
+                                                className={cn(
+                                                    consignmentErrors?.bol && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
+                                                )}
+                                                onChange={({target}) => {
+                                                    const e = {...consignmentErrors}
+                                                    delete e.bol
+                                                    setConsignmentErrors(e)
+                                                    setConsignment({ ...consignment, bol: target.value})
+                                                }}
                                                 value={consignment.bol}
                                                 placeholder="Bill of Lading #"
                                                 id="bol"
                                                 required
                                             />
+                                            {consignmentErrors?.bol && <InputError message={consignmentErrors.bol} />}
                                         </div>
                                     </div>
                                     <div className="flex justify-start flex-wrap">
@@ -171,33 +240,43 @@ export default function Create({apiToken} : {apiToken: string}) {
                                             <Label htmlFor="exchange_rate">Rate</Label>
                                             <Input
                                                 className={cn(
-                                                    // errors?.exchange_rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
+                                                    consignmentErrors?.exchange_rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
                                                     "text-right"
                                                 )}
-                                                onChange={({target}) => setConsignment({ ...consignment, exchange_rate: parseFloat(target.value) ?? 0})}
+                                                onChange={({target}) => {
+                                                    const e = {...consignmentErrors}
+                                                    delete e.exchange_rate
+                                                    setConsignmentErrors(e)
+                                                    setConsignment({ ...consignment, exchange_rate: parseFloat(target.value) ?? 0})
+                                                }}
                                                 type="number"
                                                 value={consignment.exchange_rate}
                                                 placeholder="0.00"
                                                 id="exchange_rate"
                                                 required
                                             />
-                                            {/* {errors?.exchange_rate && <InputError message={errors.exchange_rate} />} */}
+                                            {consignmentErrors?.exchange_rate && <InputError message={consignmentErrors.exchange_rate} />}
                                         </div>
                                         <div className="flex flex-col gap-2 w-full md:w-1/2 md:pl-3 pb-6">
                                             <Label htmlFor="exchange_rate">Value</Label>
                                             <Input
                                                 className={cn(
-                                                    // errors?.exchange_rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
+                                                    consignmentErrors?.value && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
                                                     "text-right"
                                                 )}
-                                                onChange={({target}) => setConsignment({ ...consignment, value: parseFloat(target.value) ?? 0})}
+                                                onChange={({target}) => {
+                                                    const e = {...consignmentErrors}
+                                                    delete e.value
+                                                    setConsignmentErrors(e)
+                                                    setConsignment({ ...consignment, value: parseFloat(target.value) ?? 0})
+                                                }}
                                                 type="number"
                                                 value={consignment.value}
                                                 placeholder="0.00"
                                                 id="value"
                                                 required
                                             />
-                                            {/* {errors?.exchange_rate && <InputError message={errors.exchange_rate} />} */}
+                                            {consignmentErrors?.value && <InputError message={consignmentErrors.value} />}
                                         </div>
                                         <div className="flex flex-col gap-2 w-full md:w-1/2 md:pr-3 pb-6">
                                             <Label htmlFor="exchange_rate">Total Tax Paid</Label>
@@ -206,39 +285,40 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                     // errors?.exchange_rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
                                                     "text-right"
                                                 )}
-                                                onChange={({target}) => setConsignment({ ...consignment, tax: parseFloat(target.value) ?? 0})}
+                                                onChange={({target}) => {
+                                                    const e = {...consignmentErrors}
+                                                    delete e.tax
+                                                    setConsignmentErrors(e)
+                                                    setConsignment({ ...consignment, tax: parseFloat(target.value) ?? 0})
+                                                }}
                                                 type="number"
                                                 value={consignment.tax}
                                                 placeholder="0.00"
                                                 id="tax"
                                                 required
                                             />
-                                            {/* {errors?.exchange_rate && <InputError message={errors.exchange_rate} />} */}
+                                            {consignmentErrors?.tax && <InputError message={consignmentErrors.tax} />}
                                         </div>
                                         <div className="flex flex-col gap-2 w-full md:w-1/2 md:pl-3 pb-6">
                                             <Label htmlFor="land_date">Issue Date</Label>
                                             <InputCalendar
-                                                // className={cn(errors?.date_issued && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
+                                                className={cn(consignmentErrors?.land_date && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                                 // date={formData.date_issued}
-                                                onChange={(date) => setConsignment({...consignment, land_date: date})}
+                                                onChange={(date) => {
+                                                    const e = {...consignmentErrors}
+                                                    delete e.land_date
+                                                    setConsignmentErrors(e)
+                                                    setConsignment({...consignment, land_date: date})
+                                                }}
                                                 date={consignment?.land_date}
                                                 id="land_date"
                                                 placeholder="Date landed"
                                             />
-                                            {/* {errors?.date_issued && <InputError message={errors.date_issued} />} */}
+                                            {consignmentErrors?.land_date && <InputError message={consignmentErrors.land_date} />}
                                         </div>
                                     </div>
                                 </form>
                             </CardContent>
-
-
-
-
-
-
-
-
-
                         </Card>
                     )
                 }

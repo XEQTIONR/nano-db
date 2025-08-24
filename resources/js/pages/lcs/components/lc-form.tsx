@@ -130,7 +130,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
             <form>
                 <div className="flex flex-col gap-6">
                     <div className="grid gap-2">
-                        <Label className={cn(errors?.lc_num && "text-red-400")} htmlFor="lc_num">Letter of Credit Number</Label>
+                        <Label htmlFor="lc_num">Letter of Credit Number</Label>
                         <Input
                             className={cn(errors?.lc_num && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             onChange={(event) => {
@@ -151,7 +151,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                     </div>
                     <div className="flex flex-col md:flex-row justify-between w-full gap-5">
                         <div className="flex flex-col gap-2 md:w-1/2">
-                            <Label className={cn(errors?.date_issued && "text-red-400")} htmlFor="date_issued">Issue Date</Label>
+                            <Label htmlFor="date_issued">Issue Date</Label>
                             <InputCalendar
                                 className={cn(errors?.date_issued && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 date={formData.date_issued}
@@ -171,7 +171,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                         </div>
                     
                         <div className="flex flex-col gap-2 md:w-1/2">
-                            <Label className={cn(errors?.date_expiry && "text-red-400")} htmlFor="date_expiry">Expiry Date</Label>
+                            <Label htmlFor="date_expiry">Expiry Date</Label>
                             <InputCalendar
                                 className={cn(errors?.date_expiry && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 date={formData.date_expiry}
@@ -191,7 +191,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label className={cn(errors?.applicant && "text-red-400")} htmlFor="applicant">Applicant</Label>
+                        <Label htmlFor="applicant">Applicant</Label>
                         <Textarea
                             className={cn(errors?.applicant && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             value={formData.applicant} 
@@ -210,7 +210,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                         {errors?.applicant && <InputError message={errors.applicant} />}
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label className={cn(errors?.beneficiary && "text-red-400")} htmlFor="beneficiary">Beneficiary</Label>
+                        <Label htmlFor="beneficiary">Beneficiary</Label>
                         <Textarea
                             className={cn(errors?.beneficiary && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             onChange={(event) => {
@@ -231,7 +231,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                     <Separator />
                     <div className="flex flex-col md:flex-row justify-start w-full gap-5">
                         <div className="grid gap-2 w-full md:w-1/2">
-                            <Label className={cn(errors?.port_depart && "text-red-400")} htmlFor="port_depart">Departing port</Label>
+                            <Label htmlFor="port_depart">Departing port</Label>
                             <Input
                                 className={cn(errors?.port_depart && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 onChange={(event) => {
@@ -251,7 +251,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                             {errors?.port_depart && <InputError message={errors.port_depart} />}
                         </div>
                         <div className="grid gap-2 w-full md:w-1/2">
-                            <Label className={cn(errors?.port_arrive && "text-red-400")} htmlFor="port_arrive">Arriving port</Label>
+                            <Label htmlFor="port_arrive">Arriving port</Label>
                             <Input
                                 className={cn(errors?.port_arrive && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 onChange={(event) => {
@@ -274,7 +274,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                     <div className="flex flex-col md:flex-row justify-start w-full gap-5">
                         <div className="flex flex-col md:flex-row gap-5 w-full md:w-3/6">
                             <div className="flex flex-col gap-2">
-                                <Label className={cn(errors?.currency_code && "text-red-400")} htmlFor="currency_code">Currency Code</Label>
+                                <Label htmlFor="currency_code">Currency Code</Label>
                                 <Input
                                     className={cn(errors?.currency_code && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                     onChange={(event) => {
@@ -294,7 +294,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                                 {errors?.currency_code && <InputError message={errors.currency_code} />}
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Label className={cn(errors?.exchange_rate && "text-red-400")} htmlFor="exchange_rate">Rate</Label>
+                                <Label htmlFor="exchange_rate">Rate</Label>
                                 <Input
                                     className={cn(
                                         errors?.exchange_rate && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
@@ -322,7 +322,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                             </div>
                         </div>
                         <div className="flex flex-col gap-2 w-full md:w-3/6">
-                            <Label className={cn(errors?.foreign_amount && "text-red-400")} htmlFor="value">Value (foreign currency)</Label>
+                            <Label htmlFor="value">Value (foreign currency)</Label>
                             <Input
                                 className={cn(
                                     errors?.foreign_amount && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
@@ -365,7 +365,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                     </div>
                     <div className="flex justify-between w-full gap-5">
                         <div className="flex flex-col gap-2 w-1/2">
-                            <Label className={cn(errors?.foreign_expense && "text-red-400")} htmlFor="foreign_expense">Foreign Expenses Paid</Label>
+                            <Label htmlFor="foreign_expense">Foreign Expenses Paid</Label>
                             <Input
                                 className={cn(
                                     errors?.foreign_expense && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
@@ -391,7 +391,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                             {errors?.foreign_expense && <InputError message={errors.foreign_expense} />}
                         </div>
                         <div className="flex flex-col gap-2 w-1/2">
-                            <Label className={cn(errors?.domestic_expense && "text-red-400")} htmlFor="domestic_expense">Domestic Expenses Paid</Label>
+                            <Label htmlFor="domestic_expense">Domestic Expenses Paid</Label>
                             <Input
                                 className={cn(
                                     errors?.domestic_expense && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50",
@@ -418,7 +418,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <Label className={cn(errors?.notes && "text-red-400")} htmlFor="notes">Notes</Label>
+                        <Label htmlFor="notes">Notes</Label>
                         <Textarea
                             className={cn(errors?.notes && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             onChange={(event) => {
