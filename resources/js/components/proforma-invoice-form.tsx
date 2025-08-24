@@ -24,11 +24,12 @@ import { Input } from "./ui/input";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
-export default function ProformaInvoiceForm({invoiceNumber, items, updateItems = undefined, onSubmit = undefined} : {
+export default function ProformaInvoiceForm({invoiceNumber, items, updateItems = undefined, onSubmit = undefined, onDirty} : {
     invoiceNumber?: string,
     items : ProformaInvoiceItem[],
     updateItems?: (items: Tyre[]) => void
     onSubmit?: (invoiceNum: string, items: ProformaInvoiceItem[]) => void
+    onDirty: () => void
 }) {
 
     const [currentItems, setCurrentItems] = useState<ProformaInvoiceItem[]>(items)
@@ -45,20 +46,32 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
     }[]>([])
 
     const updateQty = (idx: number, value: string) => {
+        if(onDirty) {
+            onDirty()
+        }
         const itms = displayItems
         itms[idx].qty = value
         setDisplayItems([...itms])
     }
 
     const updatePrice = (idx: number, value: string) => {
+        if(onDirty) {
+            onDirty()
+        }
         const itms = displayItems
         itms[idx].unit_price = value
         setDisplayItems([...itms])
     }
 
     useEffect(() => {
-        setCurrentItems([...items])
+        setCurrentItems(items)
     }, [items])
+
+    useEffect(() => {
+        if( currentItems !== items && onDirty) {
+            onDirty()
+        }
+    }, [items, currentItems, onDirty])
 
     useEffect(() => {
         const itms = currentItems.map((item, i) => {
@@ -120,7 +133,13 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
                     <div className="grid gap-2">
                         <Label htmlFor="lc_num">Invoice Number</Label>
                         <Input
-                            onChange={({target}) => setInvoiceNum( target.value == "" ? undefined : target.value )}
+                            value={invoiceNum}
+                            onChange={({target}) => {
+                                if (onDirty) {
+                                    onDirty()
+                                }
+                                setInvoiceNum( target.value == "" ? undefined : target.value )
+                            }}
                             id="invoice_no"
                             placeholder="Invoice #"
                             required

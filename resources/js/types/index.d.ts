@@ -119,3 +119,19 @@ export type ProformaInvoiceItem = Tyre & {
     qty: number,
     unit_price: number,
 }
+
+export interface LetterOfCreditFormErrors {
+    lc_num?: string,
+    date_issued?: string,
+    date_expiry?: string,
+    applicant?: string,
+    beneficiary?: string,
+    port_depart?: string,
+    port_arrive?: string,
+    currency_code?: string,
+    exchange_rate?: string,
+    foreign_amount?: string,
+    foreign_expense?: string,
+    domestic_expense?: string,
+    notes?: string,
+}

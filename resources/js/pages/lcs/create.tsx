@@ -75,6 +75,9 @@ export default function Create({apiToken} : {apiToken: string}) {
         invoice_no: ""
     })
 
+    const [lcDirty, setLcDirty] = useState(false)
+    const [invoiceDirty, setInvoiceDirty] = useState(false)
+
     const submit = (lcData: LetterOfCredit, items: ProformaInvoiceItem[]) => {
         router.post(route('lcs.store'), {
             lc: {
@@ -113,7 +116,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                         <Button disabled={current == 0} className="cursor-pointer" onClick={() => fn(true)} variant="secondary">
                         <ChevronLeft />
                         </Button>
-                        <Button disabled={current == (steps.length - 1)} className="cursor-pointer" onClick={() => {
+                        <Button disabled={
+                            current == (steps.length - 1)
+                            || (current == 0 && (lcData.lc_num.length == 0 || lcDirty))
+                            || (current == 1 && (lcData.invoice_no?.length == 0 || invoiceDirty))
+                        } className="cursor-pointer" onClick={() => {
                             fn(false)
                         }} variant="secondary">
                             <ChevronRight />
@@ -131,10 +138,15 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 !dir && (show ? "-right-0" : "-right-16"), 
                                 dir && (show ? "-left-0" : "-left-16"), )}
                         >
-                            <LetterOfCreditForm initialValue={lcData} onSubmit={(data) => {
-                                setLcData(data)
-                                fn()
-                            }} />
+                            <LetterOfCreditForm 
+                                initialValue={lcData} 
+                                onSubmit={(data) => {
+                                    setLcDirty(false)
+                                    setLcData(data)
+                                    fn()
+                                }}
+                                onDirty={() => setLcDirty(true)} 
+                                />
                         </Card>
                     )
                 }
@@ -159,6 +171,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                             })}
                             updateItems={(itms) => setItems(itms)} 
                             onSubmit={(invoiceNum: string, items: ProformaInvoiceItem[]) => {
+                                setInvoiceDirty(false)
                                 setInvoiceItems(items)
                                 setLcData({
                                     ...lcData,
@@ -166,6 +179,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 })
                                 fn()
                             }}
+
+                            onDirty={() => setInvoiceDirty(true)}
                         />
                     </Card>)
                 }

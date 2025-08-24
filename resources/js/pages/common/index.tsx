@@ -92,7 +92,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             setTimeout(() => {
                 setSelectedKey(undefined)
                 setSelectedVal(undefined)
-            }, 5000)
+            }, 20000)
         }
     }, [selectedVal, selectedKey])
     let cols = []

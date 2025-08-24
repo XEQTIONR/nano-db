@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from '@/components/ui/separator';
 import { useState } from 'react';
-import { LetterOfCredit } from '@/types';
+import { LetterOfCredit, LetterOfCreditFormErrors } from '@/types';
 import InputError from '@/components/input-error';
 import {
   CardAction,
@@ -17,9 +17,10 @@ import { Button } from "@/components/ui/button"
 import { ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function LetterOfCreditForm ({ initialValue, onSubmit } : { 
+export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } : { 
     initialValue?: LetterOfCredit,
-    onSubmit: (data: LetterOfCredit) => void 
+    onSubmit: (data: LetterOfCredit) => void,
+    onDirty: () => void, 
 }) {
 
     const [formData, setFormData] = useState<LetterOfCredit>(() => initialValue ?? {
@@ -38,21 +39,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
         notes: "",
     })
 
-    const [errors, setErrors] = useState<{
-        lc_num?: string,
-        date_issued?: string,
-        date_expiry?: string,
-        applicant?: string,
-        beneficiary?: string,
-        port_depart?: string,
-        port_arrive?: string,
-        currency_code?: string,
-        exchange_rate?: string,
-        foreign_amount?: string,
-        foreign_expense?: string,
-        domestic_expense?: string,
-        notes?: string,
-    }>({})
+    const [errors, setErrors] = useState<LetterOfCreditFormErrors>({})
 
     const sendData = () => {
         console.log('sendData:', formData)
@@ -147,6 +134,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                         <Input
                             className={cn(errors?.lc_num && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             onChange={(event) => {
+                                if (onDirty) {
+                                    onDirty()
+                                }
                                 const v = {...errors}
                                 delete v.lc_num
                                 setErrors({ ...v })
@@ -166,6 +156,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                 className={cn(errors?.date_issued && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 date={formData.date_issued}
                                 onChange={(date) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.date_issued
                                     setErrors({ ...v })
@@ -183,6 +176,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                 className={cn(errors?.date_expiry && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 date={formData.date_expiry}
                                 onChange={(date) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.date_expiry
                                     setErrors({ ...v })
@@ -200,6 +196,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                             className={cn(errors?.applicant && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             value={formData.applicant} 
                             onChange={(event) => {
+                                if (onDirty) {
+                                    onDirty()
+                                }
                                 const v = {...errors}
                                 delete v.applicant
                                 setErrors({ ...v })
@@ -215,6 +214,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                         <Textarea
                             className={cn(errors?.beneficiary && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                             onChange={(event) => {
+                                if (onDirty) {
+                                    onDirty()
+                                }
                                 const v = {...errors}
                                 delete v.beneficiary
                                 setErrors({ ...v })
@@ -233,6 +235,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                             <Input
                                 className={cn(errors?.port_depart && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 onChange={(event) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.port_depart
                                     setErrors({ ...v })
@@ -250,6 +255,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                             <Input
                                 className={cn(errors?.port_arrive && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                 onChange={(event) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.port_arrive
                                     setErrors({ ...v })
@@ -270,6 +278,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                 <Input
                                     className={cn(errors?.currency_code && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
                                     onChange={(event) => {
+                                        if (onDirty) {
+                                            onDirty()
+                                        }
                                         const v = {...errors}
                                         delete v.currency_code
                                         setErrors({ ...v })
@@ -290,6 +301,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                         "text-right"
                                     )}
                                     onChange={(event) => {
+                                        if (onDirty) {
+                                            onDirty()
+                                        }
                                         const v = {...errors}
                                         delete v.exchange_rate
                                         setErrors({ ...v })
@@ -315,6 +329,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                     "text-right"
                                 )}
                                 onChange={(event) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.foreign_amount
                                     setErrors({ ...v })
@@ -355,6 +372,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                     "text-right"
                                 )}
                                 onChange={(event) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.foreign_expense
                                     setErrors({ ...v })
@@ -378,6 +398,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                                     "text-right"
                                 )}
                                 onChange={(event) => {
+                                    if (onDirty) {
+                                        onDirty()
+                                    }
                                     const v = {...errors}
                                     delete v.domestic_expense
                                     setErrors({ ...v })
@@ -398,10 +421,15 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit } : {
                         <Label className={cn(errors?.notes && "text-red-400")} htmlFor="notes">Notes</Label>
                         <Textarea
                             className={cn(errors?.notes && "border-red-400 focus-visible:border-red-400 focus-visible:ring-red-400/50")}
-                            onChange={(event) => setFormData({
-                                ...formData,
-                                notes: event.target.value
-                            })} 
+                            onChange={(event) => {
+                                if (onDirty) {
+                                    onDirty()
+                                }
+                                setFormData({
+                                    ...formData,
+                                    notes: event.target.value
+                                })
+                            }} 
                             value={formData.notes} 
                             id="notes" 
                         />
