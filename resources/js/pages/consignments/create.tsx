@@ -93,15 +93,18 @@ export default function Create({apiToken} : {apiToken: string}) {
             else
                 setCurrent((current - 1))
         } else { //
-            if (current == 0) {
-                if (validateConsignment() == 0) {
-                    console.log('validated consignment')
-                    setCurrent(1)
-                }
-            } else if (current == 1) {
-                if (validateContainers() == 0) {
-                    setCurrent(2)
-                }
+            switch(current) {
+                case 0:
+                    if (validateConsignment() == 0) {
+                        setCurrent(1)
+                    }
+                break
+
+                case 1:
+                    if (validateContainers() == 0) {
+                        setCurrent(2)
+                    }
+                break
             }
         }
         
@@ -697,6 +700,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <CardHeader>
                                 <CardTitle>Confirm</CardTitle>
                                 <CardDescription>Confirm new consignment information</CardDescription>
+                                <CardAction>
+                                    <Button variant="secondary">
+                                        Create
+                                    </Button>
+                                </CardAction>
                             </CardHeader>
                             <CardContent className="flex">
                                 <div className="w-full flex flex-col gap-6">
@@ -749,7 +757,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                             <CarouselItem className=""  key={container}>
                                                 <Card className="w-full">
                                                     <CardHeader>
-                                                        <CardTitle>Container # {container}</CardTitle>
+                                                        <CardTitle>Container <span className="font-mono">#{container}</span></CardTitle>
                                                     </CardHeader>
                                                     <CardContent className="flex items-center justify-center p-6">
                                                         <Table>
@@ -758,10 +766,10 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                                     <TableHead className="font-mono font-bold">#</TableHead>
                                                                     <TableHead className="font-mono font-bold max-w-[30%]">Item</TableHead>
                                                                     <TableHead className="font-mono font-bold">Qty</TableHead>
-                                                                    <TableHead className="font-mono font-bold text-right">Price</TableHead>
-                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell text-right">Subtotal</TableHead>
-                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell text-right">Tax</TableHead>
-                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell text-right">Weight</TableHead>
+                                                                    <TableHead className="font-mono font-bold">Price</TableHead>
+                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell">Subtotal</TableHead>
+                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell">Tax</TableHead>
+                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell">Weight</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
