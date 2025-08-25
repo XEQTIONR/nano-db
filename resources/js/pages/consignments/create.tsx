@@ -1,6 +1,13 @@
 import axios from 'axios'
 import AppLayout from '@/layouts/app-layout';
 import { Consignment, ContainerItem, type BreadcrumbItem } from '@/types';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 import { Head } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
@@ -64,7 +71,7 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const [show, setShow] = useState(true);
     const [dir, setDir] = useState(true);
-    const [current, setCurrent] = useState(1)
+    const [current, setCurrent] = useState(0)
     const steps = [
         'Add consignment details',
         'Add Containers',
@@ -680,16 +687,141 @@ export default function Create({apiToken} : {apiToken: string}) {
                 }
                 {
                     current == 2 
-                    && (<Card className={cn(
-                                "w-full transition-all relative flex flex-col",
-                                show ? "opacity-100" : "opacity-0",
-                                !dir && (show ? "-right-0" : "-right-16"), 
-                                dir && (show ? "-left-0" : "-left-16"), 
-                            )}
-                
-                    >
-                        
-                    </Card>)
+                    && (<div className="w-full flex flex-col gap-4">
+                        <Card className={cn(
+                            "w-full transition-all relative flex shrink grow-0",
+                            show ? "opacity-100" : "opacity-0",
+                            !dir && (show ? "-right-0" : "-right-16"), 
+                            dir && (show ? "-left-0" : "-left-16"), 
+                        )}>
+                            <CardHeader>
+                                <CardTitle>Confirm</CardTitle>
+                                <CardDescription>Confirm new consignment information</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex">
+                                <div className="w-full flex flex-col gap-6">
+                                    <div className="flex w-full">
+                                        <div className="flex flex-col gap-2 w-1/2 pr-6">
+                                            <Label>Letter of credit #</Label>
+                                            <span className="font-mono font-light text-sm">{consignment.lc}</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2 w-1/2">
+                                            <Label>Bill of lading #</Label>
+                                            <span className="font-mono font-light text-sm">{consignment.bol}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        <div className="flex flex-col gap-2 w-1/2 pr-6">
+                                            <Label>Exchange rate</Label>
+                                            <span className="font-mono font-light text-sm">{consignment.exchange_rate.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2 w-1/2 pr-6">
+                                            <Label>Total value</Label>
+                                            <span className="font-mono font-light text-sm">{consignment.value.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex">
+                                        <div className="flex flex-col w-1/2 gap-2">
+                                            <Label>Total tax paid</Label>
+                                            <span className="font-mono font-light text-sm">{consignment.tax}</span>
+                                        </div>
+                                        <div className="flex flex-col gap-2 w-1/2 pr-6">
+                                            <Label>Total Value (taka)</Label>
+                                            <span className="font-mono font-light text-sm">{(consignment.exchange_rate * consignment.value).toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-2">
+                                        <Label>Landed on</Label>
+                                        <span className="font-mono font-light text-sm">{consignment.land_date?.toDateString()}</span>
+                                    </div>
+                                </div>
+                            </CardContent>   
+                        </Card>
+                        <Card className="w-full">
+                            <CardHeader>
+                                <CardTitle>Containers</CardTitle>
+                                <CardDescription>Confirm container details</CardDescription>
+                            </CardHeader>
+                            <CardContent className=" flex justify-center">
+                                    <Carousel className="w-[90%] min-h-80 flex justify-center items-center">
+                                        <CarouselContent className="flex items-stretch">
+                                            { containers.map((container)=> (
+                                            <CarouselItem className=""  key={container}>
+                                                <Card className="w-full">
+                                                    <CardHeader>
+                                                        <CardTitle>Container # {container}</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent className="flex items-center justify-center p-6">
+                                                        <Table>
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHead className="font-mono font-bold">#</TableHead>
+                                                                    <TableHead className="font-mono font-bold max-w-[30%]">Item</TableHead>
+                                                                    <TableHead className="font-mono font-bold">Qty</TableHead>
+                                                                    <TableHead className="font-mono font-bold text-right">Price</TableHead>
+                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell text-right">Subtotal</TableHead>
+                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell text-right">Tax</TableHead>
+                                                                    <TableHead className="font-mono font-bold hidden lg:table-cell text-right">Weight</TableHead>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+
+                                                                {
+                                                                    items.filter(({container_num}) => container_num == container)
+                                                                        .map(({
+                                                                            id, brand, size, pattern, lisi, qty, unit_price, total_tax, total_weight
+                                                                        }, idx) =>
+                                                                    (<TableRow>
+                                                                        <TableCell className="text-center font-mono">{idx + 1}</TableCell>
+                                                                        <TableCell className="font-mono max-w-[30%]"> ({id}) {brand} <span className="hidden md:inline">{size} {pattern} {lisi}</span></TableCell>
+                                                                        <TableCell className="text-center font-mono">{qty}</TableCell>
+                                                                        <TableCell className="text-right font-mono">{unit_price.toFixed(2)}</TableCell>
+                                                                        <TableCell className="text-right font-mono hidden lg:table-cell">{(qty *unit_price).toFixed(2)}</TableCell>
+                                                                        <TableCell className="text-right font-mono hidden lg:table-cell">{total_tax.toFixed(2)}</TableCell>
+                                                                        <TableCell className="text-right font-mono hidden lg:table-cell">{total_weight.toFixed(2)}</TableCell>
+                                                                    </TableRow>))
+                                                                }
+                                                                <TableRow>
+                                                                    <TableCell></TableCell>
+                                                                    <TableCell className="font-mono font-bold max-w-[30%]">Total</TableCell>
+                                                                    <TableCell className="text-center font-mono font-bold">{
+                                                                            items
+                                                                                .filter(({container_num}) => container_num == container)
+                                                                                .reduce((prev, cur) => prev + cur.qty, 0)
+                                                                    }</TableCell>
+                                                                    <TableCell></TableCell>
+                                                                    <TableCell className="text-right font-mono font-bold hidden lg:table-cell">{
+                                                                            items
+                                                                                .filter(({container_num}) => container_num == container)
+                                                                                .reduce((prev, cur) => prev + (cur.qty * cur.unit_price), 0)
+                                                                                .toFixed(2)
+                                                                    }</TableCell>
+                                                                    <TableCell className="text-right font-mono font-bold hidden lg:table-cell">{
+                                                                            items
+                                                                                .filter(({container_num}) => container_num == container)
+                                                                                .reduce((prev, cur) => prev + cur.total_tax, 0)
+                                                                                .toFixed(2)
+                                                                    }</TableCell>
+                                                                    <TableCell className="text-right font-mono font-bold hidden lg:table-cell">{
+                                                                            items
+                                                                                .filter(({container_num}) => container_num == container)
+                                                                                .reduce((prev, cur) => prev + cur.total_weight, 0)
+                                                                                .toFixed(2)
+                                                                    }</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </CardContent>
+                                                </Card>
+                                            </CarouselItem>
+                                            ))}
+                                        </CarouselContent>
+                                        <CarouselPrevious />
+                                        <CarouselNext />
+                                    </Carousel>
+                                </CardContent>
+                        </Card>
+                    </div>)
                 }
                 {
                     current == 1 && (
