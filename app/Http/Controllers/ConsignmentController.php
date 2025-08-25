@@ -37,6 +37,7 @@ class ConsignmentController extends ApiController
             'link' => route('consignments.index'),
             'title' => 'Consignments',
             'type' => 'consignment',
+            'addLink' => route('consignments.create'),
             'sortBy' => $sortBy,
             'sortDir' => $sortDir,
         ]);  
@@ -85,6 +86,12 @@ class ConsignmentController extends ApiController
             $container->contents()->saveMany($contents);
         });
 
-        return redirect(route('consignments.index'));
+        return redirect(route('consignments.index'))
+            ->with('notification', [
+                'message' => 'New Consignment ' . $consignment->BOL . ' created',
+                'link' => route('consignments.show', ['consignment' => $consignment]),
+                'selected_value' => $consignment->BOL,
+                'selected_key' => 'bol'
+            ]);
     }
 }
