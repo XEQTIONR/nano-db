@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Container extends Model
 {
@@ -15,11 +16,17 @@ class Container extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'BOL'
+        'BOL',
+        'Container_num'
     ];
 
     public function consignment(): BelongsTo
     {
         return $this->belongsTo(Consignment::class, 'BOL');
+    }
+
+    public function contents(): HasMany
+    {
+        return $this->hasMany(ContainerContent::class, 'Container_num');
     }
 }

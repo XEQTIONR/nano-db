@@ -9,7 +9,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
 use App\Http\Resources\StockResource;
-use App\Models\ContainerContent;
 use App\Models\Order;
 use App\Models\OrderContent;
 use App\Models\Payment;
@@ -36,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
     Route::get('/consignments/create', [ConsignmentController::class, 'create'])->name('consignments.create');
+    Route::post('/consignments', [ConsignmentController::class, 'store'])->name('consignments.store');
     
     Route::get('/containers', [ContainerController::class, 'index'])->name('containers.index');
 

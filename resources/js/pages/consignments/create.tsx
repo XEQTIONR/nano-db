@@ -61,6 +61,9 @@ interface ContainerErrors {
     isEmptyError?: string
     errors: OptionalContainerItemErrors[]
 }
+
+import { router } from '@inertiajs/react';
+
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -80,7 +83,7 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const [isOpen, setIsOpen] = useState(false)
     const [noContainersError, setNoContainersError] = useState<string | undefined>(undefined)
-
+    
     const fn = (prev = false) => {
         console.log('fn')
         setDir(prev)
@@ -236,6 +239,12 @@ export default function Create({apiToken} : {apiToken: string}) {
         setContainers(containers.filter((container) => container !== containerNum ))
         setItems(items.filter(({container_num}) => container_num !== containerNum))
         setContainerErrors(containerErrors.filter(({container_num}) => container_num !== containerNum))
+    }
+
+    const save = () => {
+        router.post(route('consignments.store'), {
+            consignment, containers, items
+        })
     }
 
     return (
@@ -701,7 +710,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 <CardTitle>Confirm</CardTitle>
                                 <CardDescription>Confirm new consignment information</CardDescription>
                                 <CardAction>
-                                    <Button variant="secondary">
+                                    <Button onClick={save} variant="secondary">
                                         Create
                                     </Button>
                                 </CardAction>

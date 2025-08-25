@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Consignment extends Model
 {
@@ -27,6 +28,11 @@ class Consignment extends Model
     public function letterOfCredit(): BelongsTo
     {
         return $this->belongsTo(LetterOfCredit::class, 'lc');
+    }
+
+    public function containers(): HasMany
+    {
+        return $this->hasMany(Container::class, 'BOL');
     }
 
 

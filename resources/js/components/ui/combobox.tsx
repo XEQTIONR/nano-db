@@ -78,7 +78,7 @@ export function Combobox({
           {
             type == "single"
                 ? (localValue
-                    ? localOptions.find((item) => item.value == localValue)?.label
+                    ? localOptions.find((item) => item.value == localValue)?.label ?? localValue
                     : "Select option ...")
                 : ((Array.isArray(localValue) && localValue.length > 0)
                     ? localValue.map((v: StrOrNum) => selectedOptions.find((option) => option.value == v)?.label ?? v.toString())

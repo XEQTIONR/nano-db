@@ -11,4 +11,14 @@ class ContainerContent extends Model
             'qty' => 'integer',
         ];
     }
+
+    protected $fillable = [
+        'Container_num',
+        'BOL',
+        'tyre_id',
+        'qty',
+        'unit_price',
+        'total_tax',
+        'total_weight',
+    ];
 }
