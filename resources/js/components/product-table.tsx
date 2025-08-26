@@ -15,27 +15,32 @@ import { useEffect, useState } from "react"
 import axios from 'axios';
 import { Tyre } from "@/types";
 
-export default function ProductsTable({ apiToken, addItem = undefined } : { 
+export default function ProductsTable({ apiToken, addItem = undefined, showStock = false } : { 
     apiToken: string,
-    addItem?: (item: Tyre) => void 
+    addItem?: (item: Tyre) => void
+    showStock?: boolean 
 }) {
 
 
-    const [items, setItems] = useState<Tyre[]>([])
+    const [items, setItems] = useState<(Tyre & {in_stock: number}) []>([])
     const [buttons, setButtons] = useState(null)
     const [error, setError] = useState(null)
 
     const labels = ['first', 'prev', 'next', 'last']
     const paginate = (link?: string) => {
-        axios.get(link ?? route('api.tyres.index', {
-            perPage: 20,
-            sortBy: 'tyre_id',
+        axios.get(link ?? route('api.stock.index', {
+            perPage: 15,
         }), { headers: { 
             Authorization: 'Bearer ' + apiToken, 
             Accept: 'application/json'
         } })
             .then((res) => {
-                setItems(res.data.data)
+                setItems(res.data.items.map((d) => {
+                    return {
+                        ...d,
+                        id: d.tyre_id
+                    }
+                }))
                 
                 setButtons(res.data.links)
             })
@@ -58,6 +63,7 @@ export default function ProductsTable({ apiToken, addItem = undefined } : {
                     <TableHead>Size</TableHead>
                     <TableHead>Pattern</TableHead>
                     <TableHead>Li/Si</TableHead>
+                    { showStock && <TableHead className="text-center"># available</TableHead>}
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -85,6 +91,7 @@ export default function ProductsTable({ apiToken, addItem = undefined } : {
                                 <TableCell>{item.size}</TableCell>
                                 <TableCell>{item.pattern}</TableCell>
                                 <TableCell>{item.lisi}</TableCell>
+                                { showStock && <TableCell className="text-center">{item.in_stock}</TableCell> }
                             </TableRow>
                         )) 
                         }

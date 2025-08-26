@@ -319,7 +319,6 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                     consignmentErrors?.lc && "border-red-400 dark:border-red-400",
                                                 )}
                                                 value={consignment?.lc}
-                                                boxWidthClass="w-full sm:w-sm md:w-md lg:w-lg xl:w-2xl"
                                                 getOptions={async(search: string) => {
                                                     const endpoint = route('api.lcs.index', {
                                                         filters: "lc_num.like." + search

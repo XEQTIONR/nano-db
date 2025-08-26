@@ -89,6 +89,14 @@ export interface User {
     [key: string]: unknown // This allows for additional properties...
 }
 
+export interface Customer {
+    id: number
+    name: string
+    address: string
+    phone: string
+    notes?: string
+}
+
 export interface LetterOfCredit {
     lc_num: string
     date_issued?: Date
@@ -104,7 +112,7 @@ export interface LetterOfCredit {
     domestic_expense: number
     notes: string
     invoice_no?: string
-    items?: ProformaInvoiceItem[]
+    items?: InvoiceItem[]
 }
 
 export interface Consignment {
@@ -124,12 +132,12 @@ export interface Tyre {
     lisi: string
 }
 
-export type ProformaInvoiceItem = Tyre & {
+export type InvoiceItem = Tyre & {
     qty: number
     unit_price: number
 }
 
-export type ContainerItem = ProformaInvoiceItem & {
+export type ContainerItem = InvoiceItem & {
     container_num: string
     bol: string
     total_tax: number

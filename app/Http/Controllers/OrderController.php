@@ -24,6 +24,7 @@ class OrderController extends ApiController
 
         return Inertia::render('common/index', [
             ...$data,
+            'addLink' => route('orders.create'),
             'link' => route('orders.index'),
             'title' => 'Orders',
             'type' => 'order',
@@ -35,7 +36,7 @@ class OrderController extends ApiController
      */
     public function create()
     {
-        //
+        return Inertia::render('orders/create');
     }
 
     /**

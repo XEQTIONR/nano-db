@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { ProformaInvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
+import { InvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
@@ -57,7 +57,7 @@ export default function Create({apiToken} : {apiToken: string}) {
         setTimeout(() => setShow(true), 1)
     }
 
-    const [invoiceItems, setInvoiceItems] = useState<ProformaInvoiceItem[] | null>(null)
+    const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[] | null>(null)
     const [lcData, setLcData] = useState<LetterOfCredit>({
         lc_num: "",
         date_issued: undefined,
@@ -78,7 +78,7 @@ export default function Create({apiToken} : {apiToken: string}) {
     const [lcDirty, setLcDirty] = useState(false)
     const [invoiceDirty, setInvoiceDirty] = useState(false)
 
-    const submit = (lcData: LetterOfCredit, items: ProformaInvoiceItem[]) => {
+    const submit = (lcData: LetterOfCredit, items: InvoiceItem[]) => {
         router.post(route('lcs.store'), {
             lc: {
                 ...lcData,
@@ -170,7 +170,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 }
                             })}
                             updateItems={(itms) => setItems(itms)} 
-                            onSubmit={(invoiceNum: string, items: ProformaInvoiceItem[]) => {
+                            onSubmit={(invoiceNum: string, items: InvoiceItem[]) => {
                                 setInvoiceDirty(false)
                                 setInvoiceItems(items)
                                 setLcData({

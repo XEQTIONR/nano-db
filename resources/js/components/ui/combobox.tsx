@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react"
+import { useRef, useState } from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { cn, debounce } from "@/lib/utils"
 import { useDebouncedCallback } from 'use-debounce';
@@ -30,7 +30,6 @@ export function Combobox({
   options = [], 
   type = "single",
   value = undefined,
-  boxWidthClass = "w-[19.7rem]"
 } : {
   className?: string
   dataType?: "string" | "float" | "int" 
@@ -40,12 +39,13 @@ export function Combobox({
   options?: Option[], 
   type?: "single" | "multiple", 
   value?: StrOrNum | StrOrNum[],
-  boxWidthClass?: string
 }) {
   const [open, setOpen] = useState<boolean>(false)
   const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
   const [localOptions, setLocalOptions] = useState<Option[]>(options)
   const [selectedOptions, setSelectedOptions] = useState<Option[]>([])
+
+  const inputRef = useRef(null)
 
   const debounced = useDebouncedCallback(
     async (str) => {
@@ -70,6 +70,7 @@ export function Combobox({
     }}>
       <PopoverTrigger className={className} asChild>
         <Button
+          ref={inputRef}
           variant="outline"
           role="combobox"
           aria-expanded={open}
@@ -91,7 +92,7 @@ export function Combobox({
         </span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className={"grow p-0 " + boxWidthClass}>
+      <PopoverContent align="end" className={"grow p-0 "} style={{ width: inputRef.current?.offsetWidth + 'px' }}>
         <Command shouldFilter={false}>
           <CommandInput 
             onValueChange={(str: string) => debounced(str)} 
@@ -107,7 +108,22 @@ export function Combobox({
                   value={option.value.toString()} // check if this to string should be here
                   onSelect={(currentValue) => {
                     if (type == "single") {
-                        setValue(currentValue === localValue ? "" : currentValue)
+                      let cv;
+                        switch (dataType) {
+                          case "float":
+                            cv = parseFloat(currentValue)
+                            setValue(cv === localValue ? 0 : cv)
+                            break
+                          case "int":
+                            cv = parseInt(currentValue)
+                            setValue(cv === localValue ? 0 : cv)
+                            break
+                          case "string":
+                          default:
+                            cv = currentValue
+                            setValue(cv === localValue ? "" : cv)
+                        }
+                        
                         setOpen(false)
                     } else if (Array.isArray(localValue) && currentValue) { // type == "multiple"
                         let cv;
@@ -139,7 +155,7 @@ export function Combobox({
                   <Check
                     className={cn(
                       "ml-auto",
-                      (type === "single" && localValue === option.value) || (localValue.indexOf(option.value.toString()) > -1)
+                      (type === "single" && localValue === option.value) || (Array.isArray(localValue) && localValue.indexOf(option.value.toString()) > -1)
                         ? "opacity-100" : "opacity-0"
                     )}
                   />

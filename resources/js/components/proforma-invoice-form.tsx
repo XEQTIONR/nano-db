@@ -18,7 +18,7 @@ import {
 
 import { X, ChevronRight } from "lucide-react";
 
-import { Tyre, type ProformaInvoiceItem } from "@/types";
+import { Tyre, type InvoiceItem } from "@/types";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useState, useEffect } from "react";
@@ -26,13 +26,13 @@ import { cn } from "@/lib/utils";
 
 export default function ProformaInvoiceForm({invoiceNumber, items, updateItems = undefined, onSubmit = undefined, onDirty} : {
     invoiceNumber?: string,
-    items : ProformaInvoiceItem[],
+    items : InvoiceItem[],
     updateItems?: (items: Tyre[]) => void
-    onSubmit?: (invoiceNum: string, items: ProformaInvoiceItem[]) => void
+    onSubmit?: (invoiceNum: string, items: InvoiceItem[]) => void
     onDirty: () => void
 }) {
 
-    const [currentItems, setCurrentItems] = useState<ProformaInvoiceItem[]>(items)
+    const [currentItems, setCurrentItems] = useState<InvoiceItem[]>(items)
     const [showErrors, setShowErrors] = useState(false)
     const [invoiceNum, setInvoiceNum] = useState<string | undefined>(invoiceNumber)
     const [displayItems, setDisplayItems] = useState<{

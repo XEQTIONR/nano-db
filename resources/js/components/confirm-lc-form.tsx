@@ -18,13 +18,13 @@ import {
 
 import { ChevronRight } from "lucide-react";
 
-import { LetterOfCredit, type ProformaInvoiceItem } from "@/types";
+import { LetterOfCredit, type InvoiceItem } from "@/types";
 import { Button } from "./ui/button";
 
 export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
     lcData: LetterOfCredit,
-    items: ProformaInvoiceItem[],
-    onSubmit?: (data: LetterOfCredit, items: ProformaInvoiceItem[]) => void
+    items: InvoiceItem[],
+    onSubmit?: (data: LetterOfCredit, items: InvoiceItem[]) => void
 }) {
 
     return (
