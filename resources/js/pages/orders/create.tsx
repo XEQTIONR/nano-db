@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table"
 
 import { Input } from '@/components/ui/input';
-
+import { InputCalendar } from '@/components/ui/input-calendar';
 import { useEffect, useState } from 'react';
 import { Customer, InvoiceItem } from '@/types'
 import { Label } from '@/components/ui/label';
@@ -33,7 +33,15 @@ import ProductsTable from '@/components/product-table';
 
 import axios from 'axios'
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectItem, SelectLabel } from '@/components/ui/select';
-import { ta } from 'date-fns/locale';
+import { da, ta } from 'date-fns/locale';
+import { type BreadcrumbItem } from '@/types';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'New Order',
+        href: '/orders/create',
+    },
+];
 
 interface ValueAndPercentage {
     value: number,
@@ -58,9 +66,10 @@ export default function Create({apiToken} : {apiToken: string}) {
         'Confirm Order'
     ]
 
-    const [customer, setCustomer] = useState<Customer | undefined>(undefined)
     const [customerId, setCustomerId] = useState<number | undefined>(undefined)
+    const [customer, setCustomer] = useState<Customer|undefined>(undefined)
 
+    const [ orderDate, setOrderDate ] = useState<Date | undefined>(undefined)
 
     const [tax, setTax] = useState<ValueAndPercentage>({
         value: 0,
@@ -86,6 +95,7 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const [editDiscocunt, setEditDiscount] = useState(false)
     const [editTax, setEditTax] = useState(false)
+    const [someCustomers, setSomeCustomers] = useState<Customer[]>([])
 
     useEffect(() => {
         setDisplayItems(() => items.map((item) => {
@@ -146,10 +156,10 @@ export default function Create({apiToken} : {apiToken: string}) {
     const showErrors = false
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="New Order" />
             <div className="flex flex-col h-full items-start rounded-xl p-4">
-                <div className="w-full flex gap-10 items-center">
+                <div className="w-full flex print:hidden gap-10 items-center">
                     {
                         steps.map( (step, index) => (
                             <div className="flex items-center gap-4">
@@ -169,45 +179,71 @@ export default function Create({apiToken} : {apiToken: string}) {
                         ))
                     }
                     <div className="flex gap-3">
-                        <Button disabled={current == 0} className="cursor-pointer" variant="secondary">
+                        <Button disabled={current == 0} className="cursor-pointer" variant="secondary"
+                            onClick={() => setCurrent(current - 1)}
+                        >
                         <ChevronLeft />
                         </Button>
-                        <Button className="cursor-pointer" variant="secondary">
+                        <Button className="cursor-pointer" variant="secondary"
+                            onClick={() => setCurrent(current + 1)}
+                        >
                             <ChevronRight />
                         </Button>
                     </div>
                 </div>
-                <div className="w-full pt-5 flex gap-4 items-start">
+                { current == 0 && <div className="w-full pt-5 flex gap-4 items-start">
                     <div className="w-full flex flex-col gap-4 md:w-1/2">
                         <Card className="w-full">
                             <CardHeader>
-                                <CardTitle>Select customer</CardTitle>
+                                <CardTitle>Add order details</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex flex-col gap-4">
-                                    { customerId && <Label className="font-bold">ID: <span className="font-mono font-light">{customerId}</span></Label>}
-                                    <Combobox
-                                        dataType="int"
-                                        onSelect={(id) => {
-
-                                            if (id === 0) {
-                                                setCustomerId(undefined)
-                                            } else if ( typeof id == "number") {
-                                                setCustomerId(id)
-                                            }
-                                        }}
-                                        getOptions={async(search: string) => {
-                                            const endpoint = route('api.customers.index', {
-                                                filters: "name.like." + search
-                                            })
-                                            const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
-                                            console.log(response)
-                                            return response.data.items.map(({id, name} : {id: number, name: string}) => {
-                                                return {value: id, label: `${name}`}
-                                            })
-                                            return []
-                                        }}
-                                    />
+                                <div className="flex flex-col gap-6">
+                                    <div className="w-full flex">
+                                        <div className="flex flex-col gap-4 w-full md:w-1/2 xl:w-1/3">
+                                            <Label>Order Date</Label>
+                                            <InputCalendar date={orderDate} onChange={(date) => setOrderDate(date)} id="ordered_on" />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-4">
+                                        <Label>
+                                        {
+                                            customerId
+                                                ? <> Customer ID: <span className="font-mono font-light">{customerId}</span></>
+                                                : "Customer"
+                                            
+                                        }
+                                        </Label>
+                                        <Combobox
+                                            dataType="int"
+                                            onSelect={(customerId) => {
+                                                if (customerId === 0) {
+                                                    setCustomerId(undefined)
+                                                } else if ( typeof customerId == "number") {
+                                                    setCustomerId(customerId)
+                                                    setCustomer(someCustomers.find(({id}) => id == customerId ))
+                                                }
+                                            }}
+                                            value={customerId}
+                                            options={someCustomers.map(({id, name}) => {
+                                                return {
+                                                    value: id,
+                                                    label: name
+                                                }
+                                            })}
+                                            getOptions={async(search: string) => {
+                                                const endpoint = route('api.customers.index', {
+                                                    filters: "name.like." + search
+                                                })
+                                                const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
+                                                console.log(response)
+                                                setSomeCustomers(response.data.items)
+                                                return response.data.items.map(({id, name} : {id: number, name: string}) => {
+                                                    return {value: id, label: `${name}`}
+                                                })
+                                            }}
+                                        />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -287,14 +323,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         <TableCell className="text-center max-w-24">{totalQty()}</TableCell>
                                         <TableCell className="max-w-28"></TableCell>
                                         <TableCell className="text-right">৳ {subTotal().toFixed(2)}</TableCell>
-                                        <TableCell>
-                                            <Button
-                                                    onClick={() => { deleteItemAt(index) }}
-                                                    type="button" size="icon" variant="secondary"
-                                                >
-                                                    <X />
-                                                </Button>
-                                        </TableCell>
+                                        <TableCell></TableCell>
                                     </TableRow>
                                     {
                                         discount.percentage > 0 &&
@@ -539,7 +568,127 @@ export default function Create({apiToken} : {apiToken: string}) {
                             />
                         </CardContent>
                     </Card>
-                </div>
+                </div>}
+                { current == 1 && <div className="w-full pt-5 flex gap-4 items-start justify-center">
+                    <Card className="w-1/2 print:w-full print:border-0 print:shadow-none">
+                        <CardHeader>
+                            <CardTitle>
+                                Confirm Order
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="w-full flex flex-col gap-4">
+                                <div className="w-full flex justify-between">
+                                    <div className="flex flex-col gap-2 w-1/3">
+                                        <Label className="font-semibold">Order #</Label>
+                                        <span className="font-mono text-sm">-</span>
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-1/3">
+                                        <Label className="font-semibold">Customer ID</Label>
+                                        <span className="font-mono">
+                                            {someCustomers.find(({id}) => id == customerId)?.id}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-1/3">
+                                        <Label className="font-semibold">Order Date</Label>
+                                        <span className="font-mono text-sm">{orderDate?.toDateString()}</span>
+                                    </div>
+                                </div>
+                                <div className="w-full flex justify-between">
+                                    <div className="flex flex-col gap-2 w-2/3">
+                                        <Label className="font-semibold">Customer</Label>
+                                        <span className="font-mono text-sm">
+                                            {someCustomers.find(({id}) => id == customerId)?.name}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-4">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-center">#</TableHead>
+                                                <TableHead>Item</TableHead>
+                                                <TableHead className="text-center">Qty</TableHead>
+                                                <TableHead className="text-right">Price</TableHead>
+                                                <TableHead className="text-right">Total</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody className="font-mono">
+                                        {
+                                            items.map(({id, brand, size, pattern, lisi, qty, unit_price}, i) => (
+                                                <TableRow>
+                                                    <TableCell className="text-center">{ i+1 }</TableCell>
+                                                    <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
+                                                    <TableCell className="text-center">{qty}</TableCell>
+                                                    <TableCell className="text-right">৳ {unit_price.toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">৳ {(qty*unit_price).toFixed(2)}</TableCell>
+                                                </TableRow>
+                                            ))
+                                        }
+                                        <TableRow className='font-bold'>
+                                            <TableCell className="text-center"></TableCell>
+                                            <TableCell>Sub total</TableCell>
+                                            <TableCell className="text-center">{totalQty()}</TableCell>
+                                            <TableCell className="text-right"></TableCell>
+                                            <TableCell className="text-right">৳ {subTotal().toFixed(2)}</TableCell>
+                                        </TableRow>
+                                        {
+                                            discount.percentage > 0 &&
+                                            <TableRow>
+                                                <TableCell className="text-center"></TableCell>
+                                                <TableCell>Discount</TableCell>
+                                                <TableCell className="text-center">-</TableCell>
+                                                <TableCell className="text-right">{discount.percentage} %</TableCell>
+                                                <TableCell className="text-right">৳ {(subTotal() * (discount.percentage/100)).toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        }
+                                        {
+                                            discount.value > 0 &&
+                                            <TableRow>
+                                                <TableCell className="text-center"></TableCell>
+                                                <TableCell>Discount</TableCell>
+                                                <TableCell className="text-center">-</TableCell>
+                                                <TableCell className="text-right">৳ {discount.value.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">৳ {discount.value.toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        }
+                                        {
+                                            tax.percentage > 0 &&
+                                            <TableRow>
+                                                <TableCell className="text-center"></TableCell>
+                                                <TableCell>Tax</TableCell>
+                                                <TableCell className="text-center">+</TableCell>
+                                                <TableCell className="text-right">{tax.percentage + "%"}</TableCell>
+                                                <TableCell className="text-right">৳ {(subTotal() * (tax.percentage/100)).toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        }
+                                        {
+                                            tax.value > 0 &&
+                                            <TableRow>
+                                                <TableCell className="text-center"></TableCell>
+                                                <TableCell>Tax</TableCell>
+                                                <TableCell className="text-center">+</TableCell>
+                                                <TableCell className="text-right">৳ {tax.value.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">৳ {tax.value.toFixed(2)}</TableCell>
+                                            </TableRow>
+                                        }
+                                        <TableRow className="font-bold">
+                                            <TableCell className="text-center"></TableCell>
+                                            <TableCell>Grand Total</TableCell>
+                                            <TableCell className="text-center"></TableCell>
+                                            <TableCell className="text-right"></TableCell>
+                                            <TableCell className="text-right">৳ {grandTotal().toFixed(2)}</TableCell>
+                                        </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                    <div className="w-full flex justify-end">
+                                        <Button size="sm" variant="secondary">Confirm</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>}
             </div>
         </AppLayout>
     )

@@ -25,8 +25,8 @@ import ConfirmLcForm from '@/components/confirm-lc-form';
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Create a New Letter of Credit',
-            href: route('lcs.index'),
+            title: 'New Letter of Credit',
+            href: route('lcs.create'),
         },
     ];
 
