@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\FilterService;
 use App\Models\Consignment;
+use App\Models\Container;
+use App\Models\ContainerContent;
 use App\Http\Resources\ConsignmentResource;
 use Illuminate\Support\Facades\DB;
 
@@ -55,7 +57,46 @@ class ConsignmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $consignmentData = $request->consignment;
+        $containerNums = collect($request->containers);
+        $items = collect($request->items);
+
+        DB::beginTransaction();
+        $consignment = new Consignment([
+            'BOL' => $consignmentData['bol'],
+            'lc' => $consignmentData['lc'],
+            'value' => $consignmentData['value'],
+            'exchange_rate' => $consignmentData['exchange_rate'],
+            'tax' => $consignmentData['tax'],
+            'land_date' => $consignmentData['land_date'],
+        ]);
+
+        $consignment->save();
+
+        $containers = $containerNums->map(fn($container) => new Container([
+            'Container_num' => $container
+        ]));
+
+        $containers = $consignment->containers()->saveMany($containers);
+
+        $containerContents = $items->map(fn($item) => new ContainerContent([
+            'Container_num' => $item['container_num'],
+            'BOL' => $item['bol'],
+            'tyre_id' => $item['id'],
+            'qty' => $item['qty'],
+            'unit_price' => $item['unit_price'],
+            'total_tax' => $item['total_tax'],
+            'total_weight' => $item['total_weight']
+        ]));
+
+        $containers->each(function($container) use ($containerContents) {
+            $contents = $containerContents->filter(fn($c) => $c->Container_num == $container->Container_num);
+            $container->contents()->saveMany($contents);
+        });
+
+        DB::commit();
+
+        return (new ConsignmentResource($consignment));
     }
 
     /**
