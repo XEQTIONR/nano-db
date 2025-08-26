@@ -27,7 +27,8 @@ class StockController extends Controller
         $filters = FilterService::parse($filterStr);
 
         $query = resolve(StockResource::class);
-        $query = $query->whereRaw('(supplied_qty - ordered_qty) > 0');
+
+        $query = $query->whereRaw('(IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0)) > 0');
 
         if ($filters->count() > 0) {
             for ($i=0; $i<$filters->count(); $i++) {
@@ -39,8 +40,7 @@ class StockController extends Controller
             }
         }
 
-        $supply = $query->whereRaw('(supplied_qty - ordered_qty) > 0')
-            ->orderBy($sortBy, $sortDir)
+        $supply = $query->orderBy($sortBy, $sortDir)
             ->paginate($perPage)
             ->withQueryString();
 

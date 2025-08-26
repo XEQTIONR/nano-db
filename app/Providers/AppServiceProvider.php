@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\DetailedStockResource;
 use App\Http\Resources\StockResource;
 use App\Models\ContainerContent;
 use App\Models\OrderContent;
 use App\Models\Tyre;
+use App\Models\Waste;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -27,15 +29,60 @@ class AppServiceProvider extends ServiceProvider
                 ->groupBy('order_contents.tyre_id');
             $container_contents = ContainerContent::select('tyre_id', DB::raw('SUM(qty) AS supplied_qty'))
                 ->groupBy('container_contents.tyre_id');
+            $waste = Waste::select('tyre_id', 'Container_num', 'BOL',  DB::raw('SUM(qty) AS wasted_qty'))
+                ->groupBy('tyre_id', 'Container_num', 'BOL');
 
             return Tyre::joinSub($container_contents, 'container_contents', function($join) {
                 $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
-            })->joinSub($order_contents, 'order_contents', function($join) {
+            })->leftJoinSub($order_contents, 'order_contents', function($join) {
                 $join->on('order_contents.tyre_id', '=', 'tyres.tyre_id');
+            })->leftJoinSub($waste, 'waste', function($join) {
+                $join->on('waste.tyre_id', '=', 'tyres.tyre_id');
             })->select(
-                'tyres.tyre_id','brand', 'size', 'lisi', 'pattern', 'created_at', 'updated_at', 
-                'ordered_qty', 'supplied_qty', DB::raw('supplied_qty - ordered_qty AS in_stock')
+                'tyres.tyre_id',
+                'brand', 
+                'size', 
+                'lisi', 
+                'pattern', 
+                'created_at',
+                'updated_at', 
+                DB::raw('IFNULL(ordered_qty,0) AS ordered_qty'),
+                DB::raw('IFNULL(supplied_qty,0) AS supplied_qty'),
+                DB::raw('IFNULL(wasted_qty,0) AS wasted_qty'),
+                DB::raw('IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0) AS in_stock')
             );
+        });
+
+        $this->app->bind(DetailedStockResource::class, function() {
+            
+            $order_contents =  OrderContent::select('tyre_id', 'container_num', 'bol', DB::raw('SUM(qty) AS ordered_qty'))
+                ->groupBy(['tyre_id', 'container_num', 'bol']);
+            
+            $container_contents = ContainerContent::select('tyre_id', 'Container_num', 'BOL', DB::raw('SUM(qty) AS supplied_qty'))
+                ->groupBy('container_contents.tyre_id', 'container_contents.Container_num', 'container_contents.BOL');
+            
+            $waste = Waste::groupBy(['tyre_id', 'Container_num', 'BOL'])
+                ->select(['tyre_id', 'Container_num', 'BOL', DB::raw('SUM(qty) AS wasted_qty')]);
+            
+            return Tyre::joinSub($container_contents, 'container_contents', function($join) {
+                $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
+            })->joinSub($order_contents, 'order_contents', function($join) {
+                $join->on('container_contents.BOL', '=', 'order_contents.bol');
+                $join->on('container_contents.Container_num', '=', 'order_contents.container_num');
+                $join->on('container_contents.tyre_id', '=', 'order_contents.tyre_id');
+            })->leftjoinSub($waste, 'waste', function($join) {
+                $join->on('container_contents.BOL', '=', 'waste.BOL');
+                $join->on('container_contents.Container_num', '=', 'waste.Container_num');
+                $join->on('container_contents.tyre_id', '=', 'waste.tyre_id');
+            })->select([
+                'container_contents.tyre_id',
+                'container_contents.BOL',
+                'container_contents.Container_num',
+                DB::raw('IFNULL(container_contents.supplied_qty, 0) AS supplied_qty'),
+                DB::raw('IFNULL(order_contents.ordered_qty, 0) AS ordered_qty'),
+                DB::raw('IFNULL(waste.wasted_qty, 0) AS wasted_qty'),
+                DB::raw('IFNULL(container_contents.supplied_qty, 0) - IFNULL(order_contents.ordered_qty, 0) - IFNULL(waste.wasted_qty, 0) AS in_stock')
+            ]);
         });
 
         $this->app->singleton(PersonalAccessToken::class, function() {
