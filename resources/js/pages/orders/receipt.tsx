@@ -35,7 +35,7 @@ export default function OrderReceipt({ order } : { order: { data: object } }) {
         },
         {
             title: '# ' + order.data.order_num,
-            href: route('orders.receipt', { order: order.data.order_num }),
+            href: route('orders.show', { order: order.data.order_num }),
         },
         {
             title: 'Receipt',

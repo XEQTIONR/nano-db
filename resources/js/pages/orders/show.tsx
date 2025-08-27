@@ -127,7 +127,7 @@ export default function Show({ order } : { order: { data: object } }) {
         }
     >
         <Head />
-        <div className="flex flex-wrap xl:flex-nowrap h-full p-8 print:py-0 gap-6">
+        <div className="flex flex-wrap xl:flex-nowrap p-8 print:py-0 gap-6">
             <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
                 <CardHeader>
                     <CardTitle>Order # {data.order_num}</CardTitle>
@@ -136,26 +136,27 @@ export default function Show({ order } : { order: { data: object } }) {
                     
                         <div className="flex flex-col gap-6">
                             
-                            <div className="w-full flex justify-between">
-                                <div className="flex flex-col gap-2 w-1/3">
-                                    <Label className="font-semibold">Order date</Label>
-                                    <span className=" text-sm">{ (new Date(data.order_on)).toDateString() }</span>
+                            <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
+                                <div className="w-full lg:w-1/3 flex">
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-semibold">Customer</Label>
+                                        <div className="flex flex-col gap-0.5">
+                                            <span className=" text-xs">
+                                                Customer ID: { data.customer_id }
+                                            </span>
+                                            <span className=" text-sm">
+                                                { data.customer_name }
+                                            </span>
+                                            <span className=" text-xs">
+                                                { data.customer.address }
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="w-full flex justify-between">
-                                
-                                <div className="flex flex-col gap-2 w-1/3">
-                                    <Label className="font-semibold">Customer</Label>
-                                    <div className="flex flex-col gap-0.5">
-                                        <span className=" text-xs">
-                                            Customer ID: { data.customer_id }
-                                        </span>
-                                        <span className=" text-sm">
-                                            { data.customer_name }
-                                        </span>
-                                        <span className=" text-xs">
-                                            { data.customer.address }
-                                        </span>
+                                <div className="w-full lg:w-1/3 flex ">
+                                    <div className="flex flex-col gap-2">
+                                        <Label className="font-semibold">Order date</Label>
+                                        <span className=" text-sm">{ (new Date(data.order_on)).toDateString() }</span>
                                     </div>
                                 </div>
                             </div>
