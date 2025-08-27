@@ -86,6 +86,7 @@ class OrderResource extends JsonResource
             ),
 
             'commission' => $this->commission,
+            'random' => $this->random,
             'created_at' => $this->created_at->toDateTimeString(),
         ];
     }

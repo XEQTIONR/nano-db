@@ -9,6 +9,8 @@ use App\Http\Controllers\OrderReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
+use App\Http\Resources\DetailedStockResource;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\StockResource;
 use App\Models\Order;
 use App\Models\OrderContent;
@@ -45,6 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     
     Route::get('/orders/{order}/receipt', OrderReceiptController::class)->name('orders.receipt');

@@ -184,4 +184,10 @@ class OrderController extends Controller
 
         return new OrderResource($order);
     }
+
+    public function show(Order $order) {
+        $order->load(['contents.tyre', 'payments', 'customer']);
+
+        return new OrderResource($order);
+    }
 }
