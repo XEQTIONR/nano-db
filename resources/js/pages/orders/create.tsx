@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 
 
 import { Badge } from '@/components/ui/badge';
@@ -37,8 +37,12 @@ import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'New Order',
-        href: '/orders/create',
+        title: 'Orders',
+        href: route('orders.index'),
+    },
+    {
+        title: 'Create New',
+        href: route('orders.create'),
     },
 ];
 
@@ -685,8 +689,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                                             type="button" 
                                             size="sm" 
                                             variant="secondary"
-                                            onClick={() => {
-                                                axios.post(route('api.orders.store'), {
+                                            onClick={() => {       
+                                                router.post(route('orders.store'), {
                                                     customer_id: customerId,
                                                     order_on: orderDate,
                                                     tax_percentage: tax.percentage,
@@ -694,12 +698,6 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                     discount_percent: discount.percentage,
                                                     discount_amount: discount.value,
                                                     items: items
-                                                }, {
-                                                    headers : {
-                                                        Authorization: 'Bearer ' + apiToken
-                                                    }
-                                                }).then(({data}) => {
-                                                    console.log('success:', data)
                                                 })
                                             }}
                                         >

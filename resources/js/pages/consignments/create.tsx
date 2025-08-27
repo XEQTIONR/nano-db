@@ -37,7 +37,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption
 } from "@/components/ui/table"
 import {
   Collapsible,
@@ -67,8 +66,12 @@ import { router } from '@inertiajs/react';
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Create a New Consignments',
-            href: route('lcs.index'),
+            title: 'Consignments',
+            href: route('consignments.index'),
+        },
+        {
+            title: 'Create New',
+            href: route('consignments.create'),
         },
     ];
 

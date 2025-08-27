@@ -5,6 +5,7 @@ use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderReceiptController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
@@ -45,6 +46,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    
+    Route::get('/orders/{order}/receipt', OrderReceiptController::class)->name('orders.receipt');
 
     Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
 

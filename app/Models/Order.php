@@ -19,6 +19,7 @@ class Order extends Model
         'commission',
         'customer_id',
         'order_on',
+        'random'
     ];
 
     protected function casts(): array

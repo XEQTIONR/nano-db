@@ -46,9 +46,12 @@ class OrderController extends ApiController
      */
     public function store(Request $request)
     {
-        parent::store($request);
+        $order = parent::store($request);
 
-        return redirect(route('orders.index'));
+        return redirect(route('orders.receipt', compact('order')))
+            ->with('notification', [
+                'message' => 'New order #' . $order->Order_num . ' created',
+            ]);
     }
 
     /**
