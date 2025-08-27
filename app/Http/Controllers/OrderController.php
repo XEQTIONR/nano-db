@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use App\Http\Controllers\Api\OrderController as ApiController;
+use App\Http\Resources\DetailedStockResource;
+use App\Http\Resources\StockResource;
 
 class OrderController extends ApiController
 {
@@ -44,7 +46,9 @@ class OrderController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        parent::store($request);
+
+        return redirect(route('orders.index'));
     }
 
     /**

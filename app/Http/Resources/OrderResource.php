@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use Illuminate\Support\Facades\DB;
 class OrderResource extends JsonResource
 {
     /**
@@ -32,26 +32,55 @@ class OrderResource extends JsonResource
             'tax_amount' => $this->tax_amount,
             'contents' => OrderContentResource::collection($this->whenLoaded('contents')),
             'customer' => (new CustomerResource($this->whenLoaded('customer'))),
-            $this->mergeWhen($this->relationLoaded('customer'), [
+            $this->mergeWhen($this->relationLoaded('customer'), fn() => [
                 'customer_name' => $this->customer->name,
             ]),
 
-            $this->mergeWhen($this->relationLoaded('contents'), [
+            $this->mergeWhen($this->relationLoaded('contents'), fn () => [
                 'sub_total' => $this->contents->reduce($subTotalFn, 0),
                 'grand_total' => ($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
                     + $this->tax_amount - $this->discount_amount,
                 'count' => $this->contents->reduce($countFn, 0),
+                
+                'items' => collect($this->contents)
+                    ->groupBy(['tyre_id', fn($item) => $item['unit_price']], preserveKeys: true)
+                    ->map(function($item, $tyreId) {
+                        return $item->map(function($items, $price) {
+                            $qty = $items->reduce(function($carry, $itm) {
+                                return $carry + $itm['qty'];
+                            }, 0);
+
+                            $itm = $items->first();
+
+                            $itm->qty = $qty;
+
+                            return [
+                                'order_num' => $itm->Order_num,
+                                'tyre_id' => $itm->tyre_id,
+                                'qty' => $itm->qty,
+                                'unit_price' => $itm->unit_price,
+                                'item_total' => $itm->item_total,
+                            ];
+                        });
+                    })
+                    ->values()
+                    ->map(function($itm, $key) {
+                        return $itm->values();
+                    })
+                    ->collapse()
+                ,
             ]),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
-            $this->mergeWhen($this->relationLoaded('payments'), [ 
+
+            $this->mergeWhen($this->relationLoaded('payments'), fn() => [ 
                 'count_payments' => $this->payments->count(),
                 'payments_total' => $this->payments->reduce($paymentsTotalFn, 0),
             ]),
 
             $this->mergeWhen(
-                $this->relationLoaded('contents') && $this->relationLoaded('payments'), [
+                $this->relationLoaded('contents') && $this->relationLoaded('payments'), fn() => [
                     'balance' => (($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
-                    + $this->tax_amount - $this->discount_amount)
+                    + $this->tax_amount - $this->discount_amount - $this->commission)
                     - $this->payments->reduce($paymentsTotalFn, 0)
                 ]
             ),

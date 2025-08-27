@@ -14,4 +14,17 @@ class Tyre extends Model
         'pattern',
         'lisi',
     ];
+
+    // protected $appends = [
+    //     'supplied_qty',
+    //     'ordered_qty',
+    //     'in_stock',
+    // ];
+
+    protected $casts = [
+        'supplied_qty' => 'double',
+        'ordered_qty' => 'double',
+        'wasted_qty' => 'double',
+        'in_stock' => 'double',
+    ];
 }

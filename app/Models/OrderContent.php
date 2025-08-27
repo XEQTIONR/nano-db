@@ -12,6 +12,9 @@ class OrderContent extends Model
     protected $fillable = [
         'qty',
         'unit_price',
+        'tyre_id',
+        'container_num',
+        'bol'
     ];
 
     protected $casts = [
@@ -37,8 +40,8 @@ class OrderContent extends Model
     {
         return Attribute::make(
             get: function(mixed $value, array $attr) {
-                if ($attr['unit_price'] ?? false) { // guard to protect aggregations
-                    return $attr['qty'] * $attr['unit_price'];
+                if (($attr['unit_price'] ?? false) && ($attr['qty'] ?? false)) { // guard to protect aggregations
+                    return $attr['unit_price'] * $attr['qty'];
                 }
 
                 return null;

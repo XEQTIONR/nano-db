@@ -11,7 +11,8 @@ use App\Models\OrderContent;
 use App\Models\Payment;
 use App\Services\FilterService;
 use Illuminate\Support\Facades\DB;
-
+use App\Http\Resources\DetailedStockResource;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends Controller
 {
@@ -93,5 +94,94 @@ class OrderController extends Controller
             'sortBy' => $sortBy,
             'sortDir' => $sortDir
         ];
+    }
+
+    public function store(Request $request) {
+        DB::beginTransaction();
+
+        $customer_id = $request->customer_id;
+        $order_on = $request->order_on;
+        $tax_percentage = $request->tax_percentage;
+        $tax_amount = $request->tax_amount;
+        $discount_percent = $request->discount_percent;
+        $discount_amount = $request->discount_amount;
+        $items = collect($request->items);
+
+        $order = new Order([
+            ...compact([
+                'customer_id', 
+                'order_on', 
+                'tax_percentage',
+                'tax_amount',
+                'discount_percent',
+                'discount_amount'
+            ]),
+            'random' => substr(
+                substr(uniqid(), 7) . substr(uniqid(), 7)
+                    . substr(uniqid(), 7) . substr(uniqid(), 7),
+                2
+            )
+        ]);
+        $order->save();
+
+        $stock = resolve(DetailedStockResource::class)
+            ->whereRaw('(IFNULL(container_contents.supplied_qty, 0) - IFNULL(order_contents.ordered_qty, 0) - IFNULL(waste.wasted_qty, 0)) > 0')
+            ->orderBy('container_contents.created_at')
+            ->get();
+
+        $orderContents = collect([]);
+
+        $items->each(function($item) use (&$stock, &$orderContents) {
+            $qty = $item['qty'];
+
+            $indexes = collect([]);
+            $selected = collect([]);
+            
+            $stock->each(function($stockItem, $index) use (&$indexes, &$selected,  $item) {
+                if ($stockItem['tyre_id']  == $item['tyre_id']) {
+                    $indexes->push($index);
+                    $selected->push($stockItem);
+                }
+            });
+
+            $selected->each(function($stockItem, $i) use (&$qty, &$orderContents, &$stock, $indexes, $item) {
+                $index = $indexes[$i];
+
+                if ($stockItem->in_stock >= $qty) {
+                    $orderContents->push(new OrderContent([
+                        'container_num' => $stockItem->Container_num,
+                        'bol' => $stockItem->BOL,
+                        'qty' => $qty,
+                        'tyre_id' => $stockItem->tyre_id,
+                        'unit_price' => $item['unit_price'],
+                    ]));
+
+                    $stock[$index]->qty = $stock[$index]->qty - $qty;
+
+                    return false;
+                } else {
+                    $orderContents->push(new OrderContent([
+                        'container_num' => $stockItem->Container_num,
+                        'bol' => $stockItem->BOL,
+                        'qty' => $stockItem->in_stock,
+                        'tyre_id' => $stockItem->tyre_id,
+                        'unit_price' => $item['unit_price'],
+                    ]));
+
+                    $qty = $qty - $stockItem->in_stock;
+                    $stock[$index]->qty = 0;
+                }
+                
+            });
+        });
+
+        $order->contents()->saveMany($orderContents);
+
+        DB::commit();
+        
+        $order = $order->fresh();
+        $order->load(['contents.tyre', 'customer']);
+
+        return new OrderResource($order);
     }
 }

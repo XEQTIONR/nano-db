@@ -33,7 +33,6 @@ import ProductsTable from '@/components/product-table';
 
 import axios from 'axios'
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectItem, SelectLabel } from '@/components/ui/select';
-import { da, ta } from 'date-fns/locale';
 import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -682,7 +681,30 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         </TableBody>
                                     </Table>
                                     <div className="w-full flex justify-end">
-                                        <Button size="sm" variant="secondary">Confirm</Button>
+                                        <Button
+                                            type="button" 
+                                            size="sm" 
+                                            variant="secondary"
+                                            onClick={() => {
+                                                axios.post(route('api.orders.store'), {
+                                                    customer_id: customerId,
+                                                    order_on: orderDate,
+                                                    tax_percentage: tax.percentage,
+                                                    tax_amount: tax.value,
+                                                    discount_percent: discount.percentage,
+                                                    discount_amount: discount.value,
+                                                    items: items
+                                                }, {
+                                                    headers : {
+                                                        Authorization: 'Bearer ' + apiToken
+                                                    }
+                                                }).then(({data}) => {
+                                                    console.log('success:', data)
+                                                })
+                                            }}
+                                        >
+                                            Confirm
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

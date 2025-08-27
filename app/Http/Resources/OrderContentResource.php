@@ -23,6 +23,12 @@ class OrderContentResource extends JsonResource
             'unit_price' => $this->unit_price,
             'item_total' => $this->item_total,
             'tyre' => $this->whenLoaded('tyre'),
+            $this->mergeWhen($this->relationLoaded('tyre'), fn() => [
+                'brand' => $this->tyre->brand,
+                'size' => $this->tyre->size,
+                'pattern' => $this->tyre->pattern,
+                'lisi' => $this->tyre->lisi,
+            ])
         ];
     }
 }

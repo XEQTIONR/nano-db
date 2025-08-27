@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
             $order_contents =  OrderContent::select('tyre_id', 'container_num', 'bol', DB::raw('SUM(qty) AS ordered_qty'))
                 ->groupBy(['tyre_id', 'container_num', 'bol']);
             
-            $container_contents = ContainerContent::select('tyre_id', 'Container_num', 'BOL', DB::raw('SUM(qty) AS supplied_qty'))
+            $container_contents = ContainerContent::select('tyre_id', 'Container_num', 'BOL', DB::raw('SUM(qty) AS supplied_qty'), DB::raw('MIN(created_at) AS created_at'))
                 ->groupBy('container_contents.tyre_id', 'container_contents.Container_num', 'container_contents.BOL');
             
             $waste = Waste::groupBy(['tyre_id', 'Container_num', 'BOL'])
@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
             
             return Tyre::joinSub($container_contents, 'container_contents', function($join) {
                 $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
-            })->joinSub($order_contents, 'order_contents', function($join) {
+            })->leftjoinSub($order_contents, 'order_contents', function($join) {
                 $join->on('container_contents.BOL', '=', 'order_contents.bol');
                 $join->on('container_contents.Container_num', '=', 'order_contents.container_num');
                 $join->on('container_contents.tyre_id', '=', 'order_contents.tyre_id');
@@ -78,6 +78,7 @@ class AppServiceProvider extends ServiceProvider
                 'container_contents.tyre_id',
                 'container_contents.BOL',
                 'container_contents.Container_num',
+                'container_contents.created_at',
                 DB::raw('IFNULL(container_contents.supplied_qty, 0) AS supplied_qty'),
                 DB::raw('IFNULL(order_contents.ordered_qty, 0) AS ordered_qty'),
                 DB::raw('IFNULL(waste.wasted_qty, 0) AS wasted_qty'),
