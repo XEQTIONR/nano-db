@@ -22,9 +22,6 @@ const mainNavItems: NavCollapseGroup[] = [
         links: [
             { title: "View Consignments", href: "/consignments"},
             { title: "View Containers", href: "/containers"},
-            { title: "Add Consignment", href: "/consignments/create"},
-            { title: "Add Container", href: "/containers/create"},
-            { title: "Add Expense", href: "/expense/create"}
         ]
     },
     {
@@ -32,12 +29,6 @@ const mainNavItems: NavCollapseGroup[] = [
         icon: Layers,
         links: [
             { title: "View orders", href: route('orders.index')},
-        ]
-    },
-    {
-        title: 'Payments',
-        icon: HandCoins,
-        links: [
             { title: "View payments", href: route('payments.index')},
         ]
     },
