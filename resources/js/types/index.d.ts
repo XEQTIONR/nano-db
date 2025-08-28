@@ -150,8 +150,7 @@ export type OrderContentItem = InvoiceItem & {
     container_num: string
     bol: string
     item_total: number
-    id?: number
-    tyre?: Tyre
+    tyre: Tyre
     
 }
 

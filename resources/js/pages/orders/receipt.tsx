@@ -22,11 +22,11 @@ import {
 
 import { Label } from "@/components/ui/label"
 import { Banknote, Plus, Printer, Undo2 } from "lucide-react"
-import { type BreadcrumbItem } from '@/types'
+import { Order, type BreadcrumbItem } from '@/types'
 import { useEffect } from "react";
 import { toast } from 'sonner';
 
-export default function OrderReceipt({ order } : { order: { data: object } }) {
+export default function OrderReceipt({ order } : { order: { data: Order } }) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -168,7 +168,7 @@ export default function OrderReceipt({ order } : { order: { data: object } }) {
                                         { data.customer_name }
                                     </span>
                                     <span className=" text-xs">
-                                        { data.customer.address }
+                                        { data.customer?.address }
                                     </span>
                                     <span className=" text-xs mt-2">
                                         ID: { data.customer_id }
@@ -187,26 +187,7 @@ export default function OrderReceipt({ order } : { order: { data: object } }) {
                                     </span>
                                     </div>
                                 </div>
-                                {/* <div className="flex flex-col gap-2 w-1/3">
-                                    
-                                    <Label className="font-semibold">Customer ID</Label>
-                                    <span className="font-mono text-sm">{ data.customer.id }</span>
-                                </div> */}
-                                
                             </div>
-                            {/* <div className="w-full flex justify-between">
-                                <div className="flex flex-col gap-2 w-1/3">
-                                    <Label className="font-semibold">Customer ID</Label>
-                                    <span className="font-mono text-sm">{data.customer.id}</span>
-                                    
-                                </div>
-                                <div className="flex flex-col gap-2 w-1/3 ">
-                                    
-                                    <Label className="font-semibold">Date</Label>
-                                    <span className="font-mono text-sm">{ (new Date(data.order_on)).toDateString() }</span>
-                                </div>
-                            </div> */}
-                            
                             <div className="flex flex-col mt-4">
                                 <Table>
                                     <TableHeader>
@@ -220,15 +201,15 @@ export default function OrderReceipt({ order } : { order: { data: object } }) {
                                     </TableHeader>
                                     <TableBody className="">
                                     {
-                                        data.items.map(({tyre_id, qty, unit_price, item_total}, i) => {
+                                        data.items?.map(({tyre_id, qty, unit_price, item_total}, i) => {
                                             
-                                            const tyre = data.contents.find((item) => item.tyre_id == tyre_id)
+                                            const tyre = data.contents?.find((item) => item.tyre_id == tyre_id)
 
                                             return (
                                                 <TableRow>
                                                     <TableCell className="text-center">{ i+1 }</TableCell>
                                                     <TableCell>
-                                                        ({tyre_id}) {tyre.brand} {tyre.size} {tyre.pattern} {tyre.lisi}
+                                                        ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
                                                     </TableCell>
                                                     <TableCell className="text-center">{qty}</TableCell>
                                                     <TableCell className="text-right">৳ {unit_price.toFixed(2)}</TableCell>
@@ -290,7 +271,7 @@ export default function OrderReceipt({ order } : { order: { data: object } }) {
                                         <TableCell>Grand Total</TableCell>
                                         <TableCell className="text-center"></TableCell>
                                         <TableCell className="text-right"></TableCell>
-                                        <TableCell className="text-right">৳ {data.grand_total.toFixed(2)}</TableCell>
+                                        <TableCell className="text-right">৳ {data.grand_total?.toFixed(2)}</TableCell>
                                     </TableRow>
                                     </TableBody>
                                 </Table>
