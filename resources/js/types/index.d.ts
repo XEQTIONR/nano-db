@@ -187,6 +187,8 @@ export interface Order {
     customer_id?: number
     sub_total?: number
     grand_total?: number
+    payments_total?: number
+    balance?: number
 }
 
 export interface Payments {
