@@ -40,7 +40,20 @@ class TyreController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        $brand = $request->brand;
+        $size = $request->size;
+        $pattern = $request->pattern;
+        $lisi = $request->lisi;
+
+        $tyre = new Tyre(compact('brand', 'size', 'pattern', 'lisi'));
+        $tyre->save();
+
+        return redirect(route('tyres.index'))
+            ->with('notification', [
+                'message' => 'Tyre ID: '. $tyre->tyre_id . ' created.',
+                'selected_value' => $tyre->tyre_id,
+                'selected_key' => 'id'
+            ]);
     }
 
     /**

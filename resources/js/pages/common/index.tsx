@@ -83,6 +83,8 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                     onClick: () => router.visit(notification.link)
                 }
             })
+
+            setDrawerOpen(false)
         }
     }, [notification])
     
@@ -135,80 +137,79 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
 
     breadcrumbs[0].title = title
     breadcrumbs[0].href = link
-
+    const [drawerOpen, setDrawerOpen] = useState(false)
     return (
-        <Drawer>
-        <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
-            <Head title={title} />
-            <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
-                
-                <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
+        <Drawer onOpenChange={(isOpen) => setDrawerOpen(isOpen)} open={drawerOpen}>
+            <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
+                <Head title={title} />
+                <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
+                    <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
 
-                <div className="flex justify-between w-full">
-                    <div className="shrink-0 text-sm flex items-center gap-7">
+                    <div className="flex justify-between w-full">
+                        <div className="shrink-0 text-sm flex items-center gap-7">
+                            <div>
+                                Showing { items.meta.from } to { items.meta.to } of <span className="font-semibold">{ items.meta.total }</span>
+                            </div>
+                            <div className="flex gap-3 items-center">
+                                <Select
+                                    defaultValue={items.meta.per_page.toString()}
+                                    onValueChange={(val) => {
+                                        const url = new URL(window.location.href)
+
+                                        url.searchParams.set('perPage', val)
+                                        url.searchParams.set('page', '1')
+
+                                        router.get(url)
+                                    }}
+                                >
+                                    <SelectTrigger className="w-20">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                    {
+                                        perPageOptions.includes(items.meta.per_page)
+                                        ? perPageOptions.map(perPage => <SelectItem value={perPage.toString()}>{perPage}</SelectItem>)
+                                        : [items.meta.per_page, ... perPageOptions].sort((a, b) => a-b)
+                                            .map(perPage => <SelectItem value={perPage.toString()}>{perPage}</SelectItem>)
+                                    }
+                                    </SelectContent>
+                                </Select>
+                                <span>per page</span>
+                            </div>
+                        </div>
                         <div>
-                            Showing { items.meta.from } to { items.meta.to } of <span className="font-semibold">{ items.meta.total }</span>
-                        </div>
-                        <div className="flex gap-3 items-center">
-                            <Select
-                                defaultValue={items.meta.per_page.toString()}
-                                onValueChange={(val) => {
-                                    const url = new URL(window.location.href)
-
-                                    url.searchParams.set('perPage', val)
-                                    url.searchParams.set('page', '1')
-
-                                    router.get(url)
-                                }}
-                            >
-                                <SelectTrigger className="w-20">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                {
-                                    perPageOptions.includes(items.meta.per_page)
-                                    ? perPageOptions.map(perPage => <SelectItem value={perPage.toString()}>{perPage}</SelectItem>)
-                                    : [items.meta.per_page, ... perPageOptions].sort((a, b) => a-b)
-                                        .map(perPage => <SelectItem value={perPage.toString()}>{perPage}</SelectItem>)
-                                }
-                                </SelectContent>
-                            </Select>
-                            <span>per page</span>
+                            <Pagination className="justify-end">
+                                <PaginationContent >
+                                    {
+                                        items.meta.links.map((paginationItem, index) => {
+                                            if (index == 0) {
+                                                return (<PaginationItem><PaginationPrevious key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
+                                            } else if (index == (items.meta.links.length - 1)) {
+                                                return (<PaginationItem><PaginationNext key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
+                                            } else if (paginationItem.label == "..." && paginationItem.url == null) {
+                                                return (<PaginationItem><PaginationEllipsis key={index} /></PaginationItem>)
+                                            } else {
+                                                return (<PaginationItem>
+                                                    <PaginationLink isActive={ parseInt(paginationItem.label) == items.meta.current_page} href={paginationItem.url}>
+                                                            {paginationItem.label}
+                                                    </PaginationLink>
+                                                </PaginationItem>)
+                                            }
+                                        })
+                                    }
+                                </PaginationContent>
+                            </Pagination>
                         </div>
                     </div>
-                    <div>
-                        <Pagination className="justify-end">
-                            <PaginationContent >
-                                {
-                                    items.meta.links.map((paginationItem, index) => {
-                                        if (index == 0) {
-                                            return (<PaginationItem><PaginationPrevious key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
-                                        } else if (index == (items.meta.links.length - 1)) {
-                                            return (<PaginationItem><PaginationNext key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
-                                        } else if (paginationItem.label == "..." && paginationItem.url == null) {
-                                            return (<PaginationItem><PaginationEllipsis key={index} /></PaginationItem>)
-                                        } else {
-                                            return (<PaginationItem>
-                                                <PaginationLink isActive={ parseInt(paginationItem.label) == items.meta.current_page} href={paginationItem.url}>
-                                                        {paginationItem.label}
-                                                </PaginationLink>
-                                            </PaginationItem>)
-                                        }
-                                    })
-                                }
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
+                    
                 </div>
-                
-            </div>
-            {
-               type == 'tyre'
-               && (
-                <CreateForm />
-               ) 
-            }
-        </AppLayout>
+                {
+                type == 'tyre'
+                && (
+                    <CreateForm />
+                ) 
+                }
+            </AppLayout>
         </Drawer>
     );
 }

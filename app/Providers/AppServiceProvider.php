@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             $waste = Waste::select('tyre_id', 'Container_num', 'BOL',  DB::raw('SUM(qty) AS wasted_qty'))
                 ->groupBy('tyre_id', 'Container_num', 'BOL');
 
-            return Tyre::joinSub($container_contents, 'container_contents', function($join) {
+            return Tyre::leftJoinSub($container_contents, 'container_contents', function($join) {
                 $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
             })->leftJoinSub($order_contents, 'order_contents', function($join) {
                 $join->on('order_contents.tyre_id', '=', 'tyres.tyre_id');

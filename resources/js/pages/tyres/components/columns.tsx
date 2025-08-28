@@ -36,7 +36,8 @@ export const columns = [
   },
   {
     accessorKey: "in_stock",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="in_stock" label="# in stock" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="in_stock" justify="center" label="# in stock" config={v} />,
+    cell: ({ row }) => <div className="text-center">{ row.getValue('in_stock') }</div>
   },
   {
     accessorKey: "created_at",

@@ -35,7 +35,7 @@ export default function CreateForm() {
     const validate = () => {
         const err = {...emptyFields}
         let count = 0
-        
+
         if (data.brand.length === 0) {
             err.brand = "The tyre brand is required."
             count++
@@ -69,7 +69,7 @@ export default function CreateForm() {
                     e.preventDefault()
                     const k = validate()
                     if (k === 0) {
-                        console.log('no errors')
+                        router.post(route('tyres.store'), { ...data })
                     }
                 }}
             >
