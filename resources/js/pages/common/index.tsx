@@ -33,6 +33,8 @@ import { usePage } from '@inertiajs/react'
 import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
+import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import CreateForm from '../tyres/components/create-form';
 
 
 
@@ -135,6 +137,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     breadcrumbs[0].href = link
 
     return (
+        <Drawer>
         <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
             <Head title={title} />
             <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
@@ -199,6 +202,13 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                 </div>
                 
             </div>
+            {
+               type == 'tyre'
+               && (
+                <CreateForm />
+               ) 
+            }
         </AppLayout>
+        </Drawer>
     );
 }

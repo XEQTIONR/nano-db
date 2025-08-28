@@ -58,6 +58,7 @@ import {
 import { Combobox } from "./ui/combobox"
 import { InputCalendar } from "./ui/input-calendar"
 import { cn } from "@/lib/utils"
+import { DrawerTrigger } from "./ui/drawer"
 
 export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?: BreadcrumbItemType[], controls?: ReactNode }) {
     return (
@@ -470,7 +471,32 @@ export function AppSidebarHeaderControls({ addLink, apiToken, filters, filterCon
             { addLink &&
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Button onClick={() => router.visit(addLink)} className="hover:cursor-pointer" size="icon" variant="ghost"><Plus /></Button>
+                    {
+                        addLink == 'drawer'
+                        ? (
+                            <DrawerTrigger>
+                                <Button 
+                                    className="hover:cursor-pointer" 
+                                    size="icon" 
+                                    variant="ghost"
+                                >
+                                    <Plus />
+                                </Button>
+                            </DrawerTrigger>
+                        ) : (
+                            <Button 
+                                onClick={() => {
+                                    router.visit(addLink)
+                                }} 
+                                className="hover:cursor-pointer" 
+                                size="icon" 
+                                variant="ghost"
+                            >
+                                <Plus />
+                            </Button>
+                        )
+                    }
+                    
                 </TooltipTrigger>
                 <TooltipContent>
                     <p>Add new</p>

@@ -36,9 +36,8 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Products',
         icon: LoaderPinwheel,
         links: [
-            { title: "View catalog", href: route('tyres.index')},
-            { title: "View stock", href: route('stock.index')},
-            { title: "Add a product", href: "/products/create"},
+            { title: "View all products", href: route('tyres.index')},
+            { title: "View current inventory", href: route('stock.index')},
         ]
     },
     {

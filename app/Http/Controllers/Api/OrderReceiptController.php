@@ -13,7 +13,7 @@ class OrderReceiptController extends Controller
      */
     public function __invoke(Order $order)
     {
-        $order->load(['contents.tyre', 'customer']);
+        $order->load(['contents.tyre', 'payments', 'customer']);
         return new OrderResource($order);
     }
 }

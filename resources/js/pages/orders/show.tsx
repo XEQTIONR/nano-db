@@ -15,23 +15,8 @@ import {
 } from "@/components/ui/tooltip"
 import {
   Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { 
     Table,
     TableHeader,
@@ -42,22 +27,17 @@ import {
 } from "@/components/ui/table"
 
 import { Label } from "@/components/ui/label"
-import { Banknote, ReceiptText, Undo2, Minus, Plus, Check, X } from "lucide-react"
+import { Banknote, Plus, ReceiptText, Undo2 } from "lucide-react"
 import { Order, type BreadcrumbItem } from '@/types'
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from 'sonner';
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import CreateForm from "@/pages/payments/components/create-form";
 
 export default function Show({ order } : { 
     order: { 
         data: Order
 } }) {
 
-    const [prevValue, setPreviousValue] = useState<number>(0)
-    const [newPaymentAmount, setNewPaymentAmount] = useState <string|number>(0)
-    const [editPaymentAmount, setEditPaymentAmount] = useState(false)
-    const [paymentType, setPaymentType] = useState<string|undefined>('cash')
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -69,19 +49,6 @@ export default function Show({ order } : {
             href: route('orders.show', { order: order.data.order_num }),
         },
     ];
-
-    const modifyPaymentAmount = (down: boolean, add: boolean = true) => {
-        if (down && !window.timer) {
-            window.timer = setInterval(() => {
-                if(down && window.timer) {
-                    setNewPaymentAmount((amt) => (add ? (amt + 10) : (amt - 10)))
-                }
-            }, 100)
-        } else if (window.timer) {
-            clearInterval(window.timer)
-            delete window.timer
-        }
-    }
 
     const data = order.data
 
@@ -117,14 +84,13 @@ export default function Show({ order } : {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <DrawerTrigger>
-                                <Button
-                                    // onClick={() => window.print()} 
-                                    className="hover:cursor-pointer text-xs" 
-                                    size="icon" 
-                                    variant="ghost"
-                                >
-                                    <Banknote />
-                                </Button>
+                                    <Button
+                                        className="hover:cursor-pointer text-xs" 
+                                        size="icon" 
+                                        variant="ghost"
+                                    >
+                                        <Banknote />
+                                    </Button>
                                 </DrawerTrigger>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -355,194 +321,7 @@ export default function Show({ order } : {
                     </Card>
                 </div>
                 
-                <DrawerContent>
-                    <div className="mx-auto w-full max-w-md">
-                        <DrawerHeader>
-                            <DrawerTitle className="text-center">Make a payment</DrawerTitle>
-                            <DrawerDescription className="text-center">Order # {order.data.order_num} </DrawerDescription>
-                        </DrawerHeader>
-                        <div className="px-4 pb-0 pt-8">
-                            <div className="flex flex-col justify-center gap-2">
-                                <div className="flex justify-between space-x-2 pb-2">
-                                    <div>Grand Total</div>
-                                    <div className="text-right">
-                                        ৳ {order.data.grand_total?.toFixed(2)}
-                                    </div>
-                                </div>
-                                <div className="flex justify-between space-x-2 pb-2">
-                                    <div>Payments</div>
-                                    <div className="text-right">
-                                        ৳ {order.data.payments_total?.toFixed(2)}
-                                    </div>
-                                </div>
-                                { typeof newPaymentAmount == "number" && newPaymentAmount > 0 && (<div className="flex justify-between space-x-2 pb-2">
-                                    <div>New Payment</div>
-                                    <div className="text-right">
-                                        ৳ {newPaymentAmount.toFixed(2)}
-                                    </div>
-                                </div>)}
-                                <div className="flex justify-between space-x-2 border-t-2 pt-3 mb-6">
-                                    <div>Balance</div>
-                                    <div className="text-right">৳ {
-                                        typeof newPaymentAmount == "number" && typeof order.data.balance == "number"
-                                        ? (order.data.balance - newPaymentAmount).toFixed(2)
-                                        : order.data.balance
-                                    }
-                                    </div>
-                                </div>
-                                <div>Pay</div>
-                                <div className="flex items-center justify-between h-20">
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className={cn("h-8 w-8 shrink-0 rounded-full select-none mb-6")}
-                                        disabled={(typeof newPaymentAmount == "string")}
-                                        onClick={() =>{ 
-                                            if (editPaymentAmount) {
-                                                setNewPaymentAmount(prevValue)
-                                                setEditPaymentAmount(false)
-                                            } else {
-                                                if (typeof newPaymentAmount == "number") {
-                                                    setNewPaymentAmount((amt) => {
-                                                        if (typeof amt == "number") {
-                                                            if (typeof data.balance == "number" && (amt - 10) < 0) {
-                                                                return 0
-                                                            }
-                                                            return amt - 10
-                                                        }
-                                                        return newPaymentAmount
-                                                    })
-                                                }
-                                            }
-                                        }}
-                                        onTouchStart={() => !editPaymentAmount && modifyPaymentAmount(true, false)}
-                                        onMouseDown={() => !editPaymentAmount && modifyPaymentAmount(true, false)}
-                                        onMouseUp={() => !editPaymentAmount && modifyPaymentAmount(false)}
-                                        onTouchEnd={() => !editPaymentAmount && modifyPaymentAmount(false)}
-                                    >
-                                        {editPaymentAmount ? <X /> : <Minus />}
-                                        <span className="sr-only">Decrease</span>
-                                    </Button>
-                                    <div className="flex flex-col gap-2 items-center">
-                                        {
-                                            editPaymentAmount ? (
-                                                
-                                                <div className="w-full flex justify-center">
-                                                    <Input
-                                                        min={0}
-                                                        max={data.balance}
-                                                        type="number"
-                                                        onChange={({target}) => {
-
-                                                            if (isNaN(parseFloat(target.value))) {
-                                                                setNewPaymentAmount(target.value)
-                                                            }
-                                                            setNewPaymentAmount(
-                                                                data.balance 
-                                                                ? Math.min(parseFloat(target.value), data.balance)
-                                                                : parseFloat(target.value)
-                                                            )
-                                                        }} 
-                                                        value={newPaymentAmount} 
-                                                        className="md:text-4xl w-full h-16 text-center font-bold tracking-tighter" 
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <div onClick={() => {
-                                                    setPreviousValue(newPaymentAmount)
-                                                    setEditPaymentAmount(true)
-                                                }} className="text-4xl font-bold tracking-tighter">
-                                                    {
-                                                        typeof newPaymentAmount == "number"
-                                                        ? newPaymentAmount.toFixed(2)
-                                                        : newPaymentAmount
-                                                    }
-                                                </div>
-                                            )
-                                        }
-                                        
-                                        <div className="text-muted-foreground text-[0.70rem] uppercase">
-                                            Taka
-                                        </div>
-                                    </div>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className={cn("h-8 w-8 shrink-0 rounded-full select-none mb-6")}
-                                        disabled={(typeof newPaymentAmount == "string")}
-                                        onClick={() =>{
-                                            if (editPaymentAmount) {
-                                                setEditPaymentAmount(false)
-                                            } else {
-                                                if (typeof newPaymentAmount == "number") {
-                                                    setNewPaymentAmount((amt) => {
-                                                        if (typeof amt == "number") {
-                                                            if (typeof data.balance == "number" && (amt + 10) > data.balance) {
-                                                                return data.balance
-                                                            }
-                                                            return amt + 10
-                                                        }
-                                                        return newPaymentAmount
-                                                    })
-                                                }
-                                            }
-                                            
-                                        }}
-                                        onTouchStart={() => !editPaymentAmount && modifyPaymentAmount(true)}
-                                        onMouseDown={() => !editPaymentAmount && modifyPaymentAmount(true)}
-                                        onTouchEnd={() => !editPaymentAmount && modifyPaymentAmount(false)}
-                                        onMouseUp={() => !editPaymentAmount && modifyPaymentAmount(false)}
-                                    >
-                                        {
-                                            editPaymentAmount ? <Check /> : <Plus />
-                                        }
-                                        
-                                        <span className="sr-only">Increase</span>
-                                    </Button>
-                                </div>
-                                <div className="my-4">
-                                    <Select value={paymentType} onValueChange={(value) => {
-                                        setPaymentType(value)
-                                    }}>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select payment type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                            <SelectLabel>Payment types</SelectLabel>
-                                                <SelectItem value="unknown">Unknown</SelectItem>
-                                                <SelectItem value="cash">Cash</SelectItem>
-                                                <SelectItem value="deposit">Bank Deposit</SelectItem>
-                                                <SelectItem value="check">Check</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                        </div>
-                        <DrawerFooter>
-                            <Button
-                                disabled={
-                                    editPaymentAmount 
-                                    || typeof newPaymentAmount == 'number'
-                                        && (newPaymentAmount <= 0 
-                                            ||  ( !!order.data.balance && newPaymentAmount > order.data.balance)
-                                        )
-                                } 
-                                onClick={() => {
-                                    router.post(route('payments.store'), {
-                                        order_num: order.data.order_num,
-                                        payment_amount: newPaymentAmount,
-                                        payment_type: paymentType
-                                    })
-                                }}
-                            >Make Payment</Button>
-                            <DrawerClose asChild>
-                                <Button onClick={() => setNewPaymentAmount(0)} variant="outline">Cancel</Button>
-                            </DrawerClose>
-                        </DrawerFooter>
-                    </div>
-                </DrawerContent>
+                <CreateForm order={order} />
             </AppLayout>
         </Drawer>
     )

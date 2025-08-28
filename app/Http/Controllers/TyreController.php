@@ -20,6 +20,7 @@ class TyreController extends ApiController
 
         return Inertia::render('common/index', [
             ...$data,
+            'addLink' => 'drawer',
             'link' => route('tyres.index'),
             'title' => 'Tyres',
             'type' => 'tyre',
