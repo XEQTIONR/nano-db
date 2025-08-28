@@ -34,7 +34,8 @@ import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
-import CreateForm from '../tyres/components/create-form';
+import TyreCreateForm from '../tyres/components/create-form';
+import CustomerCreateForm from '../customers/components/create-form';
 
 
 
@@ -204,10 +205,16 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                     
                 </div>
                 {
-                type == 'tyre'
-                && (
-                    <CreateForm />
-                ) 
+                    type == 'tyre'
+                    && (
+                        <TyreCreateForm />
+                    ) 
+                }
+                {
+                    type == 'customer'
+                    && (
+                        <CustomerCreateForm />
+                    ) 
                 }
             </AppLayout>
         </Drawer>

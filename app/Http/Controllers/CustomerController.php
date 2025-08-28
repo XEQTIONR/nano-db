@@ -19,6 +19,7 @@ class CustomerController extends ApiController
 
         return Inertia::render('common/index', [
             ...$data,
+            'addLink' => 'drawer',
             'link' => route('customers.index'),
             'title' => 'Customers',
             'type' => 'customer',
@@ -38,7 +39,20 @@ class CustomerController extends ApiController
      */
     public function store(Request $request)
     {
-        //
+        $name = $request->name;
+        $address = $request->address;
+        $phone = $request->phone;
+        $notes = $request->notes;
+
+        $customer = new Customer(compact('name', 'address', 'phone', 'notes'));
+        $customer->save();
+
+        return redirect(route('customers.index'))
+            ->with('notification', [
+                'message' => 'New Customer ID:: '. $customer->id . ' created.',
+                'selected_value' => $customer->id,
+                'selected_key' => 'id'
+            ]);
     }
 
     /**

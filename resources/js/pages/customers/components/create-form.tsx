@@ -14,47 +14,42 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import InputError from '@/components/input-error';
 
-interface TyreFields {
-    brand: string
-    size: string
-    pattern: string
-    lisi: string
+interface NewCustomerFields {
+    name: string
+    address: string
+    phone: string
+    notes: string
 }
 
-const emptyFields: TyreFields = {
-        brand: "",
-        size: "",
-        pattern: "",
-        lisi: ""
+const emptyFields: NewCustomerFields = {
+        name: "",
+        address: "",
+        phone: "",
+        notes: ""
 }
 export default function CreateForm() {
-    const [data, setData] = useState<TyreFields>({...emptyFields})
+    const [data, setData] = useState<NewCustomerFields>({...emptyFields})
 
-    const [errors, setErrors] = useState<TyreFields>({...emptyFields})
+    const [errors, setErrors] = useState<NewCustomerFields>({...emptyFields})
 
     const validate = () => {
         const err = {...emptyFields}
         let count = 0
 
-        if (data.brand.length === 0) {
-            err.brand = "The tyre brand is required."
+        if (data.name.length === 0) {
+            err.name = "The customer's name is required."
             count++
         } 
         
-        if (data.size.length === 0) {
-            err.size = "The tyre size is required."
+        if (data.address.length === 0) {
+            err.address = "The customer's address is required."
             count++
         } 
         
-        if (data.pattern.length === 0) {
-            err.pattern = "The tyre pattern is required."
+        if (data.phone.length === 0) {
+            err.phone = "The customer's phone number is required."
             count++
         } 
-        
-        if (data.lisi.length === 0) {
-            err.lisi = "The tyre Li/Si is required."
-            count++
-        }
 
         setErrors({...err})
         
@@ -69,74 +64,74 @@ export default function CreateForm() {
                     e.preventDefault()
                     const k = validate()
                     if (k === 0) {
-                        router.post(route('tyres.store'), { ...data })
+                        router.post(route('customers.store'), { ...data })
                     }
                 }}
             >
                 <DrawerHeader>
-                    <DrawerTitle className="text-center">Add New Tyre</DrawerTitle>
-                    <DrawerDescription className="text-center">Create a new tyre</DrawerDescription>
+                    <DrawerTitle className="text-center">Add New Customer</DrawerTitle>
+                    <DrawerDescription className="text-center">Create a new customer</DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-8 flex flex-col gap-6">
                     <div className="flex flex-col gap-3">
-                        <Label>Brand</Label>
+                        <Label>Name</Label>
                         <Input
-                            className={cn( errors.brand.length && "border-red-400")} 
-                            value={data.brand}
+                            className={cn( errors.name.length && "border-red-400")} 
+                            value={data.name}
                             onChange={({target}) => {
-                                setData({ ... data, brand: target.value.trim()})
+                                setData({ ... data, name: target.value})
                                 if(target.value.length) {
-                                    setErrors({...errors, brand: ""})
+                                    setErrors({...errors, name: ""})
                                 }
                             }} 
-                            placeholder="Input item brand" 
+                            placeholder="Customer's name" 
                         />
-                        {errors.brand.length > 0 && <InputError message={errors.brand} />}
+                        {errors.name.length > 0 && <InputError message={errors.name} />}
                     </div>
                     <div className="flex flex-col gap-3">
-                        <Label>Size</Label>
+                        <Label>Address</Label>
                         <Input
-                            className={cn( errors.size.length && "border-red-400")} 
-                            value={data.size}
+                            className={cn( errors.address.length && "border-red-400")} 
+                            value={data.address}
                             onChange={({target}) => {
-                                setData({ ... data, size: target.value.trim()})
+                                setData({ ... data, address: target.value})
                                 if(target.value.length) {
-                                    setErrors({...errors, size: ""})
+                                    setErrors({...errors, address: ""})
                                 }
                             }} 
-                            placeholder="Input item size" 
+                            placeholder="Customer's address" 
                         />
-                        {errors.size.length > 0 && <InputError message={errors.size} />}
+                        {errors.address.length > 0 && <InputError message={errors.address} />}
                     </div>
                     <div className="flex flex-col gap-3">
-                        <Label>Pattern</Label>
+                        <Label>Phone #</Label>
                         <Input
-                            className={cn( errors.pattern.length && "border-red-400")} 
-                            value={data.pattern}
+                            className={cn( errors.phone.length && "border-red-400")} 
+                            value={data.phone}
                             onChange={({target}) => {
-                                setData({ ... data, pattern: target.value.trim()})
+                                setData({ ... data, phone: target.value})
                                 if(target.value.length) {
-                                    setErrors({...errors, pattern: ""})
+                                    setErrors({...errors, phone: ""})
                                 }
                             }} 
-                            placeholder="Input item pattern" 
+                            placeholder="Customer's phone number" 
                         />
-                        {errors.pattern.length > 0 && <InputError message={errors.pattern} />}
+                        {errors.phone.length > 0 && <InputError message={errors.phone} />}
                     </div>
                     <div className="flex flex-col gap-3">
-                        <Label>Li/Si</Label>
+                        <Label>Notes</Label>
                         <Input
-                            className={cn( errors.lisi.length && "border-red-400")} 
-                            value={data.lisi}
+                            className={cn( errors.notes.length && "border-red-400")} 
+                            value={data.notes}
                             onChange={({target}) => {
-                                setData({ ... data, lisi: target.value.trim()})
+                                setData({ ... data, notes: target.value})
                                 if(target.value.length) {
-                                    setErrors({...errors, lisi: ""})
+                                    setErrors({...errors, notes: ""})
                                 }
                             }} 
-                            placeholder="Input item Li/Si" 
+                            placeholder="Notes" 
                         />
-                        {errors.lisi.length > 0 && <InputError message={errors.lisi} />}
+                        {errors.notes.length > 0 && <InputError message={errors.notes} />}
                     </div>
                 </div>
                 <DrawerFooter>
