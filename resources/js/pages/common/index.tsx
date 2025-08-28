@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Filter, FilterConfig, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
+import { columns as bankAccountCols } from "@/pages/bank-accounts/components/columns";
 import { columns as tyreCols, filterConfigs as tyreFilters } from "@/pages/tyres/components/columns";
 import { columns as lcCols, filterConfigs as lcFilters } from "@/pages/lcs/components/columns";
 import { columns as consignmentCols, filterConfigs as consignmentFilters } from '@/pages/consignments/components/columns';
@@ -103,6 +104,10 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     let cols = []
     let filterConfigs: FilterConfig[] = orderFilters
     switch (type) {
+        case "bank_account":
+            cols = bankAccountCols
+            filterConfigs = []
+            break
         case "lc":
             cols = lcCols
             filterConfigs = lcFilters

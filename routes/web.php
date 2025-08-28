@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\CustomerController;
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+
+    Route::get('/bank-accounts', [BankAccountController::class, 'index'])->name('bank_accounts.index');
 
     Route::get('/lcs/create', [LetterOfCreditController::class, 'create'])->name('lcs.create');
     Route::get('/lcs', [LetterOfCreditController::class, 'index'])->name('lcs.index');

@@ -13,7 +13,7 @@ const mainNavItems: NavCollapseGroup[] = [
         icon: Landmark,
         links: [
             { title: "Letter of Credit", href: route('lcs.index')},
-            // { title: "Proforma Invoice", href: route('lcs.create')},
+            { title: "Bank Accounts", href: route('bank_accounts.index')},
         ],
     },
     {
