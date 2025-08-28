@@ -10,7 +10,6 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
 use App\Http\Resources\DetailedStockResource;
-use App\Http\Resources\OrderResource;
 use App\Http\Resources\StockResource;
 use App\Models\Order;
 use App\Models\OrderContent;
@@ -29,15 +28,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
-    Route::get('/lcs', [LetterOfCreditController::class, 'index'])->name('lcs.index');
     Route::get('/lcs/create', [LetterOfCreditController::class, 'create'])->name('lcs.create');
+    Route::get('/lcs', [LetterOfCreditController::class, 'index'])->name('lcs.index');
     Route::get('/lcs/{lc}', [LetterOfCreditController::class, 'show'])->name('lcs.show');
     Route::post('/lcs', [LetterOfCreditController::class, 'store'])->name('lcs.store');
     
     Route::get('/tyres', [TyreController::class, 'index'])->name('tyres.index');
 
-    Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
     Route::get('/consignments/create', [ConsignmentController::class, 'create'])->name('consignments.create');
+    Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
     Route::post('/consignments', [ConsignmentController::class, 'store'])->name('consignments.store');
     Route::post('/consignments/{consignment}', [ConsignmentController::class, 'show'])->name('consignments.show');
     
@@ -45,10 +44,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
 
+    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+    
     
     Route::get('/orders/{order}/receipt', OrderReceiptController::class)->name('orders.receipt');
 

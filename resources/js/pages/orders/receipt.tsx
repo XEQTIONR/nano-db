@@ -244,46 +244,47 @@ export default function OrderReceipt({ order } : { order: { data: object } }) {
                                         <TableCell className="text-right"></TableCell>
                                         <TableCell className="text-right">৳ {data.sub_total.toFixed(2)}</TableCell>
                                     </TableRow>
-                                    {/* {
+                                    {
                                         data.discount_percent > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Discount</TableCell>
                                             <TableCell className="text-center">-</TableCell>
                                             <TableCell className="text-right">{data.discount_percent} %</TableCell>
-                                            <TableCell className="text-right">৳ {(data.subTotal() * (discount.percentage/100)).toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {(data.sub_total * (data.discount_percent/100)).toFixed(2)}</TableCell>
                                         </TableRow>
                                     }
-                                    {
-                                        discount_amount > 0 &&
+                                     {
+                                        data.discount_amount > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Discount</TableCell>
                                             <TableCell className="text-center">-</TableCell>
-                                            <TableCell className="text-right">৳ {discount.value.toFixed(2)}</TableCell>
-                                            <TableCell className="text-right">৳ {discount.value.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.discount_amount.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.discount_amount.toFixed(2)}</TableCell>
                                         </TableRow>
                                     }
+                                    
                                     {
-                                        tax.percentage > 0 &&
+                                        data.tax_percentage > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Tax</TableCell>
                                             <TableCell className="text-center">+</TableCell>
-                                            <TableCell className="text-right">{tax.percentage + "%"}</TableCell>
-                                            <TableCell className="text-right">৳ {(subTotal() * (tax.percentage/100)).toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">{data.tax_percentage + " %"}</TableCell>
+                                            <TableCell className="text-right">৳ {(data.sub_total * (data.tax_percentage/100)).toFixed(2)}</TableCell>
                                         </TableRow>
                                     }
                                     {
-                                        tax.value > 0 &&
+                                        data.tax_amount > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Tax</TableCell>
                                             <TableCell className="text-center">+</TableCell>
-                                            <TableCell className="text-right">৳ {tax.value.toFixed(2)}</TableCell>
-                                            <TableCell className="text-right">৳ {tax.value.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.tax_amount.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.tax_amount.toFixed(2)}</TableCell>
                                         </TableRow>
-                                    } */}
+                                    } 
                                     <TableRow className="font-bold">
                                         <TableCell className="text-center"></TableCell>
                                         <TableCell>Grand Total</TableCell>

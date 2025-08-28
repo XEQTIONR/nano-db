@@ -24,12 +24,15 @@ import {
 } from "@/components/ui/table"
 
 import { Label } from "@/components/ui/label"
-import { Banknote, Plus, Printer, ReceiptText, Undo2 } from "lucide-react"
-import { type BreadcrumbItem } from '@/types'
+import { Banknote, Plus, ReceiptText, Undo2 } from "lucide-react"
+import { Order, type BreadcrumbItem } from '@/types'
 import { useEffect } from "react";
 import { toast } from 'sonner';
 
-export default function Show({ order } : { order: { data: object } }) {
+export default function Show({ order } : { 
+    order: { 
+        data: Order
+} }) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -148,7 +151,7 @@ export default function Show({ order } : { order: { data: object } }) {
                                                 { data.customer_name }
                                             </span>
                                             <span className=" text-xs">
-                                                { data.customer.address }
+                                                { data.customer?.address }
                                             </span>
                                         </div>
                                     </div>
@@ -186,15 +189,15 @@ export default function Show({ order } : { order: { data: object } }) {
                                     </TableHeader>
                                     <TableBody className="">
                                     {
-                                        data.items.map(({tyre_id, qty, unit_price, item_total}, i) => {
+                                        data.items?.map(({tyre_id, qty, unit_price, item_total}, i) => {
                                             
-                                            const tyre = data.contents.find((item) => item.tyre_id == tyre_id)
+                                            const tyre = data.contents?.find((item) => item.tyre_id == tyre_id)
 
                                             return (
                                                 <TableRow key={i}>
                                                     <TableCell className="text-center">{ i+1 }</TableCell>
                                                     <TableCell>
-                                                        ({tyre_id}) {tyre.brand} {tyre.size} {tyre.pattern} {tyre.lisi}
+                                                        ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
                                                     </TableCell>
                                                     <TableCell className="text-center">{qty}</TableCell>
                                                     <TableCell className="text-right">৳ {unit_price.toFixed(2)}</TableCell>
@@ -210,52 +213,53 @@ export default function Show({ order } : { order: { data: object } }) {
                                         <TableCell className="text-right"></TableCell>
                                         <TableCell className="text-right">৳ {data.sub_total.toFixed(2)}</TableCell>
                                     </TableRow>
-                                    {/* {
+                                    {
                                         data.discount_percent > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Discount</TableCell>
                                             <TableCell className="text-center">-</TableCell>
                                             <TableCell className="text-right">{data.discount_percent} %</TableCell>
-                                            <TableCell className="text-right">৳ {(data.subTotal() * (discount.percentage/100)).toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {(data.sub_total * (data.discount_percent/100)).toFixed(2)}</TableCell>
                                         </TableRow>
                                     }
                                     {
-                                        discount_amount > 0 &&
+                                        data.discount_amount > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Discount</TableCell>
                                             <TableCell className="text-center">-</TableCell>
-                                            <TableCell className="text-right">৳ {discount.value.toFixed(2)}</TableCell>
-                                            <TableCell className="text-right">৳ {discount.value.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.discount_amount.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.discount_amount.toFixed(2)}</TableCell>
                                         </TableRow>
                                     }
+                                    
                                     {
-                                        tax.percentage > 0 &&
+                                        data.tax_percentage > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Tax</TableCell>
                                             <TableCell className="text-center">+</TableCell>
-                                            <TableCell className="text-right">{tax.percentage + "%"}</TableCell>
-                                            <TableCell className="text-right">৳ {(subTotal() * (tax.percentage/100)).toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">{data.tax_percentage + " %"}</TableCell>
+                                            <TableCell className="text-right">৳ {(data.sub_total * (data.tax_percentage/100)).toFixed(2)}</TableCell>
                                         </TableRow>
                                     }
                                     {
-                                        tax.value > 0 &&
+                                        data.tax_amount > 0 &&
                                         <TableRow>
                                             <TableCell className="text-center"></TableCell>
                                             <TableCell>Tax</TableCell>
                                             <TableCell className="text-center">+</TableCell>
-                                            <TableCell className="text-right">৳ {tax.value.toFixed(2)}</TableCell>
-                                            <TableCell className="text-right">৳ {tax.value.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.tax_amount.toFixed(2)}</TableCell>
+                                            <TableCell className="text-right">৳ {data.tax_amount.toFixed(2)}</TableCell>
                                         </TableRow>
-                                    } */}
+                                    }
                                     <TableRow className="font-bold">
                                         <TableCell className="text-center"></TableCell>
                                         <TableCell>Grand Total</TableCell>
                                         <TableCell className="text-center"></TableCell>
                                         <TableCell className="text-right"></TableCell>
-                                        <TableCell className="text-right">৳ {data.grand_total.toFixed(2)}</TableCell>
+                                        <TableCell className="text-right">৳ {data.grand_total?.toFixed(2)}</TableCell>
                                     </TableRow>
                                     </TableBody>
                                 </Table>
@@ -283,21 +287,21 @@ export default function Show({ order } : { order: { data: object } }) {
                                     </TableHeader>
                                     <TableBody className="">
                                     {
-                                        data.payments.map(({transaction_id, created_at, amount}, i) => {
+                                        data.payments?.map(({transaction_id, created_at, amount}, i) => {
                                             return (
                                                 <TableRow key={transaction_id}>
                                                     <TableCell className="text-center">{ transaction_id }</TableCell>
                                                     <TableCell>
-                                                        {(new Date(created_at)).toDateString()}
+                                                        {created_at &&(new Date(created_at)).toDateString()}
                                                     </TableCell>
-                                                    <TableCell className="text-right">৳ {(
+                                                    <TableCell className="text-right">৳ {data.grand_total && data.payments && (
                                                         data.grand_total 
                                                             - data.payments.slice(0, i).
                                                                 reduce((acc, cur) => acc + cur.amount, 0)
                                                     ).toFixed(2)}
                                                     </TableCell>
                                                     <TableCell className="text-right">- ৳ {amount.toFixed(2)}</TableCell>
-                                                    <TableCell className="text-right">{(
+                                                    <TableCell className="text-right">{data.grand_total && data.payments && (
                                                         data.grand_total 
                                                             - data.payments.slice(0, i).reduce((acc, cur) => acc + cur.amount, 0)
                                                             - amount

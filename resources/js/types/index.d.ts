@@ -144,6 +144,17 @@ export type ContainerItem = InvoiceItem & {
     total_weight: number
 }
 
+export type OrderContentItem = InvoiceItem & {
+    order_num: number
+    tyre_id: number
+    container_num: string
+    bol: string
+    item_total: number
+    id?: number
+    tyre?: Tyre
+    
+}
+
 export interface LetterOfCreditFormErrors {
     lc_num?: string
     date_issued?: string
@@ -158,4 +169,35 @@ export interface LetterOfCreditFormErrors {
     foreign_expense?: string
     domestic_expense?: string
     notes?: string
+}
+
+export interface Order {
+    order_num: number
+    order_on: string | Date
+    count?: number
+    sub_total: number
+    discount_percent: number
+    discount_amount: number
+    tax_percentage: number
+    tax_amount: number
+    contents?: OrderContentItem[]
+    items?: OrderContentItem[]
+    payments?: Payments[]
+    customer?: Customer
+    customer_name?: string
+    customer_id?: number
+    sub_total?: number
+    grand_total?: number
+}
+
+export interface Payments {
+    transaction_id: number
+    account: number | null
+    amount: number
+    payment_amount: number
+    refund_amount: number
+    type: "cash" | "deposit" | "check" | "unknown"
+    order?: Order
+    created_at?: string
+
 }
