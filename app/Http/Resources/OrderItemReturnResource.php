@@ -24,6 +24,7 @@ class OrderItemReturnResource extends JsonResource
             'created_at' => $this->created_at->toDateTimeString(),
 
             $this->mergeWhen($this->relationLoaded('tyre'), fn () => [
+                'id' => $this->tyre_id,
                 'brand' => $this->tyre->brand,
                 'size' => $this->tyre->size,
                 'pattern' => $this->tyre->pattern,

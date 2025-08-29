@@ -154,6 +154,8 @@ export type OrderContentItem = InvoiceItem & {
     
 }
 
+export type OrderReturnItem = OrderContentItem
+
 export interface LetterOfCreditFormErrors {
     lc_num?: string
     date_issued?: string
@@ -181,6 +183,8 @@ export interface Order {
     tax_amount: number
     contents?: OrderContentItem[]
     items?: OrderContentItem[]
+    returns?: OrderReturnItem[],
+    returns_consolidated?: OrderReturnItem[],
     payments?: Payments[]
     customer?: Customer
     customer_name?: string

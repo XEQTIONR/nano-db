@@ -350,7 +350,7 @@ export default function Show({ order } : {
                                                             </TableCell>
                                                             <TableCell className="text-center">{qty}</TableCell>
                                                             <TableCell className="text-right">৳ {unit_price}</TableCell>
-                                                            <TableCell className="text-right">৳ {(qty * parseFloat(unit_price)).toFixed(2)}</TableCell>
+                                                            <TableCell className="text-right">৳ {(qty * unit_price).toFixed(2)}</TableCell>
                                                         </TableRow>
                                                     )
                                                 })
