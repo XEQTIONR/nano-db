@@ -1,36 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Resources\BankAccountResource;
 use App\Models\BankAccount;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Http\Controllers\Api\BankAccountController as ApiController;
 
-class BankAccountController extends ApiController
+class BankAccountController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $data = parent::index($request);
+        $perPage = intval($request->input('perPage') ?? 50);
 
-        return Inertia::render('common/index', [
-            ...$data,
-            'link' => route('bank_accounts.index'),
-            'title' => 'Bank Accounts',
-            'type' => 'bank_account',
-        ]);
-    }
+        $sortBy = $request->input('sortBy') ?? 'id';
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $sortDir = $request->input('sortDir') ?? 'asc';
+
+        $data = BankAccountResource::collection(
+            BankAccount::orderBy($sortBy, $sortDir)
+            ->paginate($perPage)
+        );
+
+        return [
+            'items' => $data,
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir,
+        ];
     }
 
     /**
@@ -45,14 +44,6 @@ class BankAccountController extends ApiController
      * Display the specified resource.
      */
     public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
     {
         //
     }

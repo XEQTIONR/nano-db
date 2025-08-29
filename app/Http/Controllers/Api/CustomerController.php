@@ -79,4 +79,17 @@ class CustomerController extends Controller
             'sortDir' => $sortDir
         ];
     }
+
+    public function store(Request $request)
+    {
+        $name = $request->name;
+        $address = $request->address;
+        $phone = $request->phone;
+        $notes = $request->notes;
+
+        $customer = new Customer(compact('name', 'address', 'phone', 'notes'));
+        $customer->save();
+
+        return new CustomerResource($customer);
+    }
 }

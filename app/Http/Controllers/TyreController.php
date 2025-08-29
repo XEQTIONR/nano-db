@@ -40,13 +40,7 @@ class TyreController extends ApiController
      */
     public function store(Request $request)
     {
-        $brand = $request->brand;
-        $size = $request->size;
-        $pattern = $request->pattern;
-        $lisi = $request->lisi;
-
-        $tyre = new Tyre(compact('brand', 'size', 'pattern', 'lisi'));
-        $tyre->save();
+        $tyre = parent::store($request);
 
         return redirect(route('tyres.index'))
             ->with('notification', [

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\StockResource;
 use App\Http\Resources\TyreResource;
 use App\Services\FilterService;
+use App\Models\Tyre;
 
 class TyreController extends Controller
 {
@@ -77,7 +78,15 @@ class TyreController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $brand = $request->brand;
+        $size = $request->size;
+        $pattern = $request->pattern;
+        $lisi = $request->lisi;
+
+        $tyre = new Tyre(compact('brand', 'size', 'pattern', 'lisi'));
+        $tyre->save();
+
+        return new TyreResource($tyre);
     }
 
     /**

@@ -12,22 +12,25 @@ const mainNavItems: NavCollapseGroup[] = [
         title: 'Bank',
         icon: Landmark,
         links: [
-            { title: "Letter of Credit", href: route('lcs.index')},
-            { title: "Bank Accounts", href: route('bank_accounts.index')},
+            { title: "Create new letter of credit", href: route('lcs.create')},
+            { title: "View letters of credit", href: route('lcs.index')},
+            { title: "View bank accounts", href: route('bank_accounts.index')},
         ],
     },
     {
         title: 'Consignments',
         icon: Anchor,
         links: [
-            { title: "View Consignments", href: "/consignments"},
-            { title: "View Containers", href: "/containers"},
+            { title: "Create new consignment", href: route('consignments.create')},
+            { title: "View consignments", href: route('consignments.index')},
+            { title: "View containers", href: "/containers"},
         ]
     },
     {
         title: 'Orders',
         icon: Layers,
         links: [
+            { title: "Create new order", href: route('orders.create')},
             { title: "View orders", href: route('orders.index')},
             { title: "View payments", href: route('payments.index')},
         ]
