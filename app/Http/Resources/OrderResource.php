@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\DB;
+
 class OrderResource extends JsonResource
 {
     /**
@@ -68,9 +68,31 @@ class OrderResource extends JsonResource
                         return $itm->values();
                     })
                     ->collapse()
+                    ->filter(fn($value) => $value['qty'] > 0)
+                    ->values()
                 ,
             ]),
+            'returns' => OrderItemReturnResource::collection($this->whenLoaded('returns')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
+            $this->mergeWhen($this->relationLoaded('returns'), fn() => [ 
+                'returns_consolidated' => OrderItemReturnResource::collection($this->returns
+                    ->groupBy('tyre_id')
+                    ->map(function($item, $tyreId) {
+                        return $item->groupBy('unit_price')
+                                ->map(function($item2, $unitPrice) {
+                                    return $item2->reduce(function($carry, $item3) {
+                                        if ($carry ==  null) {
+                                            return $item3;
+                                        }
+                                        $carry->qty += $item3->qty;
+                                        return $carry;
+                                    }, null);
+                                })
+                        ;
+                    })
+                    ->collapse()
+                    ->values())
+            ]),
 
             $this->mergeWhen($this->relationLoaded('payments'), fn() => [ 
                 'count_payments' => $this->payments->count(),

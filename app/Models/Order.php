@@ -48,4 +48,9 @@ class Order extends Model
     {
         return $this->hasMany(Payment::class, 'Order_num');
     }
+
+    public function returns(): HasMany
+    {
+        return $this->hasMany(OrderItemReturn::class, 'order_num');
+    }
 }
