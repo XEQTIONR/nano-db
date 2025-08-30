@@ -63,6 +63,8 @@ export default function Create({apiToken} : {apiToken: string}) {
         lisi: string;
     }[]>([])
 
+    const [show, setShow] = useState(true)
+    const [dir, setDir] = useState(true)
     const [current, setCurrent] = useState(0)
     const steps = [
         'Add Details',
@@ -158,6 +160,23 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const showErrors = false
 
+    const fn = (prev = false) => {
+        setDir(prev)
+        setShow(false)
+        setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
+        
+        if (prev) {
+            if ((current - 1) < 0)
+                setCurrent(steps.length - 1)
+            else
+                setCurrent((current - 1))
+        } else {
+            setCurrent((current+1) % steps.length)
+        }
+        
+        setTimeout(() => setShow(true), 1)
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="New Order" />
@@ -183,19 +202,24 @@ export default function Create({apiToken} : {apiToken: string}) {
                     }
                     <div className="flex gap-3">
                         <Button disabled={current == 0} className="cursor-pointer" variant="secondary"
-                            onClick={() => setCurrent(current - 1)}
+                            onClick={() => fn(true)}
                         >
                         <ChevronLeft />
                         </Button>
-                        <Button className="cursor-pointer" variant="secondary"
-                            onClick={() => setCurrent(current + 1)}
+                        <Button disabled={current == 1} className="cursor-pointer" variant="secondary"
+                            onClick={() => fn()}
                         >
                             <ChevronRight />
                         </Button>
                     </div>
                 </div>
                 { current == 0 && <div className="w-full pt-5 flex gap-4 items-start">
-                    <div className="w-full flex flex-col gap-4 md:w-1/2">
+                    <div className={cn(
+                        "w-full transition-all relative flex flex-col gap-4 md:w-1/2",
+                        show ? "opacity-100" : "opacity-0",
+                        !dir && (show ? "-right-0" : "-right-16"), 
+                        dir && (show ? "-left-0" : "-left-16")
+                    )}>
                         <Card className="w-full">
                             <CardHeader>
                                 <CardTitle>Add order details</CardTitle>
@@ -549,31 +573,44 @@ export default function Create({apiToken} : {apiToken: string}) {
                             </CardContent>
                         </Card>
                     </div>
-                    <Card className="w-1/2">
-                        <CardHeader>
-                            <CardTitle>Product Catalog</CardTitle>
-                            <CardDescription>
-                                All products
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <ProductsTable
-                                showStock={true} 
-                                apiToken={apiToken}
-                                addItem={(item) => {
-                                    console.log('additem', item)
-                                    setItems([...items, {
-                                        ...item,
-                                        qty: 1,
-                                        unit_price: 0
-                                    }])
-                                }} 
-                            />
-                        </CardContent>
-                    </Card>
+                    <div className={cn(
+                        "w-full transition-all relative md:w-1/2",
+                        show ? "opacity-100" : "opacity-0",
+                        !dir && (show ? "-right-0" : "-right-16"), 
+                        dir && (show ? "-left-0" : "-left-16")
+                    )}>
+                        <Card className="w-full">
+                            <CardHeader>
+                                <CardTitle>Product Catalog</CardTitle>
+                                <CardDescription>
+                                    All products
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ProductsTable
+                                    showStock={true} 
+                                    apiToken={apiToken}
+                                    addItem={(item) => {
+                                        console.log('additem', item)
+                                        setItems([...items, {
+                                            ...item,
+                                            qty: 1,
+                                            unit_price: 0
+                                        }])
+                                    }} 
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
+                    
                 </div>}
                 { current == 1 && <div className="w-full pt-5 flex gap-4 items-start justify-center">
-                    <Card className="w-1/2 print:w-full print:border-0 print:shadow-none">
+                    <Card className={cn(
+                        "w-1/2 print:w-full transition-all relative print:border-0 print:shadow-none",
+                        show ? "opacity-100" : "opacity-0",
+                        !dir && (show ? "-right-0" : "-right-16"), 
+                        dir && (show ? "-left-0" : "-left-16"),
+                    )}>
                         <CardHeader>
                             <CardTitle>
                                 Confirm Order

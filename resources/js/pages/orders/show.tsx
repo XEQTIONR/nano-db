@@ -150,6 +150,7 @@ export default function Show({ order } : {
                     <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
                         <CardHeader>
                             <CardTitle>Order # {data.order_num}</CardTitle>
+                            <CardDescription>Details</CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col justify-between h-full font-mono">
                             
@@ -320,49 +321,54 @@ export default function Show({ order } : {
                         </CardContent>
                     </Card>
                 </div>
-                <div className="flex flex-wrap xl:flex-nowrap pb-8 px-8 print:py-0 gap-6">
-                    <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
-                        <CardHeader>
-                            <CardTitle>Returns</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col justify-between h-full font-mono">
-                            
-                                <div className="flex flex-col gap-6">
-                                    <div className="flex flex-col mt-4">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="text-center">#</TableHead>
-                                                    <TableHead>Item</TableHead>
-                                                    <TableHead className="text-center">Qty</TableHead>
-                                                    <TableHead className="text-right">Price</TableHead>
-                                                    <TableHead className="text-right">Total</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody className="">
-                                            {
-                                                data.returns_consolidated?.map(({tyre_id, qty, unit_price, tyre}, i) => {
-                                                    return (
-                                                        <TableRow key={i}>
-                                                            <TableCell className="text-center">{ i+1 }</TableCell>
-                                                            <TableCell>
-                                                                ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
-                                                            </TableCell>
-                                                            <TableCell className="text-center">{qty}</TableCell>
-                                                            <TableCell className="text-right">৳ {unit_price}</TableCell>
-                                                            <TableCell className="text-right">৳ {(qty * unit_price).toFixed(2)}</TableCell>
-                                                        </TableRow>
-                                                    )
-                                                })
-                                            }
-                                            
-                                            </TableBody>
-                                        </Table>
+                {   
+                    data.returns && data.returns.length > 0 &&
+                    (<div className="flex flex-wrap xl:flex-nowrap pb-8 px-8 print:py-0 gap-6">
+                        <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
+                            <CardHeader>
+                                <CardTitle>Returns</CardTitle>
+                                <CardDescription>Items previously from the order that have been returned</CardDescription>
+                            </CardHeader>
+                            <CardContent className="flex flex-col justify-between h-full font-mono">
+                                
+                                    <div className="flex flex-col gap-6">
+                                        <div className="flex flex-col mt-4">
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="text-center">#</TableHead>
+                                                        <TableHead>Item</TableHead>
+                                                        <TableHead className="text-center">Qty</TableHead>
+                                                        <TableHead className="text-right">Price</TableHead>
+                                                        <TableHead className="text-right">Total</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody className="">
+                                                {
+                                                    data.returns_consolidated?.map(({tyre_id, qty, unit_price, tyre}, i) => {
+                                                        return (
+                                                            <TableRow key={i}>
+                                                                <TableCell className="text-center">{ i+1 }</TableCell>
+                                                                <TableCell>
+                                                                    ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
+                                                                </TableCell>
+                                                                <TableCell className="text-center">{qty}</TableCell>
+                                                                <TableCell className="text-right">৳ {unit_price}</TableCell>
+                                                                <TableCell className="text-right">৳ {(qty * unit_price).toFixed(2)}</TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    })
+                                                }
+                                                
+                                                </TableBody>
+                                            </Table>
+                                        </div>
                                     </div>
-                                </div>
-                        </CardContent>
-                    </Card>
-                </div>
+                            </CardContent>
+                        </Card>
+                        <div className="w-full lg:w-1/2 spacer" />
+                    </div>)
+                }
                 
                 <CreateForm order={order} />
             </AppLayout>

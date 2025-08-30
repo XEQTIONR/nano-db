@@ -34,8 +34,8 @@ export default function Create({apiToken} : {apiToken: string}) {
         },
     ];
 
-    const [show, setShow] = useState(true);
-    const [dir, setDir] = useState(true);
+    const [show, setShow] = useState(true)
+    const [dir, setDir] = useState(true)
     const [current, setCurrent] = useState(0)
     const [items, setItems] = useState<Tyre[]>([])
     const steps = [
