@@ -98,6 +98,10 @@ class OrderController extends ApiController
             $contents = $order->contents;
             $returns = collect($request->returns);
             $returnedItems = collect([]);
+            $discount_percent = $request->discount_percent;
+            $discount_amount = $request->discount_amount;
+            $tax_percentage = $request->tax_percentage;
+            $tax_amount = $request->tax_amount;
 
             $returns->each(function($return) use (&$contents, &$returnedItems) {
                 $id = $return['id'];
@@ -140,6 +144,13 @@ class OrderController extends ApiController
 
             $order->contents()->saveMany($contents);
             $order->returns()->saveMany($returnedItems);
+
+            $order->discount_percent = $request->discount_percent;
+            $order->discount_amount = $request->discount_amount;
+            $order->tax_percentage = $request->tax_percentage;
+            $order->tax_amount = $request->tax_amount;
+
+            $order->save();
 
             DB::commit();
         } catch(\Exception $e) {

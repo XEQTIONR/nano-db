@@ -395,7 +395,8 @@ export default function Returns({order} : {order: { data: Order }}) {
                                                 setEditTax(true)
                                             }} variant="outline" size="sm">Add Tax</Button>
                                             <Button 
-                                                variant="secondary" 
+                                                variant="secondary"
+                                                disabled={grandTotal() < 0} 
                                                 size="sm"
                                                 onClick={() => {
                                                     router.post(route('orders.returns.store', {
@@ -406,9 +407,14 @@ export default function Returns({order} : {order: { data: Order }}) {
                                                                 return {
                                                                     id,
                                                                     qty,
-                                                                    unit_price
+                                                                    unit_price,
                                                                 }
-                                                            })
+                                                            }),
+                                                        discount_percent: discount.percentage,
+                                                        discount_amount: discount.value,
+                                                        tax_percentage: tax.percentage,
+                                                        tax_amount: tax.value,
+                                                        
                                                     })
                                                 }}
                                             >
