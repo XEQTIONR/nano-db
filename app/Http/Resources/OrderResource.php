@@ -60,6 +60,11 @@ class OrderResource extends JsonResource
                                 'qty' => $itm->qty,
                                 'unit_price' => $itm->unit_price,
                                 'item_total' => $itm->item_total,
+                                'tyre' => $itm->tyre,
+                                'brand' => $itm->tyre->brand,
+                                'size' => $itm->tyre->size,
+                                'pattern' => $itm->tyre->pattern,
+                                'lisi' => $itm->tyre->lisi
                             ];
                         });
                     })
@@ -69,8 +74,7 @@ class OrderResource extends JsonResource
                     })
                     ->collapse()
                     ->filter(fn($value) => $value['qty'] > 0)
-                    ->values()
-                ,
+                    ->values(),
             ]),
             'returns' => OrderItemReturnResource::collection($this->whenLoaded('returns')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),

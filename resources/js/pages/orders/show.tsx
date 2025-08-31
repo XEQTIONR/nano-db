@@ -100,7 +100,7 @@ export default function Show({ order } : {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
-                                    onClick={() => router.visit(route('orders.receipt', { order: order.data.order_num}))} 
+                                    onClick={() => router.visit(route('orders.receipt', { order: order.data.order_num }))} 
                                     className="hover:cursor-pointer text-xs" 
                                     size="icon" 
                                     variant="ghost"
@@ -115,7 +115,7 @@ export default function Show({ order } : {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
-                                    onClick={() => router.visit(route('orders.create'))}
+                                    onClick={() => router.visit(route('orders.returns.create', { order: order.data.order_num }))}
                                     className="hover:cursor-pointer text-xs" 
                                     size="icon" 
                                     variant="ghost"

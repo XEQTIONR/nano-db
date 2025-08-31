@@ -52,12 +52,11 @@ class ConsignmentController extends ApiController
     {
         $consignment = parent::store($request);
 
-        return redirect(route('consignments.index'))
-            ->with('notification', [
-                'message' => 'New Consignment ' . $consignment->BOL . ' created',
-                'link' => route('consignments.show', ['consignment' => $consignment]),
-                'selected_value' => $consignment->BOL,
-                'selected_key' => 'bol'
-            ]);
+        return redirect(route('consignments.index'))->with('notification', [
+            'message' => 'New Consignment ' . $consignment->BOL . ' created',
+            'link' => route('consignments.show', ['consignment' => $consignment]),
+            'selected_value' => $consignment->BOL,
+            'selected_key' => 'bol'
+        ]);
     }
 }

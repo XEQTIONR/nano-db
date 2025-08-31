@@ -53,6 +53,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/returns', [OrderController::class, 'returns'])->name('orders.returns.create');
+    Route::post('/orders/{order}/returns', [OrderController::class, 'storeReturn'])->name('orders.returns.store');
     
     
     Route::get('/orders/{order}/receipt', OrderReceiptController::class)->name('orders.receipt');
