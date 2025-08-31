@@ -18,7 +18,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption
 } from "@/components/ui/table"
 
 import { Input } from '@/components/ui/input';
@@ -122,6 +121,10 @@ export default function Returns({order} : {order: { data: Order }}) {
     }
 
     const grandTotal = () => (subTotal() ?? 0) - totalDiscount() + totalTax()
+
+    const paymentsTotal = () => order.data?.payments?.reduce((prev, payment) => prev + payment.amount, 0) ?? 0
+    
+    const balance = () => grandTotal() - paymentsTotal()
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -276,9 +279,25 @@ export default function Returns({order} : {order: { data: Order }}) {
                                     <TableRow className="font-extrabold">
                                         <TableCell></TableCell>
                                         <TableCell>Grand total</TableCell>
-                                        <TableCell className="text-center max-w-24">{totalQty()}</TableCell>
+                                        <TableCell className="text-center max-w-24"></TableCell>
                                         <TableCell className="max-w-28"></TableCell>
                                         <TableCell className="text-right">৳ {grandTotal().toFixed(2)}</TableCell>
+                                   
+                                    </TableRow>
+                                     <TableRow className="font-extrabold">
+                                        <TableCell></TableCell>
+                                        <TableCell>Payments total</TableCell>
+                                        <TableCell className="text-center max-w-24">{order.data.payments?.length ?? ""}</TableCell>
+                                        <TableCell className="max-w-28"></TableCell>
+                                        <TableCell className="text-right">৳ {paymentsTotal().toFixed(2)}</TableCell>
+                                   
+                                    </TableRow>
+                                    <TableRow className="font-extrabold">
+                                        <TableCell></TableCell>
+                                        <TableCell>Amount owed</TableCell>
+                                        <TableCell className="text-center max-w-24"></TableCell>
+                                        <TableCell className="max-w-28"></TableCell>
+                                        <TableCell className="text-right">৳ {balance().toFixed(2)}</TableCell>
                                    
                                     </TableRow>
                                     </TableBody>

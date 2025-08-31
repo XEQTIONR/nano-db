@@ -83,7 +83,7 @@ class OrderController extends ApiController
 
     public function returns(Order $order)
     {
-        $order->load(['customer', 'contents.tyre']);
+        $order->load(['customer', 'contents.tyre', 'payments']);
 
         return Inertia::render('orders/returns', [
             'order' => new OrderResource($order)
@@ -95,13 +95,11 @@ class OrderController extends ApiController
         DB::beginTransaction();
 
         try {
+            $order->load(['contents', 'payments']);
             $contents = $order->contents;
+
             $returns = collect($request->returns);
             $returnedItems = collect([]);
-            $discount_percent = $request->discount_percent;
-            $discount_amount = $request->discount_amount;
-            $tax_percentage = $request->tax_percentage;
-            $tax_amount = $request->tax_amount;
 
             $returns->each(function($return) use (&$contents, &$returnedItems) {
                 $id = $return['id'];
@@ -151,6 +149,39 @@ class OrderController extends ApiController
             $order->tax_amount = $request->tax_amount;
 
             $order->save();
+
+            $order->load(['contents', 'payments']);
+
+            $contents = $order->contents;
+            $payments = $order->payments;
+            $editedPayments = collect([]);
+            $subTotal = $contents->reduce(function($carry, $item) {
+                return $carry + ($item->qty * $item->unit_price);
+            }, 0);
+
+            $amountOwed = $subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100)) + $order->tax_amount - $order->discount_amount;
+            $paid = false; 
+
+            foreach ($payments as $payment) {
+                if (!$paid) {
+                    if ($payment->amount <= $amountOwed) {
+                        $amountOwed = $amountOwed - $payment->amount;
+                    } else { // $payment->amount > $amountOwed
+                        $payment->refund_amount = $payment->payment_amount - $amountOwed;
+                        $editedPayments->push($payment);
+                        $paid = true;
+                    }
+                } else {
+                    $payment->refund_amount = $payment->payment_amount;
+                    $editedPayments->push($payment);
+                }
+                
+            }
+
+            // save all edited payments
+            $editedPayments->each(function($payment) {
+                $payment->save();
+            });
 
             DB::commit();
         } catch(\Exception $e) {
