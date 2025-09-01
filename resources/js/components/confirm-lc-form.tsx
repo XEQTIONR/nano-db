@@ -1,4 +1,15 @@
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import {
   CardAction,
   CardContent,
   CardDescription,
@@ -35,18 +46,37 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                 Confirm details about your letter of credit and proforma invoice
             </CardDescription>
             <CardAction>
-                <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => {
-                        if (onSubmit) {
-                            onSubmit(lcData, items)
-                        }
-                    }}
-                >
-                    Finish
-                    <ChevronRight />
-                </Button>
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                        >
+                            Finish
+                            <ChevronRight />
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Create new letter of credit?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to create this letter of credit?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>
+                                Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction onClick={() => {
+                                if (onSubmit) {
+                                    onSubmit(lcData, items)
+                                }
+                            }}>
+                                Confirm
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </CardAction>
         </CardHeader>
         <CardContent>
