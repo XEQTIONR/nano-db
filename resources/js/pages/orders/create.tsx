@@ -72,7 +72,7 @@ export default function Create({apiToken} : {apiToken: string}) {
     ]
 
     const [customerId, setCustomerId] = useState<number | undefined>(undefined)
-    const [customer, setCustomer] = useState<Customer|undefined>(undefined)
+    const [customer, setCustomer] = useState<Customer | undefined>(undefined)
 
     const [ orderDate, setOrderDate ] = useState<Date | undefined>(undefined)
 
@@ -163,7 +163,6 @@ export default function Create({apiToken} : {apiToken: string}) {
     const fn = (prev = false) => {
         setDir(prev)
         setShow(false)
-        setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
         
         if (prev) {
             if ((current - 1) < 0)
@@ -171,7 +170,15 @@ export default function Create({apiToken} : {apiToken: string}) {
             else
                 setCurrent((current - 1))
         } else {
-            setCurrent((current+1) % steps.length)
+            if (current == 0) {
+                if (customerId && customerId > 0 
+                    && (items.length > 0) 
+                    && orderDate
+                    && items.every((item) => item.qty > 0 && item.unit_price > 0)
+                ) {
+                    setCurrent(1)
+                } 
+            }
         }
         
         setTimeout(() => setShow(true), 1)
@@ -555,21 +562,18 @@ export default function Create({apiToken} : {apiToken: string}) {
                                             <Button size="sm" type="submit">Submit</Button>
                                         </form>
                                     </div>
-                                }
-                                {
-                                    displayItems.length > 0 && (
-                                        <div className="w-full flex justify-end gap-3">
-                                            <Button onClick={() => {
-                                                setEditDiscount(true)
-                                            }} variant="outline" size="sm">Add Discount</Button>
-                                            <Button onClick={() => {
-                                                setEditTax(true)
-                                            }} variant="outline" size="sm">Add Tax</Button>
-                                            <Button variant="secondary" size="sm">Continue</Button>
-                                        </div>
-                                    )
-                                }
-                                
+                                }                                    
+                                <div className="w-full flex justify-end gap-3">
+                                    <Button disabled={displayItems.length == 0} onClick={() => {
+                                        setEditDiscount(true)
+                                    }} variant="outline" size="sm">Add Discount</Button>
+                                    <Button disabled={displayItems.length == 0} onClick={() => {
+                                        setEditTax(true)
+                                    }} variant="outline" size="sm">Add Tax</Button>
+                                    <Button disabled={displayItems.length == 0} onClick={() => fn()} variant="secondary" size="sm">
+                                        Continue
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
