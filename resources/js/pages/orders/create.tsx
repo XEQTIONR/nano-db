@@ -1,4 +1,15 @@
 import AppLayout from '@/layouts/app-layout';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Head, router } from '@inertiajs/react';
 
 
@@ -218,6 +229,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                         >
                             <ChevronRight />
                         </Button>
+                        
                     </div>
                 </div>
                 { current == 0 && <div className="w-full pt-5 flex gap-4 items-start">
@@ -726,24 +738,43 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         </TableBody>
                                     </Table>
                                     <div className="w-full flex justify-end">
-                                        <Button
-                                            type="button" 
-                                            size="sm" 
-                                            variant="secondary"
-                                            onClick={() => {       
-                                                router.post(route('orders.store'), {
-                                                    customer_id: customerId,
-                                                    order_on: orderDate,
-                                                    tax_percentage: tax.percentage,
-                                                    tax_amount: tax.value,
-                                                    discount_percent: discount.percentage,
-                                                    discount_amount: discount.value,
-                                                    items: items
-                                                })
-                                            }}
-                                        >
-                                            Confirm
-                                        </Button>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    type="button" 
+                                                    size="sm" 
+                                                    variant="secondary"
+                                                >
+                                                    Create Order
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Create new order?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Are you sure you want to create this new order for {customer?.name} (ID: {customerId})?
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction onClick={() => {       
+                                                        router.post(route('orders.store'), {
+                                                            customer_id: customerId,
+                                                            order_on: orderDate,
+                                                            tax_percentage: tax.percentage,
+                                                            tax_amount: tax.value,
+                                                            discount_percent: discount.percentage,
+                                                            discount_amount: discount.value,
+                                                            items: items
+                                                        })
+                                                    }}>
+                                                        Confirm
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
                                 </div>
                             </div>
