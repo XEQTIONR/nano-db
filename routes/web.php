@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stock', StockController::class)->name('stock.index');
 
     Route::get('/waste/create', [WasteController::class, 'create'])->name('waste.create');
+    Route::post('/waste', [WasteController::class, 'store'])->name('waste.store');
 
 });
 

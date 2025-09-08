@@ -1,10 +1,9 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -15,7 +14,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCaption
 } from "@/components/ui/table"
 
 import { Input } from '@/components/ui/input';
@@ -24,6 +22,10 @@ import { type BreadcrumbItem } from '@/types';
 import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Consignments',
+        href: route('consignments.index'),
+    },
     {
         title: 'Waste',
         href: route('waste.create'),
@@ -42,13 +44,13 @@ type WasteItem = {
 
 export default function Create({ groupedConsignments, tyres } : { tyres: { data: Tyre[]}}) {
     
-    const [changes, setChanges] = useState<WasteItem[]>([])
+    const [waste, setWaste] = useState<WasteItem[]>([])
 
     const setQty = (containerNum: string, bol: string, tyreId: number, qty: string, max: number) => {
         
         const tempQty = isNaN(parseInt(qty)) ? 0 : parseInt(qty)
 
-        const index = changes.findIndex((item) => 
+        const index = waste.findIndex((item) => 
             item.containerNum == containerNum
             && item.bol == bol
             && item.tyreId == tyreId
@@ -56,9 +58,9 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
 
         if (index >= 0) {
             if (tempQty == 0) {
-                setChanges(changes.filter((_, idx) => idx !== index))
+                setWaste(waste.filter((_, idx) => idx !== index))
             } else if (tempQty <= max) {
-                setChanges(changes.map((itm, idx) => {
+                setWaste(waste.map((itm, idx) => {
                     if (idx == index) {
                         itm.qtyReturned = tempQty
                     }
@@ -66,9 +68,7 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
                 }))
             }
         } else if (tempQty > 0 && tempQty <= max) {
-            // console.log('else tempQty:', tempQty, 'max:', max)
-            // if (tempQty <= max)
-            setChanges([...changes, {
+            setWaste([...waste, {
                 containerNum,
                 bol,
                 tyreId,
@@ -77,10 +77,17 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
         }
     }
 
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        router.post(route('waste.store'), {
+            waste: waste
+        })
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Waste" />
-            <div className="w-full flex justify-center">
+            <form onSubmit={submit} className="w-full flex justify-center">
                 <div className="w-full lg:w-3/4 xl:w-2/3 flex flex-col gap-4 p-4">
                     {
                         Object.keys(groupedConsignments).map((bol) => (
@@ -116,7 +123,7 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
                                                                         </TableCell>
                                                                         <TableCell>
                                                                             <Input
-                                                                                value={changes.find((wasteItem) => wasteItem.bol == bol && wasteItem.containerNum == containerNum && wasteItem.tyreId == item.tyre_id)?.qtyReturned ?? ""} 
+                                                                                value={waste.find((wasteItem) => wasteItem.bol == bol && wasteItem.containerNum == containerNum && wasteItem.tyreId == item.tyre_id)?.qtyReturned ?? ""} 
                                                                                 min={0} 
                                                                                 max={item.in_stock} 
                                                                                 onChange={({target}) => setQty(containerNum, bol, item.tyre_id, target.value, item.in_stock)} 
@@ -125,7 +132,7 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
                                                                             />
                                                                         </TableCell>
                                                                         <TableCell className="text-center">
-                                                                            {item.in_stock - (changes.find((wasteItem) => wasteItem.bol == bol && wasteItem.containerNum == containerNum && wasteItem.tyreId == item.tyre_id)?.qtyReturned ?? 0)}
+                                                                            {item.in_stock - (waste.find((wasteItem) => wasteItem.bol == bol && wasteItem.containerNum == containerNum && wasteItem.tyreId == item.tyre_id)?.qtyReturned ?? 0)}
                                                                         </TableCell>
                                                                     </TableRow>
                                                                 ))
@@ -140,8 +147,11 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
                             </Card>
                         ))
                     }
+                    <div className="w-full flex justify-end">
+                        <Button disabled={waste.length == 0}>Submit</Button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </AppLayout>
     )
 }
