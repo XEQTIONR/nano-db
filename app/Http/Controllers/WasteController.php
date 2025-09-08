@@ -58,7 +58,11 @@ class WasteController extends Controller
             $w->save();
         });
 
-        return redirect(route('consignments.index'));
+        $total = $wasteInput->reduce(fn($carry, $current) => $carry + $current['qtyReturned'], 0);
+
+        return redirect(route('consignments.index'))->with('notification', [
+            'message' => "Removed $total items from stock and added to waste."
+        ]);
     }
 
     /**

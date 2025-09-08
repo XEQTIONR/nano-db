@@ -1,4 +1,15 @@
 import AppLayout from '@/layouts/app-layout';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Head, router } from '@inertiajs/react';
 import { Button } from "@/components/ui/button"
 import {
@@ -77,8 +88,7 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
         }
     }
 
-    const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const submit = () => {
         router.post(route('waste.store'), {
             waste: waste
         })
@@ -87,7 +97,7 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Waste" />
-            <form onSubmit={submit} className="w-full flex justify-center">
+            <div className="w-full flex justify-center">
                 <div className="w-full lg:w-3/4 xl:w-2/3 flex flex-col gap-4 p-4">
                     {
                         Object.keys(groupedConsignments).map((bol) => (
@@ -148,10 +158,30 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
                         ))
                     }
                     <div className="w-full flex justify-end">
-                        <Button disabled={waste.length == 0}>Submit</Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button disabled={waste.length == 0}>Submit</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Confirm add waste?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Are you sure that you want to add tyres to waste? These <span className="font-bold text-black dark:text-white">{waste.reduce((prev, curr) => prev + curr.qtyReturned, 0)}</span> tyres will be removed from the current stock.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction onClick={submit}>
+                                        Confirm
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </div>
-            </form>
+            </div>
         </AppLayout>
     )
 }
