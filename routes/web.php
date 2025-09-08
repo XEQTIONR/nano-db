@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderReturnController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
+use App\Http\Controllers\WasteController;
 use App\Http\Resources\DetailedStockResource;
 use App\Http\Resources\StockResource;
 use App\Models\Order;
@@ -64,6 +65,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
 
     Route::get('/stock', StockController::class)->name('stock.index');
+
+    Route::get('/waste/create', [WasteController::class, 'create'])->name('waste.create');
 
 });
 
