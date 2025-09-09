@@ -3,17 +3,53 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\WasteResource;
 use App\Models\Waste;
+use App\Services\FilterService;
+use Illuminate\Http\Request;
+
 
 class WasteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $sortBy = $request->input('sortBy') ?? 'id';
+
+        $sortDir = $request->input('sortDir') ?? 'asc';
+
+        $filterStr = $request->input('filters') ?? "";
+
+        $filters = FilterService::parse($filterStr);
+
+        $query = Waste::with('tyre');
+
+        if ($filters->count() > 0) {
+            for ($i=0; $i<$filters->count(); $i++) {
+                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                    $query = $query->whereIn($filters[$i][0], $filters[$i][2]);
+                } else {
+                    $query = $query->where(...$filters[$i]);
+                }
+            }
+
+            $query = $query->select();
+        }
+
+        $data = WasteResource::collection(
+            $query->orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
+        );
+
+        return [
+            'items' => $data,
+            'filters' => $filters,
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir
+        ];
     }
 
     /**

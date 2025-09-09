@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Waste extends Model
 {
@@ -14,4 +15,9 @@ class Waste extends Model
         'tyre_id',
         'qty'
     ];
+
+    public function tyre(): BelongsTo
+    {
+        return $this->belongsTo(Tyre::class, 'tyre_id', 'tyre_id');
+    }
 }

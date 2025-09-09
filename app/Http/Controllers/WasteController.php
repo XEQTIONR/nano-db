@@ -15,9 +15,17 @@ class WasteController extends ApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        
+        $data = parent::index($request);
+
+        return Inertia::render('common/index', [
+            ...$data,
+            'addLink' => route('waste.create'),
+            'link' => route('waste.index'),
+            'title' => 'Waste',
+            'type' => 'waste',
+        ]);
     }
 
     /**
@@ -49,7 +57,7 @@ class WasteController extends ApiController
     {
         $total = parent::store($request);
 
-        return redirect(route('consignments.index'))->with('notification', [
+        return redirect(route('waste.index'))->with('notification', [
             'message' => "Removed $total items from stock and added to waste."
         ]);
     }

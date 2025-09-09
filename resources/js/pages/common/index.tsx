@@ -10,8 +10,9 @@ import { columns as consignmentCols, filterConfigs as consignmentFilters } from 
 import { columns as containerCols, filterConfigs as containerFilters } from '@/pages/containers/components/columns';
 import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
 import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/orders/components/columns';
-import { columns as paymentCols, filterConfigs as paymentFilters } from '@/pages//payments/components/columns';
+import { columns as paymentCols, filterConfigs as paymentFilters } from '@/pages/payments/components/columns';
 import { columns as stockCols } from '@/pages//stock/components/columns';
+import { columns as wasteCols, filterConfigs as wasteFilters } from '@/pages/waste/components/columns';
 import {
   Pagination,
   PaginationContent,
@@ -134,6 +135,10 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             break
         case "stock":
             cols = stockCols
+            break
+        case "waste":
+            cols = wasteCols
+            filterConfigs = wasteFilters
             break
         case "tyre":
         default: 

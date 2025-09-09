@@ -34,11 +34,11 @@ import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Consignments',
-        href: route('consignments.index'),
+        title: 'Waste',
+        href: route('waste.index'),
     },
     {
-        title: 'Waste',
+        title: 'Create New',
         href: route('waste.create'),
     },
 ];
