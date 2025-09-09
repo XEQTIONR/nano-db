@@ -8,8 +8,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Tyre;
 use App\Models\Waste;
+use App\Http\Controllers\Api\WasteController as ApiController;
 
-class WasteController extends Controller
+class WasteController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -46,19 +47,7 @@ class WasteController extends Controller
      */
     public function store(Request $request)
     {
-        $wasteInput = collect($request->waste);
-        $wasteInput->each(function($waste) {
-            $w = new Waste([
-                'BOL' => $waste['bol'],
-                'Container_num' => $waste['containerNum'],
-                'tyre_id' => $waste['tyreId'],
-                'qty' => $waste['qtyReturned'],
-            ]);
-
-            $w->save();
-        });
-
-        $total = $wasteInput->reduce(fn($carry, $current) => $carry + $current['qtyReturned'], 0);
+        $total = parent::store($request);
 
         return redirect(route('consignments.index'))->with('notification', [
             'message' => "Removed $total items from stock and added to waste."
