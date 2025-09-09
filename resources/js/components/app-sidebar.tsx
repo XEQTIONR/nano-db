@@ -23,7 +23,8 @@ const mainNavItems: NavCollapseGroup[] = [
         links: [
             { title: "Create new consignment", href: route('consignments.create')},
             { title: "View consignments", href: route('consignments.index')},
-            { title: "View containers", href: "/containers"},
+            { title: "View containers", href: route('containers.index')},
+            { title: "View waste", href: route('waste.index')},
         ]
     },
     {
@@ -41,6 +42,7 @@ const mainNavItems: NavCollapseGroup[] = [
         links: [
             { title: "View all products", href: route('tyres.index')},
             { title: "View current inventory", href: route('stock.index')},
+            { title: "View waste", href: route('waste.index')}
         ]
     },
     {
