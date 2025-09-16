@@ -71,8 +71,7 @@ class LetterOfCreditController extends Controller
     {
         $lcData = $request->lc;
         $items = collect($request->items);
-        Log::info('items');
-        Log::info($items);
+
         DB::beginTransaction();
 
         try {
@@ -93,8 +92,7 @@ class LetterOfCreditController extends Controller
 
             return new LetterOfCreditResource($lc);
         } catch(Exception $e) {
-            Log::info('exception');
-            Log::info($e);
+
             DB::rollBack();
 
             return;

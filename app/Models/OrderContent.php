@@ -17,10 +17,13 @@ class OrderContent extends Model
         'bol'
     ];
 
-    protected $casts = [
-        'qty' => 'integer',
-        'unit_price' => 'float',
-    ];
+    protected function casts() : array  
+    { 
+        return [
+            'qty' => 'integer',
+            'unit_price' => 'float',
+        ];
+    }
 
     protected $appends = [
         'item_total'

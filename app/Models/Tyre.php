@@ -21,10 +21,13 @@ class Tyre extends Model
     //     'in_stock',
     // ];
 
-    protected $casts = [
-        'supplied_qty' => 'double',
-        'ordered_qty' => 'double',
-        'wasted_qty' => 'double',
-        'in_stock' => 'double',
-    ];
+    protected function casts(): array 
+    {
+        return [
+            'supplied_qty' => 'double',
+            'ordered_qty' => 'double',
+            'wasted_qty' => 'double',
+            'in_stock' => 'double',
+        ];
+    }
 }

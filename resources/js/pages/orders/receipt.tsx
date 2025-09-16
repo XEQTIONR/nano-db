@@ -142,7 +142,6 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
                             
                                 <div className="flex flex-col gap-6">
                                     <div className="w-full flex items-center gap-2">
-                                        {/* <Globe  size={40} /> */}
                                         <img src="/crosscountry.svg" className="w-20 h-20" />
                                         <div className="flex flex-col gap-0">
                                             <h2 className="text-xl font-bold ">Cross Country</h2>

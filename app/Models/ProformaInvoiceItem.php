@@ -16,11 +16,15 @@ class ProformaInvoiceItem extends Model
 
     ];
 
-    protected $casts = [
-        'lc_num' => 'string'
-    ];
+    protected function casts(): array 
+    {
+        return [
+            'lc_num' => 'string'
+        ];
+    }
 
-    public function tyre(): BelongsTo {
+    public function tyre(): BelongsTo 
+    {
         return $this->belongsTo(Tyre::class, 'tyre_id', 'tyre_id');
     }
 

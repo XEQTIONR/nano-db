@@ -20,10 +20,13 @@ class Consignment extends Model
         'land_date',
         'lc',
     ];
-
-    protected $casts = [
-        'land_date' => 'date',
-    ];
+    
+    protected function casts() : array  
+    { 
+        return [
+            'land_date' => 'date',
+        ];
+    }
 
     public function letterOfCredit(): BelongsTo
     {
