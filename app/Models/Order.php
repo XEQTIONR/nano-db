@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Order extends Model
 {
@@ -52,5 +53,10 @@ class Order extends Model
     public function returns(): HasMany
     {
         return $this->hasMany(OrderItemReturn::class, 'order_num');
+    }
+
+    public function expenses(): MorphMany
+    {
+        return $this->morphMany(Expense::class, 'expenseable', 'string');
     }
 }

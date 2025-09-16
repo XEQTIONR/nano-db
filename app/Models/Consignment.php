@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Expensable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Consignment extends Model
 {
+    use Expensable;
+    
     public $incrementing = false;
     
     protected $primaryKey = 'BOL';
@@ -37,6 +40,8 @@ class Consignment extends Model
     {
         return $this->hasMany(Container::class, 'BOL');
     }
+
+
 
 
 
