@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Anchor, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
+import { Anchor, BanknoteArrowDown, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavCollapseGroup[] = [
@@ -28,6 +28,21 @@ const mainNavItems: NavCollapseGroup[] = [
         ]
     },
     {
+        title: 'Customers',
+        icon: Smile,
+        links: [
+            { title: "View customers", href: route('customers.index')},
+        ]
+    },
+    {
+        title: 'Expenses',
+        icon: BanknoteArrowDown,
+        links: [
+            { title: "View expenses", href: '/expenses'},
+            { title: "Create an expense", href: '/expenses/create'},
+        ]
+    },
+    {
         title: 'Orders',
         icon: Layers,
         links: [
@@ -45,13 +60,7 @@ const mainNavItems: NavCollapseGroup[] = [
             { title: "View waste", href: route('waste.index')}
         ]
     },
-    {
-        title: 'Customers',
-        icon: Smile,
-        links: [
-            { title: "View customers", href: route('customers.index')},
-        ]
-    },
+    
     {
         title: 'Reports',
         icon: ChartColumnIncreasing,
