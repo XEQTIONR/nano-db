@@ -19,7 +19,6 @@ export interface NavCollapseGroup {
     title: string
     icon?: LucideIcon | null
     links: NavItem[]
-    isActive?: boolean
 }
 
 export interface NavItem {

@@ -1,4 +1,4 @@
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, useSidebar } from '@/components/ui/sidebar';
 import { type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@radix-ui/react-collapsible';
@@ -21,7 +21,7 @@ import {
 import { ChevronRight, LayoutGrid } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { useSidebar } from '@/components/ui/sidebar';
+import { relativeUrl } from '@/lib/utils';
 
 export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     const page = usePage();
@@ -30,8 +30,8 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     const colorClasses = "text-neutral-800 dark:text-neutral-100"
     const [current, setCurrent] = useState(-1);
 
+    const { open } = useSidebar()
 
-    const { open } = useSidebar();
 
     function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, index: number}) {
         return (
@@ -39,8 +39,8 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             key={item.title}
             asChild 
             className="group/collapsible"
-            open={item.isActive ?? (current == index)}
-            onOpenChange={(opened) => setCurrent((opened ? index : -1))}
+            open={index == current || item.links.some((link) => link.href == relativeUrl(window.location.href))}
+            onOpenChange={(opened) => opened ? setCurrent(index) : null}
         >
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
@@ -117,10 +117,10 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     return (
         <SidebarGroup className="px-2 py-0">
             <SidebarGroupContent>
-            <SidebarMenu className={"flex flex-col mt-4 " + (!open ? "md:hidden" : "")}>
+            <SidebarMenu className={open ? "flex flex-col mt-4 " : "hidden"}>
                 <SidebarMenuItem>
                     <Link href={route('dashboard')}>
-                        <SidebarMenuButton tooltip="Dashboard">
+                        <SidebarMenuButton isActive={route().current('dashboard')} tooltip="Dashboard">
                             <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
                             <span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>Dashboard</span>
                         </SidebarMenuButton>
