@@ -268,7 +268,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                             disabled={ !canSubmit() }
                                             type="button" 
                                         >
-                                            Create Order
+                                            Create Expense
                                         </Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>

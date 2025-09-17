@@ -13,6 +13,8 @@ import { MoreHorizontal } from "lucide-react"
 
 import { FilterConfig } from "@/types"
 
+const uc = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
 export const columns = [
   {
     accessorKey: "id",
@@ -28,7 +30,7 @@ export const columns = [
     accessorKey: "expensable_type",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_type" label="Type" config={v} />,
     cell: ({ row }) => <div className="">{ 
-      row.getValue("expensable_type").split('App\\Models\\').join("") 
+      uc(row.getValue("expensable_type").split('App\\Models\\').join("")) 
     }</div>
   },
   {

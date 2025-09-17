@@ -1,4 +1,4 @@
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem } from '@/components/ui/sidebar';
 import { type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@radix-ui/react-collapsible';
@@ -33,89 +33,90 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
 
     const { open } = useSidebar();
 
-function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, index: number}) {
-    return (
-    <Collapsible
-        key={item.title}
-        asChild 
-        className="group/collapsible"
-        open={item.isActive ?? (current == index)}
-        onOpenChange={(opened) => setCurrent((opened ? index : -1))}
-    >
-        <SidebarMenuItem>
-            <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <span><item.icon className={colorClasses} size={iconSize}  strokeWidth={iconStroke} /></span>}
-                    {<span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>{item.title}</span>}
-                    <ChevronRight className={"ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 "
-                        + colorClasses
-                    } />
-                </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-                <SidebarMenuSub>
-                    {
-                        item.links.map((link) => (
-                            <SidebarMenuSubItem>
-                                <SidebarMenuSubButton isActive={page.url === link.href}>
-                                    <Link href={link.href}>
-                                        <span className="overflow-x-visible text-nowrap">{link.title}</span>
-                                    </Link>
-                                </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                        ))
-                    }
-                </SidebarMenuSub>
-            </CollapsibleContent>
-        </SidebarMenuItem>
-    </Collapsible>)
-}
+    function SidebarCollapsibleMenuItem ({ item, index }: {item: NavCollapseGroup, index: number}) {
+        return (
+        <Collapsible
+            key={item.title}
+            asChild 
+            className="group/collapsible"
+            open={item.isActive ?? (current == index)}
+            onOpenChange={(opened) => setCurrent((opened ? index : -1))}
+        >
+            <SidebarMenuItem>
+                <CollapsibleTrigger asChild>
+                    <SidebarMenuButton tooltip={item.title}>
+                        {item.icon && <span><item.icon className={colorClasses} size={iconSize}  strokeWidth={iconStroke} /></span>}
+                        {<span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>{item.title}</span>}
+                        <ChevronRight className={"ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 "
+                            + colorClasses
+                        } />
+                    </SidebarMenuButton>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <SidebarMenuSub>
+                        {
+                            item.links.map((link) => (
+                                <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton isActive={page.url === link.href}>
+                                        <Link href={link.href}>
+                                            <span className="overflow-x-visible text-nowrap">{link.title}</span>
+                                        </Link>
+                                    </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                            ))
+                        }
+                    </SidebarMenuSub>
+                </CollapsibleContent>
+            </SidebarMenuItem>
+        </Collapsible>)
+    }
 
-function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
-    const elem = useRef<HTMLButtonElement>(null);
-    const [isOpen, setIsOpen] = useState(false);
+    function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
+        const elem = useRef<HTMLButtonElement>(null);
+        const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(() => {
-        if (elem.current) {
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function() {
-                    const state = (elem.current?.getAttribute('data-state'))
-                    if (isOpen != (state === 'open')) {
-                        setIsOpen(state === 'open') 
-                    }
+        useEffect(() => {
+            if (elem.current) {
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function() {
+                        const state = (elem.current?.getAttribute('data-state'))
+                        if (isOpen != (state === 'open')) {
+                            setIsOpen(state === 'open') 
+                        }
+                    });
                 });
-            });
-            observer.observe(elem.current, {attributes: true})
+                observer.observe(elem.current, {attributes: true})
 
-            return () => observer.disconnect()
-        }
-    }, [isOpen])
-    return (<MenubarMenu>
-        <MenubarTrigger ref={elem} className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
-            {
-                !isOpen 
-                    ? (<Tooltip>
-                        <TooltipTrigger>{item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />}</TooltipTrigger>
-                        <TooltipContent side="right">{item.title}</TooltipContent>
-                    </Tooltip>)
-                    : (item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />)
+                return () => observer.disconnect()
             }
-        </MenubarTrigger>
-        <MenubarContent side="right">
-            <MenubarItem disabled><span className="text-xs uppercase font-thin tracking-widest">{item.title}</span></MenubarItem>
-            {
-                item.links.map((link) => (<MenubarItem disabled={page.url === link.href}>
-                    <Link href={link.href}>
-                        <span className="overflow-x-visible text-nowrap text-sm">{link.title}</span>
-                    </Link>
-                </MenubarItem>))
-            }
-        </MenubarContent>
-    </MenubarMenu>)
-}
+        }, [isOpen])
+        return (<MenubarMenu>
+            <MenubarTrigger ref={elem} className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                {
+                    !isOpen 
+                        ? (<Tooltip>
+                            <TooltipTrigger>{item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />}</TooltipTrigger>
+                            <TooltipContent side="right">{item.title}</TooltipContent>
+                        </Tooltip>)
+                        : (item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />)
+                }
+            </MenubarTrigger>
+            <MenubarContent side="right">
+                <MenubarItem disabled><span className="text-xs uppercase font-thin tracking-widest">{item.title}</span></MenubarItem>
+                {
+                    item.links.map((link) => (<MenubarItem disabled={page.url === link.href}>
+                        <Link href={link.href}>
+                            <span className="overflow-x-visible text-nowrap text-sm">{link.title}</span>
+                        </Link>
+                    </MenubarItem>))
+                }
+            </MenubarContent>
+        </MenubarMenu>)
+    }
 
     return (
         <SidebarGroup className="px-2 py-0">
+            <SidebarGroupContent>
             <SidebarMenu className={"flex flex-col mt-4 " + (!open ? "md:hidden" : "")}>
                 <SidebarMenuItem>
                     <Link href={route('dashboard')}>
@@ -127,6 +128,7 @@ function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
                 </SidebarMenuItem>
                 { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
             </SidebarMenu>
+            
             <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col items-start bg-transparent p-0 border-none shadow-none" : "")} asChild={false}>
                     <MenubarMenu>
                         <MenubarTrigger className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
@@ -142,6 +144,7 @@ function SidebarHoveringMenuItem({ item }: {item: NavCollapseGroup}) {
                     </MenubarMenu>
                     { items.map((item) => (<SidebarHoveringMenuItem item={item} />)) }
             </Menubar>
+            </SidebarGroupContent>
         </SidebarGroup>
     );
 }
