@@ -137,6 +137,13 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                     <CardContent>
                         <div className="grid gap-6">
                             <div className="grid gap-4">
+                                <Label>Date</Label>
+                                <InputCalendar date={date} id="date" onChange={(date) => {
+                                    setDate(date)
+                                    setData('date', date)
+                                }} />
+                            </div>
+                            <div className="grid gap-4">
                                 <Label>Expense type</Label>
                                 <Select value={type} onValueChange={(value) => {
                                     setType(value)
@@ -156,11 +163,6 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                     
                                 </Select>
                             </div>
-                            
-                                <InputCalendar date={date} id="date" onChange={(date) => {
-                                    setDate(date)
-                                    setData('date', date)
-                                }} />
 
                             {type && isRelation(type) && <div className="grid gap-4">
                                 {/* <Label>{types[type] ?? "Select"}</Label> */}
@@ -230,7 +232,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                             
                                         </Select>
                                     </div>
-                                    <Input onChange={({target}) => {
+                                    <Input placeholder="Year" onChange={({target}) => {
 
                                         if (data.expensable_id.split('-').length == 2) {
                                                 setData('expensable_id', (data.expensable_id.split('-')[0] + '-' + target.value))
@@ -242,7 +244,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                             }
                             {
                                 type == 'yearly' &&
-                                <Input type="number" onChange={({target}) => setData('expensable_id', target.value)} className='w-full' type="number" />
+                                <Input placeholder="Year" type="number" onChange={({target}) => setData('expensable_id', target.value)} className='w-full' type="number" />
                             }
                             <div className="grid gap-4">
                                 <Label>Amount</Label>

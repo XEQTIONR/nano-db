@@ -17,7 +17,7 @@ class ExpenseController extends Controller
     {
         $perPage = intval($request->input('perPage') ?? 50);
 
-        $sortBy = $request->input('sortBy') ?? 'id';
+        $sortBy = $request->input('sortBy') ?? 'created_at';
 
         $sortDir = $request->input('sortDir') ?? 'desc';
 

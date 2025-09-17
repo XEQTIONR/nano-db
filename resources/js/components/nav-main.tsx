@@ -39,7 +39,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             key={item.title}
             asChild 
             className="group/collapsible"
-            open={index == current || item.links.some((link) => link.href == relativeUrl(window.location.href))}
+            open={index == current || item.links.some((link) => relativeUrl(window.location.href).startsWith(link.href))}
             onOpenChange={(opened) => opened ? setCurrent(index) : null}
         >
             <SidebarMenuItem>
@@ -57,7 +57,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                         {
                             item.links.map((link) => (
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton isActive={page.url === link.href}>
+                                    <SidebarMenuSubButton isActive={page.url === link.href || page.url.startsWith(link.href)}>
                                         <Link href={link.href}>
                                             <span className="overflow-x-visible text-nowrap">{link.title}</span>
                                         </Link>
