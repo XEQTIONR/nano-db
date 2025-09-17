@@ -24,6 +24,13 @@ export const columns = [
     }
   },
   {
+    accessorKey: "land_date",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="land_date" label="Land Date" config={v} />,
+    cell: ({row}) => {
+      return <div className="text-center">{row.getValue("land_date")}</div>
+    }
+  },
+  {
     accessorKey: "value",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="end" colKey="value" label="Foreign Amount" config={v} />,
     cell: ({ row }) => {
@@ -57,13 +64,6 @@ export const columns = [
         return <div className="text-right">{(new Intl.NumberFormat("en-IN", 
             { style: "currency", currency: 'BDT', currencyDisplay: "narrowSymbol" })
             .format(amount))}</div>
-    }
-  },
-  {
-    accessorKey: "land_date",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="land_date" label="Land Date" config={v} />,
-    cell: ({row}) => {
-      return <div className="text-center">{row.getValue("land_date")}</div>
     }
   },
   {

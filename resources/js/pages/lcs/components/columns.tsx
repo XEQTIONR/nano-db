@@ -18,7 +18,7 @@ import { Link } from '@inertiajs/react'
 export const columns = [
   {
     accessorKey: "lc_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="lc_num" label="LC #" config={v} />,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="start" colKey="lc_num" label="LC #" config={v} />,
     cell: ({ row }) => <Link href={route('lcs.show', {lc: row.getValue("lc_num")})}>{row.getValue("lc_num")}</Link>
   },
   {

@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button'
 import { router } from "@inertiajs/react";
 import {
@@ -135,7 +146,33 @@ export default function CreateForm() {
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button type="submit">Submit</Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button type="button">Submit</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                            <AlertDialogTitle>Create new customer?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to create this new customer?
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>
+                                Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction onClick={() => {
+                                const k = validate()
+                                if (k === 0) {
+                                    router.post(route('customers.store'), { ...data })
+                                }
+                            }}>
+                                Confirm
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    
                     <DrawerClose asChild>
                         <Button onClick={() =>{
                             setErrors({...emptyFields})

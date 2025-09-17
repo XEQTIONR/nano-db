@@ -20,7 +20,7 @@ class TyreController extends Controller
 
         $perPage = intval($request->input('perPage') ?? 50);
 
-        $sortBy = $request->input('sortBy') ?? 'in_stock';
+        $sortBy = $request->input('sortBy') ?? 'created_at';
 
         $sortDir = $request->input('sortDir') ?? 'desc';
 

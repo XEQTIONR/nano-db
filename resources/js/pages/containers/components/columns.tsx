@@ -20,16 +20,16 @@ export const columns = [
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="container_num" label="Container #" config={v} />
   },
   {
+    accessorKey: "land_date",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="land_date" label="Landed On" config={v} />
+  },
+  {
     accessorKey: "bol",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="bol" label="Bill of lading #" config={v} />
   },
   {
     accessorKey: "lc_num",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="lc_num" label="LC #" config={v} />
-  },
-  {
-    accessorKey: "land_date",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="land_date" label="Landed On" config={v} />
   },
   {
     accessorKey: "created_at",
