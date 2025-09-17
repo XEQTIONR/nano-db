@@ -16,28 +16,25 @@ import { FilterConfig } from "@/types"
 export const columns = [
   {
     accessorKey: "id",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id" label="ID" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id"  justify="center" label="ID" config={v} />,
+    cell: ({ row }) => <div className="text-center">{ row.getValue("id") }</div>
+  },
+  {
+    accessorKey: "date",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="date" justify="start" label="Date" config={v} />,
+    cell: ({ row }) => <div className="">{ row.getValue("date") }</div>
   },
   {
     accessorKey: "expensable_type",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_type" label="Type" config={v} />
-  },
-  {
-    accessorKey: "expensable_type2",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_type2" label="Type2" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ 
-      row.getValue("expensable_type").split('App\\Models\\')[1] 
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_type" label="Type" config={v} />,
+    cell: ({ row }) => <div className="">{ 
+      row.getValue("expensable_type").split('App\\Models\\').join("") 
     }</div>
   },
   {
     accessorKey: "expensable_id",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_id" justify="center" label="Expensable" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue("expensable_id") }</div>
-  },
-  {
-    accessorKey: "date",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="date" justify="center" label="Date" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ row.getValue("date") }</div>
   },
   {
     accessorKey: "amount_local",

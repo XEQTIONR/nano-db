@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { InvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 
 import {
   Select,
@@ -30,7 +30,15 @@ import {
 } from "@/components/ui/alert-dialog"
 import { InputCalendar } from '@/components/ui/input-calendar';
 
+type ExpenseForm = {
+    expensable_type: string,
+    expensable_id: string,
+    date: Date,
+    amount: number,
+    note: string,
+}
 export default function Create({apiToken, types} : {apiToken: string, types: object}) {
+    
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Expenses',
@@ -42,11 +50,19 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
         },
     ];
 
+    const { data, setData, post, processing, errors, reset } = useForm<Required<ExpenseForm>>({
+        expensable_type: '',
+        expensable_id: '',
+        date: new Date(),
+        amount: 0,
+        note: ''
+    })
+
     const [amount, setAmount] = useState('0.00')
     const [floatAmount, setFloatAmount] = useState(0)
     const [type, setType] = useState<string| undefined>(undefined)
     const [value, setValue] = useState<string | undefined>(undefined)
-    const [date, setDate] = useState<Date | undefined>(undefined)
+    const [date, setDate] = useState<Date | undefined>(new Date())
     const [note, setNote] = useState<string>("")
 
     const isRelation = (val?: string) => val && val.startsWith('App\\Models\\') 
@@ -135,6 +151,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                 <Label>Expense type</Label>
                                 <Select value={type} onValueChange={(value) => {
                                     setType(value)
+                                    setData('expensable_type', value)
                                     setValue(undefined)
                                 }}>
                                     <SelectTrigger className="w-full">
@@ -151,7 +168,10 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                 </Select>
                             </div>
                             
-                                <InputCalendar id="date" onChange={(date) => setDate(date)} />
+                                <InputCalendar date={date} id="date" onChange={(date) => {
+                                    setDate(date)
+                                    setData('date', date)
+                                }} />
 
                             {type && isRelation(type) && <div className="grid gap-4">
                                 {/* <Label>{types[type] ?? "Select"}</Label> */}
@@ -180,6 +200,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                     }}
                                     onSelect={(val: string) => {
                                         setValue(val)
+                                        setData('expensable_id', val)
                                     }}
                                 />
                             </div>}
@@ -188,11 +209,15 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                 <Input value={amount} onChange={(e) => {
                                     setAmount(e.target.value)
                                     setFloatAmount(parseFloat(e.target.value))
+                                    setData('amount', parseFloat(e.target.value))
                                 }} type="number" className="md:text-4xl text-center font-bold h-16" />
                             </div>
                             <div className="grid gap-4">
                                 <Label>Note</Label>
-                                <Textarea value={note} onChange={({target}) => setNote(target.value)} className="min-h-36" />
+                                <Textarea value={note} onChange={({target}) => {
+                                    setNote(target.value)
+                                    setData('note', target.value)
+                                }} className="min-h-36" />
                             </div>
 
                             <div className="w-full flex justify-end">
@@ -221,16 +246,11 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                             <AlertDialogCancel>
                                                 Cancel
                                             </AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => {       
-                                                // router.post(route('orders.store'), {
-                                                //     customer_id: customerId,
-                                                //     order_on: orderDate,
-                                                //     tax_percentage: tax.percentage,
-                                                //     tax_amount: tax.value,
-                                                //     discount_percent: discount.percentage,
-                                                //     discount_amount: discount.value,
-                                                //     items: items
-                                                // })
+                                            <AlertDialogAction onClick={() => {    
+                                                post(route('expenses.store'), {
+                                                    // onSuccess: () => alert('success'),
+                                                    // onError: () => alert('error')
+                                                })
                                             }}>
                                                 Confirm
                                             </AlertDialogAction>

@@ -72,6 +72,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/waste', [WasteController::class, 'store'])->name('waste.store');
 
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
+    Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
     Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
 
 });

@@ -19,12 +19,12 @@ class ExpenseController extends Controller
 
         $sortBy = $request->input('sortBy') ?? 'id';
 
-        $sortDir = $request->input('sortDir') ?? 'asc';
+        $sortDir = $request->input('sortDir') ?? 'desc';
 
         $filterStr = $request->input('filters') ?? "";
 
         $data = ExpenseResource::collection(
-            Expense::with('expensable')->orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
+            Expense::orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
         );
 
         return Inertia::render('common/index', [
@@ -34,6 +34,7 @@ class ExpenseController extends Controller
             'link' => route('expenses.index'),
             'title' => 'Expenses',
             'type' => 'expense',
+            'types' => Expense::EXPENSABLE_LABELS
         ]);
     }
 
@@ -53,7 +54,7 @@ class ExpenseController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type' => [
+            'expensable_type' => [
                 'required',
                 Rule::in(Expense::EXPENSE_TYPES)
             ],
@@ -65,7 +66,7 @@ class ExpenseController extends Controller
         ]);
 
         $expense = new Expense([
-            'expensable_type' => $validated['type'],
+            'expensable_type' => $validated['expensable_type'],
             'expensable_id' => $validated['expensable_id'],
             'date' => $validated['date'],
             'amount' => $validated['amount'],
@@ -75,7 +76,11 @@ class ExpenseController extends Controller
 
         $expense->save();
 
-        return redirect(route('expenses.index'));
+        return redirect(route('expenses.index'))->with('notification', [
+            'message' => 'New expense ID:: '. $expense->id . ' of ৳'. $expense->amount_local .' created.',
+            'selected_value' => $expense->id,
+            'selected_key' => 'id'
+        ]);
     }
 
     /**

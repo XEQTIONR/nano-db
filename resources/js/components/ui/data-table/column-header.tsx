@@ -58,7 +58,7 @@ export function DataTableCustomColumnHeader({
             className={cn(
                 config && sortParam
                 ? "text-neutral-400 hover:text-neutral-800 dark:hover:text-neutral-300 dark:text-neutral-500 cursor-pointer"
-                : "text-neutral-300 hover:text-neutral-800 dark:text-neutral-700 dark:hover:text-neutral-200 cursor-pointer"
+                : "text-neutral-300 hover:text-neutral-800 dark:text-neutral-700 dark:hover:text-neutral-200 cursor-pointer",
             )}
             onClick={toggleSorting}
         >

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class ExpenseResource extends JsonResource
 {
@@ -24,7 +25,7 @@ class ExpenseResource extends JsonResource
             'amount_local' => $this->amount_local,
             'created_at' => $this->created_at->toDateTimeString(),
             'toString' => '' . $this->id,
-            $this->mergeWhen($this->relationLoaded('expensable'), fn() => [
+            $this->mergeWhen(Str::of($this->expensable_type)->startsWith("App\\Models\\"), fn() => [
                 'expensable' => $this->expensable
             ])
         ];
