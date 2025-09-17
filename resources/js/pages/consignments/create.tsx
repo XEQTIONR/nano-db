@@ -712,8 +712,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 <CardTitle>Confirm</CardTitle>
                                 <CardDescription>Confirm new consignment information</CardDescription>
                                 <CardAction>
-                                    <Button onClick={save} variant="secondary">
-                                        Create
+                                    <Button onClick={save}>
+                                        Create Consignment
                                     </Button>
                                 </CardAction>
                             </CardHeader>
@@ -852,7 +852,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="overflow-x-scroll">
-                                <ProductsTable 
+                                <ProductsTable
+                                    all={true} 
                                     apiToken={apiToken}
                                     addItem={(item) => {
                                         if(containers.length > 0)

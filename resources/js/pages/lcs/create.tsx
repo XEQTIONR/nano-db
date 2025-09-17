@@ -215,7 +215,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <ProductsTable 
+                                <ProductsTable
+                                    all={true} 
                                     apiToken={apiToken}
                                     addItem={(item) => {
                                         setItems([

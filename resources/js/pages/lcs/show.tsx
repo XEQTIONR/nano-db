@@ -54,13 +54,13 @@ export default function Show({ letterOfCredit } : {
                     <div className="flex flex-col gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Applicant</Label>
-                            {letterOfCredit.data.applicant}
+                            {letterOfCredit.data.applicant.split('<br/>').map((item) => <p>{item}</p>)}
                         </div>
                     </div>
                     <div className="flex flex-col gap-6 mb-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Beneficiary</Label>
-                            {letterOfCredit.data.beneficiary}
+                            {letterOfCredit.data.beneficiary.split('<br/>').map((item) => <p>{item}</p>)}
                         </div>
                     </div>
                     <div className="flex gap-6 mb-6">

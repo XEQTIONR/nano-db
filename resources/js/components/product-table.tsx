@@ -15,10 +15,11 @@ import { useEffect, useState } from "react"
 import axios from 'axios';
 import { Tyre } from "@/types";
 
-export default function ProductsTable({ apiToken, addItem = undefined, showStock = false } : { 
+export default function ProductsTable({ apiToken, addItem = undefined, showStock = false, all = false } : { 
     apiToken: string,
     addItem?: (item: Tyre) => void
     showStock?: boolean 
+    all?: boolean
 }) {
 
 
@@ -27,20 +28,31 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
     const [error, setError] = useState(null)
 
     const labels = ['first', 'prev', 'next', 'last']
+    const tyreRoute = route('api.tyres.index', { perPage: 15 })
+    const stockRoute = route('api.stock.index', { perPage: 15 })
     const paginate = (link?: string) => {
-        axios.get(link ?? route('api.stock.index', {
-            perPage: 15,
-        }), { headers: { 
+        const r = all ? tyreRoute : stockRoute
+        axios.get(link ?? r, { headers: { 
             Authorization: 'Bearer ' + apiToken, 
             Accept: 'application/json'
         } })
             .then((res) => {
-                setItems(res.data.items.map((d) => {
-                    return {
-                        ...d,
-                        id: d.tyre_id
-                    }
-                }))
+                console.log('res:', res)
+
+                if (res.data.items)
+                    setItems(res.data.items.map((d) => {
+                        return {
+                            ...d,
+                            id: d.tyre_id ?? d.id
+                        }
+                    }))
+                if (res.data.data)
+                    setItems(res.data.data.map((d) => {
+                        return {
+                            ...d,
+                            id: d.tyre_id ?? d.id
+                        }
+                    }))
                 
                 setButtons(res.data.links)
             })

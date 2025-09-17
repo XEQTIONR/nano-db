@@ -57,7 +57,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                         {
                             item.links.map((link) => (
                                 <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton isActive={page.url === link.href || page.url.startsWith(link.href)}>
+                                    <SidebarMenuSubButton isActive={page.url === link.href || (page.url.startsWith(link.href) && !page.url.endsWith('create'))}>
                                         <Link href={link.href}>
                                             <span className="overflow-x-visible text-nowrap">{link.title}</span>
                                         </Link>
