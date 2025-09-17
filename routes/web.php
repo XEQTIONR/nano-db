@@ -4,6 +4,7 @@ use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderReceiptController;
@@ -69,6 +70,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/waste/create', [WasteController::class, 'create'])->name('waste.create');
     Route::get('/waste', [WasteController::class, 'index'])->name('waste.index');
     Route::post('/waste', [WasteController::class, 'store'])->name('waste.store');
+
+    Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
 
 });
 

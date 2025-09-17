@@ -21,6 +21,7 @@ class ContainerResource extends JsonResource
             'land_date' => (new Carbon($this->land_date))->toDateString(),
             'lc_num' => $this->lc,
             'created_at' => $this->created_at->toDateTimeString(),
+            'toString' => $this->container_num
         ];
     }
 }

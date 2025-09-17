@@ -30,6 +30,7 @@ export function Combobox({
   options = [], 
   type = "single",
   value = undefined,
+  placeholder = undefined
 } : {
   className?: string
   dataType?: "string" | "float" | "int" 
@@ -39,6 +40,7 @@ export function Combobox({
   options?: Option[], 
   type?: "single" | "multiple", 
   value?: StrOrNum | StrOrNum[],
+  placeholder: string | undefined
 }) {
   const [open, setOpen] = useState<boolean>(false)
   const [localValue, setLocalValue] = useState<StrOrNum | StrOrNum[]>(value ?? (type == "single" ? "" : []))
@@ -80,11 +82,11 @@ export function Combobox({
             type == "single"
                 ? (localValue
                     ? localOptions.find((item) => item.value == localValue)?.label ?? localValue
-                    : "Select option ...")
+                    : placeholder ?? "Select option ...")
                 : ((Array.isArray(localValue) && localValue.length > 0)
                     ? localValue.map((v: StrOrNum) => selectedOptions.find((option) => option.value == v)?.label ?? v.toString())
                         .join(", ")
-                    : "Select options ...")
+                    : placeholder ?? "Select options ...")
 
             }
         <span className="hover:cursor-pointer hover:bg-white dark:hover:bg-neutral-700 dark:text-neutral-400 dark:hover:text-gray-50 p-1 rounded">

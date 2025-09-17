@@ -9,6 +9,6 @@ trait Expensable {
 
     public function expenses(): MorphMany
     {
-        return $this->morphMany(Expense::class, 'expenseable', 'string');
+        return $this->morphMany(Expense::class, 'expensable');
     }
 }

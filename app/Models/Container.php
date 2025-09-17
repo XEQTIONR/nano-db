@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\Expensable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Container extends Model
 {
-    //
+    use Expensable;
+    
     protected $table = 'consignment_containers';
 
     protected $primaryKey = 'Container_num';

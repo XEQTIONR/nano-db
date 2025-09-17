@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BankAccountController;
 use App\Http\Controllers\Api\ConsignmentController;
 use App\Http\Controllers\Api\ContainerController;
 use App\Http\Controllers\Api\CustomerController;
@@ -16,6 +17,8 @@ Route::name('api.')->middleware('auth:sanctum')->group(function() {
         return $request->user();
     })->name('user');
 
+    Route::get('/bank-accounts', [BankAccountController::class, 'index'])->name('bank-accounts.index');
+    
     Route::get('/customers', [CustomerController::class, 'index'])
         ->name('customers.index');
 

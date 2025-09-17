@@ -23,6 +23,7 @@ class BankAccountResource extends JsonResource
             'created_at' => $this->created_at
                 ? $this->created_at->toDateTimeString()
                 : null,
+            'toString' => $this->bank_name . " Acct #" . $this->account_number
         ];
     }
 }
