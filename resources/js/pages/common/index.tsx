@@ -13,6 +13,7 @@ import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/ord
 import { columns as paymentCols, filterConfigs as paymentFilters } from '@/pages/payments/components/columns';
 import { columns as stockCols } from '@/pages//stock/components/columns';
 import { columns as wasteCols, filterConfigs as wasteFilters } from '@/pages/waste/components/columns';
+import { columns as expensesCols } from '@/pages/expenses/components/columns';
 import {
   Pagination,
   PaginationContent,
@@ -124,6 +125,10 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
         case "customer":
             cols = customerCols
             filterConfigs = customerFilters
+            break
+        case "expense":
+            cols = expensesCols
+            filterConfigs = []
             break
         case "order":
             cols = orderCols

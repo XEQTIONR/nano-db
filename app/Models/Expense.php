@@ -9,14 +9,25 @@ use Illuminate\Support\Str;
 
 class Expense extends Model
 {
-    const EXPENSEABLE_DAILY = 'daily';
-    const EXPENSEABLE_MONTHLY = 'monthly';
-    const EXPENSEABLE_YEARLY = 'yearly';
+    const EXPENSABLE_DAILY = 'daily';
+    const EXPENSABLE_MONTHLY = 'monthly';
+    const EXPENSABLE_YEARLY = 'yearly';
 
-    const EXPENSABLE_TYPES = [
-        self::EXPENSEABLE_DAILY => 'Daily',
-        self::EXPENSEABLE_MONTHLY => 'Monthly',
-        self::EXPENSEABLE_YEARLY => 'Yearly',
+    const EXPENSE_TYPES = [
+        self::EXPENSABLE_DAILY, 
+        self::EXPENSABLE_MONTHLY,
+        self::EXPENSABLE_YEARLY ,
+        BankAccount::class,
+        Container::class,
+        Consignment::class,
+        LetterOfCredit::class,
+        Order::class 
+    ];
+    
+    const EXPENSABLE_LABELS = [
+        self::EXPENSABLE_DAILY => 'Daily',
+        self::EXPENSABLE_MONTHLY => 'Monthly',
+        self::EXPENSABLE_YEARLY => 'Yearly',
         BankAccount::class => 'Bank Account',
         Container::class => 'Container',
         Consignment::class => 'Consignment',

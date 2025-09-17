@@ -2,18 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ExpenseResource;
 use App\Models\Expense;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Validation\Rule;
 
 class ExpenseController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = intval($request->input('perPage') ?? 50);
+
+        $sortBy = $request->input('sortBy') ?? 'id';
+
+        $sortDir = $request->input('sortDir') ?? 'asc';
+
+        $filterStr = $request->input('filters') ?? "";
+
+        $data = ExpenseResource::collection(
+            Expense::with('expensable')->orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
+        );
+
+        return Inertia::render('common/index', [
+            'filters' => [],
+            'items' => $data,
+            'addLink' => route('expenses.create'),
+            'link' => route('expenses.index'),
+            'title' => 'Expenses',
+            'type' => 'expense',
+        ]);
     }
 
     /**
@@ -22,7 +43,7 @@ class ExpenseController extends Controller
     public function create()
     {
         return Inertia::render('expenses/create', [
-            'types' => Expense::EXPENSABLE_TYPES
+            'types' => Expense::EXPENSABLE_LABELS
         ]);
     }
 
@@ -31,7 +52,30 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'type' => [
+                'required',
+                Rule::in(Expense::EXPENSE_TYPES)
+            ],
+            'expensable_id' => 'nullable',
+            'date' => 'required|date',
+            'amount' => 'required|numeric|gt:0',
+            'note' => 'required|min:3'
+            
+        ]);
+
+        $expense = new Expense([
+            'expensable_type' => $validated['type'],
+            'expensable_id' => $validated['expensable_id'],
+            'date' => $validated['date'],
+            'amount' => $validated['amount'],
+            'note' => $validated['note'],
+            'rate' => 1
+        ]);
+
+        $expense->save();
+
+        return redirect(route('expenses.index'));
     }
 
     /**

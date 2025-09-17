@@ -17,6 +17,18 @@ import { useEffect, useState } from 'react';
 import { Combobox } from '@/components/ui/combobox';
 import axios from 'axios';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { InputCalendar } from '@/components/ui/input-calendar';
 
 export default function Create({apiToken, types} : {apiToken: string, types: object}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -32,10 +44,12 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
 
     const [amount, setAmount] = useState('0.00')
     const [floatAmount, setFloatAmount] = useState(0)
-    const [type, setType] = useState<undefined| string>(undefined)
+    const [type, setType] = useState<string| undefined>(undefined)
     const [value, setValue] = useState<string | undefined>(undefined)
+    const [date, setDate] = useState<Date | undefined>(undefined)
+    const [note, setNote] = useState<string>("")
 
-    const isRelation = (val: string) => val.startsWith('App\\Models\\') 
+    const isRelation = (val?: string) => val && val.startsWith('App\\Models\\') 
 
     const getApiRoute = (val: string, input: string) => {
         console.log('val: ', val)
@@ -90,6 +104,11 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
         }
     }, [type])
 
+    const canSubmit = (() => floatAmount > 0 
+    && note.length > 0
+    && date
+    && ((isRelation(type) && value) || !isRelation(type)))  
+
     // const submit = (lcData: LetterOfCredit, items: InvoiceItem[]) => {
     //     router.post(route('lcs.store'), {
     //         lc: {
@@ -105,7 +124,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="New expense" />
             <div className="flex justify-center h-full items-start p-4">
-                <Card className="w-full lg:w-1/2 xl:w-1/3">
+                <Card className="w-full lg:w-2/3 lg:max-w-lg xl:w-3/5">
                     <CardHeader>
                         <CardTitle>New Expense</CardTitle>
                         <CardDescription>Add details</CardDescription>
@@ -116,9 +135,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                 <Label>Expense type</Label>
                                 <Select value={type} onValueChange={(value) => {
                                     setType(value)
-                                    if (isRelation(value)) {
-                                        console.log('isRelation')
-                                    }
+                                    setValue(undefined)
                                 }}>
                                     <SelectTrigger className="w-full">
                                         <SelectValue placeholder="Select expense type" />
@@ -133,6 +150,9 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                     
                                 </Select>
                             </div>
+                            
+                                <InputCalendar id="date" onChange={(date) => setDate(date)} />
+
                             {type && isRelation(type) && <div className="grid gap-4">
                                 {/* <Label>{types[type] ?? "Select"}</Label> */}
                                 <Combobox
@@ -172,10 +192,52 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                             </div>
                             <div className="grid gap-4">
                                 <Label>Note</Label>
-                                <Textarea className="min-h-36" />
+                                <Textarea value={note} onChange={({target}) => setNote(target.value)} className="min-h-36" />
                             </div>
 
-                            <Button>Submit</Button>
+                            <div className="w-full flex justify-end">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            className="w-full md:w-auto"
+                                            disabled={ !canSubmit() }
+                                            type="button" 
+                                        >
+                                            Create Order
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                        <AlertDialogTitle>Create new expense?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                        {   
+                                            type && isRelation(type) 
+                                                ? <>Are you sure you want to create this new expense of <span className="dark:text-white">{floatAmount.toFixed(2)}</span> for {types[type]} <span className="dark:text-white">{value}</span></>
+                                                : <>Are you sure you want to add this new <span className="dark:text-white">{types[type]}</span> expense of <span className="dark:text-white">{floatAmount.toFixed(2)}</span></>
+                                        }
+                                        </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => {       
+                                                // router.post(route('orders.store'), {
+                                                //     customer_id: customerId,
+                                                //     order_on: orderDate,
+                                                //     tax_percentage: tax.percentage,
+                                                //     tax_amount: tax.value,
+                                                //     discount_percent: discount.percentage,
+                                                //     discount_amount: discount.value,
+                                                //     items: items
+                                                // })
+                                            }}>
+                                                Confirm
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
