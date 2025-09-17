@@ -125,17 +125,6 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
     && date
     && ((isRelation(type) && value) || !isRelation(type)))  
 
-    // const submit = (lcData: LetterOfCredit, items: InvoiceItem[]) => {
-    //     router.post(route('lcs.store'), {
-    //         lc: {
-    //             ...lcData,
-    //             date_issued: lcData.date_issued?.toISOString().split("T")[0],
-    //             date_expiry: lcData.date_expiry?.toISOString().split("T")[0],
-    //         },
-    //         items,
-    //     })
-    // }
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="New expense" />
@@ -204,6 +193,57 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                     }}
                                 />
                             </div>}
+                            {
+                                type == 'monthly' &&
+                                // <Input className="w-full dark:text-white fill-red-400" type="month" onChange={({target}) => console.log(target.value)} />
+                                <div className="flex gap-4">
+                                    <div className="w-1/2">
+                                        <Select onValueChange={(value) => {
+
+
+                                            if (data.expensable_id.split('-').length == 2) {
+                                                setData('expensable_id', (value + '-' + data.expensable_id.split('-')[1]))
+                                            } else {
+                                                setData('expensable_id', value + '-')
+                                            }
+                    
+                                            
+                                            //setValue(undefined)
+                                        }}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select month" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value={'1'}>January</SelectItem>
+                                                <SelectItem value={'2'}>February</SelectItem>
+                                                <SelectItem value={'3'}>March</SelectItem>
+                                                <SelectItem value={'4'}>April</SelectItem>
+                                                <SelectItem value={'5'}>May</SelectItem>
+                                                <SelectItem value={'6'}>June</SelectItem>
+                                                <SelectItem value={'7'}>July</SelectItem>
+                                                <SelectItem value={'8'}>August</SelectItem>
+                                                <SelectItem value={'9'}>September</SelectItem>
+                                                <SelectItem value={'10'}>October</SelectItem>
+                                                <SelectItem value={'11'}>November</SelectItem>
+                                                <SelectItem value={'12'}>December</SelectItem>
+                                            </SelectContent>
+                                            
+                                        </Select>
+                                    </div>
+                                    <Input onChange={({target}) => {
+
+                                        if (data.expensable_id.split('-').length == 2) {
+                                                setData('expensable_id', (data.expensable_id.split('-')[0] + '-' + target.value))
+                                        } else {
+                                            setData('expensable_id', '-' + target.value)
+                                        }
+                                    }} className='w-1/2' type="number" />
+                                </div>
+                            }
+                            {
+                                type == 'yearly' &&
+                                <Input type="number" onChange={({target}) => setData('expensable_id', target.value)} className='w-full' type="number" />
+                            }
                             <div className="grid gap-4">
                                 <Label>Amount</Label>
                                 <Input value={amount} onChange={(e) => {

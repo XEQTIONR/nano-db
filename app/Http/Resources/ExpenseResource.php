@@ -25,9 +25,6 @@ class ExpenseResource extends JsonResource
             'amount_local' => $this->amount_local,
             'created_at' => $this->created_at->toDateTimeString(),
             'toString' => '' . $this->id,
-            $this->mergeWhen(Str::of($this->expensable_type)->startsWith("App\\Models\\"), fn() => [
-                'expensable' => $this->expensable
-            ])
         ];
     }
 }

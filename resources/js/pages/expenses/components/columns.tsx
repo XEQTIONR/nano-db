@@ -33,7 +33,7 @@ export const columns = [
   },
   {
     accessorKey: "expensable_id",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_id" justify="center" label="Expensable" config={v} />,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="expensable_id" justify="center" label="Expensable ID" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue("expensable_id") }</div>
   },
   {

@@ -23,15 +23,22 @@ class ExpenseController extends Controller
 
         $filterStr = $request->input('filters') ?? "";
 
-        $data = ExpenseResource::collection(
-            Expense::orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
-        );
+
+        if ($sortBy == 'amount_local') {
+            $expenses = Expense::orderByRaw('(rate * amount) ' . $sortDir);
+        } else {
+            $expenses = Expense::orderBy($sortBy, $sortDir);
+        }
+
+        $data = ExpenseResource::collection($expenses->paginate($perPage)->withQueryString());
 
         return Inertia::render('common/index', [
             'filters' => [],
             'items' => $data,
             'addLink' => route('expenses.create'),
             'link' => route('expenses.index'),
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir,
             'title' => 'Expenses',
             'type' => 'expense',
             'types' => Expense::EXPENSABLE_LABELS
