@@ -18,6 +18,7 @@ class ConsignmentResource extends JsonResource
         return [
             'bol' => $this->BOL,
             'value' => $this->value,
+            'value_local' => $this->value_local,
             'exchange_rate' => $this->exchange_rate,
             'tax' => $this->tax,
             'land_date' => ($this->land_date instanceof Carbon)

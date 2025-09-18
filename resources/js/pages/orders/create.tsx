@@ -223,7 +223,10 @@ export default function Create({apiToken} : {apiToken: string}) {
             }
         >
             <Head title="New Order" />
-            <div className="flex flex-col h-full items-start rounded-xl p-4">
+            <div className="flex flex-col h-full items-start rounded-xl px-4">
+                <div className="w-full">
+                    <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new order</h1>
+                </div>
                 <div className="w-full flex print:hidden gap-10 items-center">
                     {
                         steps.map( (step, index) => (

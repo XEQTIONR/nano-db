@@ -6,6 +6,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -24,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { ArrowLeft } from "lucide-react";
+import { currencyFormat } from "@/lib/utils";
 
 export default function Show({ letterOfCredit } : { 
     letterOfCredit: {data: LetterOfCredit}
@@ -63,7 +65,7 @@ export default function Show({ letterOfCredit } : {
         >
             <Head title={breadcrumbs[0].title} />
             <div className="w-full">
-                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Letter of Credit <span className="text-muted text-2xl">#{letterOfCredit.data.lc_num}</span></h1>
+                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Letter of credit <span className="text-muted text-2xl">#{letterOfCredit.data.lc_num}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">
                     <Card className="w-full lg:w-1/2 dark:bg-neutral-900 dark:border-none rounded-3xl">
                         <CardHeader>
@@ -119,7 +121,9 @@ export default function Show({ letterOfCredit } : {
                                 </div>
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Rate</Label>
-                                    {letterOfCredit.data.exchange_rate}
+                                    <span className="tracking-wide">
+                                        {letterOfCredit.data.exchange_rate.toFixed(2)}
+                                    </span>
                                 </div>
                                 
                             </div>
@@ -127,59 +131,126 @@ export default function Show({ letterOfCredit } : {
                                 <div className="grid gap-2 w-full md:w-1/2"></div>
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Value</Label>
-                                    {letterOfCredit.data.foreign_amount.toFixed(2)}
+                                    <span className="tracking-wide">
+                                        {currencyFormat(letterOfCredit.data.currency_code,letterOfCredit.data.foreign_amount)}
+                                    </span>
                                 </div>
                             </div>
                             <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Foreign Expense</Label>
-                                    {letterOfCredit.data.foreign_expense.toFixed(2)}
+                                    <span className="tracking-wide">
+                                        {currencyFormat(letterOfCredit.data.currency_code,letterOfCredit.data.foreign_expense)}
+                                    </span>
                                 </div>
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Domestic Expense</Label>
-                                    {letterOfCredit.data.domestic_expense.toFixed(2)}
+                                    <span className="tracking-wide">
+                                        {currencyFormat('BDT',letterOfCredit.data.domestic_expense)}
+                                    </span>
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="flex flex-col w-full lg:w-1/2  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
-                        <CardHeader>
-                            <CardTitle>Proforma Invoice</CardTitle>
-                            <CardDescription># {letterOfCredit.data.invoice_no}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="">#</TableHead>
-                                    <TableHead>Item</TableHead>
-                                    <TableHead className="text-center">Qty</TableHead>
-                                    <TableHead className="text-right">Price</TableHead>
-                                    <TableHead className="text-right">Sub total</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody className="font-mono text-xs">
-                            { 
-                                letterOfCredit.data?.items?.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
-                                    <TableRow>
-                                        <TableCell className="font-bold">{index + 1}</TableCell>
-                                        <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
+                    <div className="flex flex-col gap-4 w-full lg:w-1/2">
+                        <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
+                            <CardHeader>
+                                <CardTitle>Proforma Invoice</CardTitle>
+                                <CardDescription># {letterOfCredit.data.invoice_no}</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="hover:bg-transparent">
+                                        <TableHead className="">#</TableHead>
+                                        <TableHead>Item</TableHead>
+                                        <TableHead className="text-center">Qty</TableHead>
+                                        <TableHead className="text-right">Price</TableHead>
+                                        <TableHead className="text-right">Sub total</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody className="font-mono text-xs">
+                                { 
+                                    letterOfCredit.data?.items?.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
+                                        <TableRow className="hover:bg-transparent">
+                                            <TableCell className="font-bold">{index + 1}</TableCell>
+                                            <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
+                                            <TableCell className="text-center">
+                                                {qty} 
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {currencyFormat(letterOfCredit.data.currency_code, unit_price)}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {currencyFormat(letterOfCredit.data.currency_code,(qty * unit_price))}
+                                            </TableCell>
+                                        </TableRow>
+                                    )) 
+                                }
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow className="font-mono" >
+                                        <TableCell></TableCell>
+                                        <TableCell>Total</TableCell>
                                         <TableCell className="text-center">
-                                            {qty} 
+                                            {letterOfCredit.data?.items?.reduce((prev, { qty }) => prev + qty, 0)} 
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            {unit_price}
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            {(qty * unit_price).toFixed(2)}
+                                            {currencyFormat(
+                                                letterOfCredit.data.currency_code,
+                                                letterOfCredit.data?.items?.reduce((prev, { qty, unit_price }) => prev + (qty * unit_price), 0) ?? 0
+                                            )} 
                                         </TableCell>
                                     </TableRow>
-                                )) 
-                            }
-                            </TableBody>
-                        </Table>
-                        </CardContent>
-                    </Card>
+                                </TableFooter>
+                            </Table>
+                            </CardContent>
+                        </Card>
+                        <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
+                            <CardHeader>
+                                <CardTitle>Consignments</CardTitle>
+                                <CardDescription>Consignemnts imported under this letter of credit.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="hover:bg-transparent">
+                                        <TableHead className="">#</TableHead>
+                                        <TableHead>Bill of Lading #</TableHead>
+                                        <TableHead className="text-center">Landed On</TableHead>
+                                        <TableHead className="text-right">Tax</TableHead>
+                                        <TableHead className="text-right">Value</TableHead>
+                                        <TableHead className="text-right">Value (Taka)</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody className="font-mono text-xs">
+                                { 
+                                    letterOfCredit.data?.consignments?.map(({bol, land_date, tax, value, value_local}, index) => (
+                                        <TableRow className="hover:bg-transparent">
+                                            <TableCell className="font-bold">{index + 1}</TableCell>
+                                            <TableCell>{bol}</TableCell>
+                                            <TableCell className="text-center">
+                                                {land_date} 
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {currencyFormat('BDT',tax)}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {currencyFormat(letterOfCredit.data.currency_code, value ?? 0)}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {currencyFormat('BDT', value_local ?? 0)}
+                                            </TableCell>
+                                        </TableRow>
+                                    )) 
+                                }
+                                </TableBody>
+                            </Table>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
             

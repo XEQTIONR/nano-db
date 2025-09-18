@@ -104,7 +104,7 @@ class LetterOfCreditController extends Controller
      */
     public function show(LetterOfCredit $lc)
     {
-        $lc->load('items.tyre');
+        $lc->load('items.tyre', 'consignments');
         return (new LetterOfCreditResource($lc));
     }
 

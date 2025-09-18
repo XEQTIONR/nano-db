@@ -1,7 +1,7 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head, router } from '@inertiajs/react';
 
-import { Minus, Plus, X } from 'lucide-react';
+import { ArrowLeft, Minus, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
@@ -19,6 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
@@ -40,7 +45,7 @@ export default function Returns({order} : {order: { data: Order }}) {
         href: route('orders.index'),
     },
     {
-        title: 'Order #' + order.data.order_num,
+        title: '# ' + order.data.order_num,
         href: route('orders.show', {order: order.data.order_num}),
     },
     {
@@ -127,7 +132,28 @@ export default function Returns({order} : {order: { data: Order }}) {
     const balance = () => grandTotal() - paymentsTotal()
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout 
+            breadcrumbs={breadcrumbs}
+            controls={
+                <div className="flex items-end gap-2 justify-end">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                onClick={() => router.visit(route('orders.show', {order: order.data.order_num}))}
+                                className="hover:cursor-pointer text-xs" 
+                                size="icon" 
+                                variant="ghost"
+                            >
+                                <ArrowLeft />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Back to <span className="font-semibold">#{order.data.order_num}</span></p>
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
+            }    
+        >
             <Head title="Return Items" />
             <div className="flex flex-col h-full items-start rounded-xl p-4">
                 <div className="w-full pt-5 flex gap-4 items-start">

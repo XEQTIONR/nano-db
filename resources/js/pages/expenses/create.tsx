@@ -128,7 +128,10 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="New expense" />
-            <div className="flex justify-center h-full items-start p-4">
+            <div className="flex flex-col h-full items-center px-4">
+                <div className="w-full">
+                    <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new expense</h1>
+                </div>
                 <Card className="w-full lg:w-2/3 lg:max-w-lg xl:w-3/5">
                     <CardHeader>
                         <CardTitle>New Expense</CardTitle>

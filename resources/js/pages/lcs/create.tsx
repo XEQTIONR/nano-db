@@ -121,8 +121,11 @@ export default function Create({apiToken} : {apiToken: string}) {
             }
         >
             <Head title="Create LC" />
-            <div className="flex flex-col h-full items-start rounded-xl p-4">
-                <div className="w-full flex gap-10 items-center">
+            <div className="flex flex-col h-full items-start rounded-xl px-4">
+                <div className="w-full">
+                    <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new letter of credit</h1>
+                </div>
+                <div className="w-full flex gap-10 items-center mb-2">
                     {
                         steps.map( (step, index) => (
                             <div className="flex items-center gap-4">

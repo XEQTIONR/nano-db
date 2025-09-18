@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { cn } from "@/lib/utils";
+import { cn, currencyFormat } from "@/lib/utils";
 import { router } from "@inertiajs/react";
 import { Minus, Plus, Check, X } from "lucide-react"
 import {
@@ -61,28 +61,28 @@ export default function CreateForm({ order } : {
                     <div className="flex flex-col justify-center gap-2">
                         <div className="flex justify-between space-x-2 pb-2">
                             <div>Grand Total</div>
-                            <div className="text-right">
-                                ৳ {order.data.grand_total?.toFixed(2)}
+                            <div className="text-right tracking-wide">
+                            {currencyFormat('BDT', order.data.grand_total ?? 0)}
                             </div>
                         </div>
                         <div className="flex justify-between space-x-2 pb-2">
                             <div>Payments</div>
-                            <div className="text-right">
-                                ৳ {order.data.payments_total?.toFixed(2)}
+                            <div className="text-right tracking-wide">
+                                {currencyFormat('BDT', order.data.payments_total ?? 0)}
                             </div>
                         </div>
                         { typeof newPaymentAmount == "number" && newPaymentAmount > 0 && (<div className="flex justify-between space-x-2 pb-2">
                             <div>New Payment</div>
-                            <div className="text-right">
-                                ৳ {newPaymentAmount.toFixed(2)}
+                            <div className="text-right tracking-wide">
+                                {currencyFormat('BDT', newPaymentAmount)}
                             </div>
                         </div>)}
                         <div className="flex justify-between space-x-2 border-t-2 pt-3 mb-6">
                             <div>Balance</div>
-                            <div className="text-right">৳ {
+                            <div className="text-right tracking-wide">{
                                 typeof newPaymentAmount == "number" && typeof order.data.balance == "number"
-                                ? (order.data.balance - newPaymentAmount).toFixed(2)
-                                : order.data.balance
+                                ? (currencyFormat('BDT',order.data.balance - newPaymentAmount))
+                                : currencyFormat('BDT', order.data.balance ?? 0)
                             }
                             </div>
                         </div>
@@ -147,11 +147,11 @@ export default function CreateForm({ order } : {
                                         <div onClick={() => {
                                             setPreviousValue(newPaymentAmount)
                                             setEditPaymentAmount(true)
-                                        }} className="text-4xl font-bold tracking-tighter">
+                                        }} className="text-4xl font-bold tracking-tight">
                                             {
                                                 typeof newPaymentAmount == "number"
-                                                ? newPaymentAmount.toFixed(2)
-                                                : newPaymentAmount
+                                                ? currencyFormat('BDT', newPaymentAmount)
+                                                : currencyFormat('BDT', parseFloat(newPaymentAmount))
                                             }
                                         </div>
                                     )

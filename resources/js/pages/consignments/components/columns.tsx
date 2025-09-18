@@ -12,6 +12,7 @@ import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-h
 
 import { type FilterConfig, type Option } from "@/types"
 import axios from 'axios'
+import { Link } from "@inertiajs/react"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
@@ -70,7 +71,9 @@ export const columns = [
     accessorKey: "lc_num",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="lc_num" label="LC #" config={v} />,
     cell: ({row}) => {
-      return <div className="text-center">{row.getValue("lc_num")}</div>
+      return <div className="text-center">
+          <Link className="italic hover:underline" href={route('lcs.show', { lc: row.getValue("lc_num")})}>{row.getValue("lc_num")}</Link>
+        </div>
     }
   },
   {

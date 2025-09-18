@@ -9,7 +9,7 @@ export const columns = [
   {
     accessorKey: "order_num",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order #" config={v} />,
-    cell: ({ row }) => <Link className="hover:underline" href={route('orders.show', { order: row.getValue("order_num") })}>
+    cell: ({ row }) => <Link className="italic hover:underline" href={route('orders.show', { order: row.getValue("order_num") })}>
         {row.getValue("order_num")}
       </Link>,
   },

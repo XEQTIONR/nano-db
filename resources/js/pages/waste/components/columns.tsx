@@ -12,6 +12,7 @@ import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-h
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 import { type FilterConfig, type Option } from "@/types"
+import { Link } from "@inertiajs/react"
 
 export const columns = [
   {
@@ -22,10 +23,16 @@ export const columns = [
   {
     accessorKey: "bol",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="id" label="BOL #" config={v} />,
+    cell: ({ row }) => <div className="text-center">
+      <Link className="italic hover:underline" href={route('consignments.show', { consignment: row.getValue('bol')})}>
+      { row.getValue('bol') }
+      </Link>
+    </div>
   },
   {
     accessorKey: "container_num",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="id" label="Container #" config={v} />,
+    cell: ({ row }) => <div className="text-center">{ row.getValue('container_num') }</div>
   },
   {
     accessorKey: "tyre_id",

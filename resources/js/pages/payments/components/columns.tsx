@@ -15,6 +15,7 @@ import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-h
 import { FilterConfig } from "@/types"
 import axios from 'axios'
 import { type Option } from "@/types"
+import { Link } from "@inertiajs/react"
 
 export const columns = [
   {
@@ -23,7 +24,8 @@ export const columns = [
   },
   {
     accessorKey: "order_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="order_num" label="Order" config={v} />,
+    cell: ({ row }) => <Link className="italic hover:underline" href={route("orders.show", {order: row.getValue('order_num')})}>{ row.getValue('order_num') }</Link>
   },
   {
     accessorKey: "type",

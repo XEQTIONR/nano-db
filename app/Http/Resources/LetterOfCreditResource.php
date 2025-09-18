@@ -42,6 +42,8 @@ class LetterOfCreditResource extends JsonResource
                 ($request->route()->getName() === 'lcs.show'),
                 fn() => ProformaInvoiceItemResource::collection($this->items)
             ),
+
+            'consignments' => ConsignmentResource::collection($this->whenLoaded('consignments')),
             'toString' => $this->lc_num
         ];
     }

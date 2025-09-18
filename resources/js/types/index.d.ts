@@ -112,6 +112,7 @@ export interface LetterOfCredit {
     notes: string
     invoice_no?: string
     items?: InvoiceItem[]
+    consignments?: Consignment[]
 }
 
 export interface Consignment {
@@ -121,6 +122,7 @@ export interface Consignment {
     exchange_rate: number
     tax: number
     land_date?: Date
+    value_local?: number
 }
 
 export interface Tyre {

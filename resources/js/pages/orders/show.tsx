@@ -32,6 +32,7 @@ import { Order, type BreadcrumbItem } from '@/types'
 import { useEffect } from "react";
 import { toast } from 'sonner';
 import CreateForm from "@/pages/payments/components/create-form";
+import { currencyFormat } from "@/lib/utils";
 
 export default function Show({ order } : { 
     order: { 
@@ -165,7 +166,7 @@ export default function Show({ order } : {
                     <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Order <span className="text-muted text-2xl">#{data.order_num}</span></h1>
                 </div>
                 <div className="flex flex-wrap xl:flex-nowrap pt-4 mb-6 px-4 print:py-0 gap-6">
-                    <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
+                    <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none dark:bg-neutral-900 dark:border-none">
                         <CardHeader>
                             <CardTitle>Details</CardTitle>
                         </CardHeader>
@@ -208,7 +209,7 @@ export default function Show({ order } : {
                                                     <TableHead className="text-right">Total</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            <TableBody className="text-xs">
+                                            <TableBody>
                                             {
                                                 data.items?.map(({tyre_id, qty, unit_price, item_total}, i) => {
                                                     
@@ -221,8 +222,8 @@ export default function Show({ order } : {
                                                                 ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
                                                             </TableCell>
                                                             <TableCell className="text-center">{qty}</TableCell>
-                                                            <TableCell className="text-right">৳ {unit_price.toFixed(2)}</TableCell>
-                                                            <TableCell className="text-right">৳ {(item_total).toFixed(2)}</TableCell>
+                                                            <TableCell className="text-right">{currencyFormat('BDT', unit_price)}</TableCell>
+                                                            <TableCell className="text-right">{currencyFormat('BDT', item_total)}</TableCell>
                                                         </TableRow>
                                                     )
                                                 })
@@ -232,7 +233,7 @@ export default function Show({ order } : {
                                                 <TableCell>Sub total</TableCell>
                                                 <TableCell className="text-center">{data.count}</TableCell>
                                                 <TableCell className="text-right"></TableCell>
-                                                <TableCell className="text-right">৳ {data.sub_total.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">{currencyFormat('BDT', data.sub_total)}</TableCell>
                                             </TableRow>
                                             {
                                                 data.discount_percent > 0 &&
@@ -241,7 +242,7 @@ export default function Show({ order } : {
                                                     <TableCell>Discount</TableCell>
                                                     <TableCell className="text-center">-</TableCell>
                                                     <TableCell className="text-right">{data.discount_percent} %</TableCell>
-                                                    <TableCell className="text-right">৳ {(data.sub_total * (data.discount_percent/100)).toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">{currencyFormat('BDT',(data.sub_total * (data.discount_percent/100)))}</TableCell>
                                                 </TableRow>
                                             }
                                             {
@@ -250,8 +251,8 @@ export default function Show({ order } : {
                                                     <TableCell className="text-center"></TableCell>
                                                     <TableCell>Discount</TableCell>
                                                     <TableCell className="text-center">-</TableCell>
-                                                    <TableCell className="text-right">৳ {data.discount_amount.toFixed(2)}</TableCell>
-                                                    <TableCell className="text-right">৳ {data.discount_amount.toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">{currencyFormat('BDT', data.discount_amount)}</TableCell>
+                                                    <TableCell className="text-right">{currencyFormat('BDT', data.discount_amount)}</TableCell>
                                                 </TableRow>
                                             }
                                             
@@ -262,7 +263,7 @@ export default function Show({ order } : {
                                                     <TableCell>Tax</TableCell>
                                                     <TableCell className="text-center">+</TableCell>
                                                     <TableCell className="text-right">{data.tax_percentage + " %"}</TableCell>
-                                                    <TableCell className="text-right">৳ {(data.sub_total * (data.tax_percentage/100)).toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">{currencyFormat('BDT', (data.sub_total * (data.tax_percentage/100)))}</TableCell>
                                                 </TableRow>
                                             }
                                             {
@@ -271,8 +272,8 @@ export default function Show({ order } : {
                                                     <TableCell className="text-center"></TableCell>
                                                     <TableCell>Tax</TableCell>
                                                     <TableCell className="text-center">+</TableCell>
-                                                    <TableCell className="text-right">৳ {data.tax_amount.toFixed(2)}</TableCell>
-                                                    <TableCell className="text-right">৳ {data.tax_amount.toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">{currencyFormat('BDT', data.tax_amount)}</TableCell>
+                                                    <TableCell className="text-right">{currencyFormat('BDT', data.tax_amount)}</TableCell>
                                                 </TableRow>
                                             }
                                             <TableRow className="font-bold">
@@ -280,7 +281,7 @@ export default function Show({ order } : {
                                                 <TableCell>Grand Total</TableCell>
                                                 <TableCell className="text-center"></TableCell>
                                                 <TableCell className="text-right"></TableCell>
-                                                <TableCell className="text-right">৳ {data.grand_total?.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">{currencyFormat('BDT', data.grand_total ?? 0)}</TableCell>
                                             </TableRow>
                                             </TableBody>
                                         </Table>
@@ -288,7 +289,7 @@ export default function Show({ order } : {
                                 </div>
                         </CardContent>
                     </Card>
-                    <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
+                    <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none bg-neutral-50 dark:bg-neutral-900 border-none dark:border-none">
                         <CardHeader>
                             <CardTitle>Payments</CardTitle>
                             <CardDescription>Payment made for order # {data.order_num}</CardDescription>
@@ -321,12 +322,12 @@ export default function Show({ order } : {
                                                                         reduce((acc, cur) => acc + cur.amount, 0)
                                                             ).toFixed(2)}
                                                             </TableCell>
-                                                            <TableCell className="text-right">- ৳ {amount.toFixed(2)}</TableCell>
-                                                            <TableCell className="text-right">৳ {data.grand_total && data.payments && (
-                                                                data.grand_total 
+                                                            <TableCell className="text-right">- {currencyFormat('BDT', amount)}</TableCell>
+                                                            <TableCell className="text-right">৳ { currencyFormat('BDT', (
+                                                                data.grand_total ?? 0 
                                                                     - data.payments.slice(0, i).reduce((acc, cur) => acc + cur.amount, 0)
                                                                     - amount
-                                                            ).toFixed(2)}
+                                                            ))}
                                                             </TableCell>
                                                         </TableRow>
                                                     )
@@ -340,7 +341,8 @@ export default function Show({ order } : {
                 </div>
                 {   
                     data.returns && data.returns.length > 0 &&
-                    (<div className="flex flex-wrap xl:flex-nowrap pb-8 px-8 print:py-0 gap-6">
+                    (<div className="flex flex-wrap xl:flex-nowrap pb-8 px-4 print:py-0 gap-6">
+                        <div className="hidden lg:flex lg:w-1/2 spacer" />
                         <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
                             <CardHeader>
                                 <CardTitle>Returns</CardTitle>
@@ -360,7 +362,7 @@ export default function Show({ order } : {
                                                         <TableHead className="text-right">Total</TableHead>
                                                     </TableRow>
                                                 </TableHeader>
-                                                <TableBody className="">
+                                                <TableBody className="text-xs">
                                                 {
                                                     data.returns_consolidated?.map(({tyre_id, qty, unit_price, tyre}, i) => {
                                                         return (
@@ -376,6 +378,16 @@ export default function Show({ order } : {
                                                         )
                                                     })
                                                 }
+                                                    <TableRow>
+                                                        <TableCell className="text-center"></TableCell>
+                                                        <TableCell>
+                                                            Total
+                                                        </TableCell>
+                                                        <TableCell className="text-center">{data.returns_consolidated?.reduce((prev, { qty }) => prev + qty, 0)}</TableCell>
+                                                        <TableCell className="text-right">৳ </TableCell>
+                                                        <TableCell className="text-right">৳ {data.returns_consolidated?.reduce((prev, { qty, unit_price }) => prev + (qty * unit_price), 0).toFixed(2)}</TableCell>
+
+                                                    </TableRow>
                                                 
                                                 </TableBody>
                                             </Table>
@@ -383,7 +395,7 @@ export default function Show({ order } : {
                                     </div>
                             </CardContent>
                         </Card>
-                        <div className="w-full lg:w-1/2 spacer" />
+                        
                     </div>)
                 }
                 

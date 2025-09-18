@@ -23,7 +23,7 @@ class LetterOfCreditController extends ApiController
             ...$data,
             'link' => route('lcs.index'),
             'addLink' => route('lcs.create'),
-            'title' => 'Letters of Credit',
+            'title' => 'Letters of credit',
             'type' => 'lc',
             'sortBy' => $sortBy,
             'sortDir' => $sortDir

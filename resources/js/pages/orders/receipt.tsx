@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table"
 
 import { Label } from "@/components/ui/label"
-import { Banknote, Plus, Printer, Undo2 } from "lucide-react"
+import { ArrowLeft, Banknote, Plus, Printer, Undo2 } from "lucide-react"
 import { Order, type BreadcrumbItem } from '@/types'
 import { useEffect } from "react";
 import { toast } from 'sonner';
@@ -73,6 +73,21 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
                     <div className="flex items-end gap-2 justify-end">
                         <Tooltip>
                             <TooltipTrigger asChild>
+                                <Button
+                                    onClick={() => router.visit(route('orders.show', {order: order.data.order_num}))}
+                                    className="hover:cursor-pointer text-xs" 
+                                    size="icon" 
+                                    variant="ghost"
+                                >
+                                    <ArrowLeft />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Back to <span className="font-semibold">#{order.data.order_num}</span></p>
+                            </TooltipContent>
+                        </Tooltip>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
                                 <DrawerTrigger>
                                     <Button
                                         className="hover:cursor-pointer text-xs" 
@@ -100,21 +115,6 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Print</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    onClick={() => router.visit(route('orders.create'))}
-                                    className="hover:cursor-pointer text-xs" 
-                                    size="icon" 
-                                    variant="ghost"
-                                >
-                                    <Undo2 />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Return</p>
                             </TooltipContent>
                         </Tooltip>
                         <Tooltip>
