@@ -21,7 +21,9 @@ export const columns = [
     accessorKey: "bol",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="bol" label="Bill of lading #" config={v} />,
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("bol")}</div>
+      return <div className="text-center">
+        <Link className="italic hover:underline" href={route('consignments.show', {consignment: row.getValue("bol")})}>{row.getValue("bol")}</Link>
+        </div>
     }
   },
   {

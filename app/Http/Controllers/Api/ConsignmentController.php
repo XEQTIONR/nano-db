@@ -102,9 +102,10 @@ class ConsignmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Consignment $consignment)
     {
-        //
+        $consignment->load('letterOfCredit', 'containers.contents.tyre');
+        return new ConsignmentResource($consignment);
     }
 
     /**

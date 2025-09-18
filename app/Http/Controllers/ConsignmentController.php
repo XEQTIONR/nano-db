@@ -48,6 +48,13 @@ class ConsignmentController extends ApiController
         return Inertia::render('consignments/create');
     }
 
+    public function show(Consignment $consignment)
+    {
+        return Inertia::render('consignments/show', [
+            'consignment' => parent::show($consignment)
+        ]);
+    }
+
     public function store(Request $request)
     {
         $consignment = parent::store($request);

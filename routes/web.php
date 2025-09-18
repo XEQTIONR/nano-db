@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/consignments/create', [ConsignmentController::class, 'create'])->name('consignments.create');
     Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
     Route::post('/consignments', [ConsignmentController::class, 'store'])->name('consignments.store');
-    Route::post('/consignments/{consignment}', [ConsignmentController::class, 'show'])->name('consignments.show');
+    Route::get('/consignments/{consignment}', [ConsignmentController::class, 'show'])->name('consignments.show');
     
     Route::get('/containers', [ContainerController::class, 'index'])->name('containers.index');
 

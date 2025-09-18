@@ -115,14 +115,26 @@ export interface LetterOfCredit {
     consignments?: Consignment[]
 }
 
+export interface Container {
+    container_num: string
+    bol: string
+    land_date: Date | string
+    lc_num: string
+    toString: string
+    contents?: ContainerItem[]
+    
+}
+
 export interface Consignment {
-    lc: string
+    lc_num: string
     bol: string
     value: number
     exchange_rate: number
     tax: number
     land_date?: Date
     value_local?: number
+    currency_code?: string
+    containers?: Container[]
 }
 
 export interface Tyre {
@@ -143,6 +155,7 @@ export type ContainerItem = InvoiceItem & {
     bol: string
     total_tax: number
     total_weight: number
+    total: number
 }
 
 export type OrderContentItem = InvoiceItem & {

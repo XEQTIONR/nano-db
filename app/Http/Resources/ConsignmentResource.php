@@ -31,7 +31,10 @@ class ConsignmentResource extends JsonResource
             'created_at' => ($this->created_at instanceof Carbon)
                 ? $this->created_at->toDateTimeString()
                 : (new Carbon($this->created_at))->toDateTimeString(),
-            'toString' => $this->BOL
+            'toString' => $this->BOL,
+            $this->mergeWhen($this->relationLoaded('containers'), [
+                'containers' => ContainerResource::collection($this->containers)
+            ]),
             
         ];
     }
