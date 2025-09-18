@@ -29,7 +29,7 @@ export const columns = [
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="bol" justify="center" label="Bill of lading #" config={v} />,
     cell: ({ row }) => <div className="text-center">
       <Link className="italic hover:underline" href={route('consignments.show', { consignment: row.getValue('bol')})}>
-      { row.getValue('lc_num') }
+      { row.getValue('bol') }
       </Link>
     </div>
   },

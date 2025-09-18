@@ -1,6 +1,6 @@
 import AppLayout from "@/layouts/app-layout"
 import { LetterOfCredit, BreadcrumbItem, Consignment } from "@/types"
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -67,7 +67,7 @@ export default function Show({ consignment } : {
             <div className="w-full">
                 <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Consignment <span className="text-muted text-2xl">#{consignment.data.bol}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">
-                    <Card className="w-full lg:w-1/2 dark:bg-neutral-900 dark:border-none rounded-3xl">
+                    <Card className="w-full lg:w-1/2 xl:w-1/3 dark:bg-neutral-900 dark:border-none rounded-3xl">
                         <CardHeader>
                             <CardTitle>Information</CardTitle>
                         </CardHeader>
@@ -79,7 +79,9 @@ export default function Show({ consignment } : {
                                 </div>
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Letter of Credit Number</Label>
-                                    {consignment.data.lc_num}
+                                    <Link className="italic hover:underline" href={route('lcs.show', {lc: consignment.data.lc_num})}>
+                                        {consignment.data.lc_num}
+                                    </Link>
                                 </div>
                             </div>
                             <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
@@ -137,7 +139,7 @@ export default function Show({ consignment } : {
                             </div>
                         </CardContent>
                     </Card>
-                    <div className="flex flex-col gap-4 w-full lg:w-1/2">
+                    <div className="flex flex-col gap-4 w-full lg:w-1/2 xl:w-2/3">
                         <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
                             <CardHeader>
                                 <CardTitle>Containers</CardTitle>

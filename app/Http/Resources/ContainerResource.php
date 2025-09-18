@@ -16,8 +16,8 @@ class ContainerResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'container_num' => $this->Container_num,
-            'bol' => $this->BOL,
+            'container_num' => $this->Container_num ?? $this->container_num,
+            'bol' => $this->BOL ?? $this->bol,
             'land_date' => (new Carbon($this->land_date))->toDateString(),
             'lc_num' => $this->lc,
             'created_at' => $this->created_at->toDateTimeString(),

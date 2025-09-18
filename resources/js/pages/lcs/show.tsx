@@ -1,6 +1,6 @@
 import AppLayout from "@/layouts/app-layout"
 import { LetterOfCredit, BreadcrumbItem } from "@/types"
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Label } from "@/components/ui/label";
 import {
   Table,
@@ -230,7 +230,11 @@ export default function Show({ letterOfCredit } : {
                                     letterOfCredit.data?.consignments?.map(({bol, land_date, tax, value, value_local}, index) => (
                                         <TableRow className="hover:bg-transparent">
                                             <TableCell className="font-bold">{index + 1}</TableCell>
-                                            <TableCell>{bol}</TableCell>
+                                            <TableCell>
+                                                <Link className="italic hover:underline" href={route('consignments.show', { consignment: bol})}>
+                                                    {bol}
+                                                </Link>
+                                            </TableCell>
                                             <TableCell className="text-center">
                                                 {land_date} 
                                             </TableCell>
