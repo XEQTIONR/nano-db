@@ -162,7 +162,8 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
         <Drawer onOpenChange={(isOpen) => setDrawerOpen(isOpen)} open={drawerOpen}>
             <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
                 <Head title={title} />
-                <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
+                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">{title}</h1>
+                <div className="flex h-screen basis-10/12 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
                     <div className="overflow-y-scroll max-h-[83vh] rounded-md border">
                         <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
                     </div>
@@ -222,7 +223,6 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                             </Pagination>
                         </div>
                     </div>
-                    
                 </div>
                 {
                     type == 'tyre'

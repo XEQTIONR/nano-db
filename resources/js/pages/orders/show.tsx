@@ -161,11 +161,13 @@ export default function Show({ order } : {
                 }
             >
                 <Head />
-                <div className="flex flex-wrap xl:flex-nowrap pt-8 mb-6 px-8 print:py-0 gap-6">
+                <div className="w-full">
+                    <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Order <span className="text-muted text-2xl">#{data.order_num}</span></h1>
+                </div>
+                <div className="flex flex-wrap xl:flex-nowrap pt-4 mb-6 px-4 print:py-0 gap-6">
                     <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
                         <CardHeader>
-                            <CardTitle>Order # {data.order_num}</CardTitle>
-                            <CardDescription>Details</CardDescription>
+                            <CardTitle>Details</CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-col justify-between h-full font-mono">
                             
