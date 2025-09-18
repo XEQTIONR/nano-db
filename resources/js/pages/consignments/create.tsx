@@ -290,11 +290,11 @@ export default function Create({apiToken} : {apiToken: string}) {
             }
         >
             <Head title="Create Consignments" />
-            <div className="flex flex-col h-full md:items-start rounded-xl px-4">
+            <div className="flex flex-col h-full md:items-start rounded-xl p-4">
                 <div className="w-full">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new consignment</h1>
                 </div>
-                <div className="w-full flex gap-10 items-center">
+                <div className="w-full flex gap-10 items-center pt-4">
                     {
                         steps.map( (step, index) => (
                             <div className="flex items-center gap-4">

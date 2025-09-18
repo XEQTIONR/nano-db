@@ -4,6 +4,7 @@ use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\ConsignmentController;
 use App\Http\Controllers\ContainerController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LetterOfCreditController;
 use App\Http\Controllers\OrderController;
@@ -28,9 +29,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('/bank-accounts', [BankAccountController::class, 'index'])->name('bank_accounts.index');
 
