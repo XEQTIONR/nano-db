@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table"
 
 import { Label } from "@/components/ui/label"
-import { Banknote, Plus, ReceiptText, Undo2 } from "lucide-react"
+import { ArrowLeft, Banknote, Plus, ReceiptText, Undo2 } from "lucide-react"
 import { Order, type BreadcrumbItem } from '@/types'
 import { useEffect } from "react";
 import { toast } from 'sonner';
@@ -83,6 +83,21 @@ export default function Show({ order } : {
                     <div className="flex items-end gap-2 justify-end">
                         <Tooltip>
                             <TooltipTrigger asChild>
+                                <Button
+                                    onClick={() => router.visit(route('orders.index'))} 
+                                    className="hover:cursor-pointer text-xs" 
+                                    size="icon" 
+                                    variant="ghost"
+                                >
+                                    <ArrowLeft />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Back to Orders</p>
+                            </TooltipContent>
+                        </Tooltip>
+                        { order.data.balance > 0 && <Tooltip>
+                            <TooltipTrigger asChild>
                                 <DrawerTrigger>
                                     <Button
                                         className="hover:cursor-pointer text-xs" 
@@ -96,7 +111,7 @@ export default function Show({ order } : {
                             <TooltipContent>
                                 <p>Add Payment</p>
                             </TooltipContent>
-                        </Tooltip>
+                        </Tooltip>}
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <Button
@@ -191,7 +206,7 @@ export default function Show({ order } : {
                                                     <TableHead className="text-right">Total</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            <TableBody className="">
+                                            <TableBody className="text-xs">
                                             {
                                                 data.items?.map(({tyre_id, qty, unit_price, item_total}, i) => {
                                                     
@@ -199,7 +214,7 @@ export default function Show({ order } : {
 
                                                     return (
                                                         <TableRow key={i}>
-                                                            <TableCell className="text-center">{ i+1 }</TableCell>
+                                                            <TableCell className="text-center font-bold">{ i+1 }</TableCell>
                                                             <TableCell>
                                                                 ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
                                                             </TableCell>
@@ -289,7 +304,7 @@ export default function Show({ order } : {
                                                     <TableHead className="text-right">Balance</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            <TableBody className="">
+                                            <TableBody className="text-xs">
                                             {
                                                 data.payments?.map(({transaction_id, created_at, amount}, i) => {
                                                     return (
@@ -305,7 +320,7 @@ export default function Show({ order } : {
                                                             ).toFixed(2)}
                                                             </TableCell>
                                                             <TableCell className="text-right">- ৳ {amount.toFixed(2)}</TableCell>
-                                                            <TableCell className="text-right">{data.grand_total && data.payments && (
+                                                            <TableCell className="text-right">৳ {data.grand_total && data.payments && (
                                                                 data.grand_total 
                                                                     - data.payments.slice(0, i).reduce((acc, cur) => acc + cur.amount, 0)
                                                                     - amount

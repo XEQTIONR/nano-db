@@ -22,7 +22,7 @@ import {
 import { Head } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronsUpDown, ChevronRight, Plus, X, Check, TriangleAlert } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronsUpDown, ChevronRight, Plus, X, Check, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
@@ -49,6 +49,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
   Collapsible,
   CollapsibleContent,
@@ -262,7 +267,28 @@ export default function Create({apiToken} : {apiToken: string}) {
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout 
+            breadcrumbs={breadcrumbs}
+            controls={
+                <div className="flex items-end gap-2 justify-end">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    onClick={() => router.visit(route('consignments.index'))} 
+                                    className="hover:cursor-pointer text-xs" 
+                                    size="icon" 
+                                    variant="ghost"
+                                >
+                                    <ArrowLeft />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Back to Consignments</p>
+                            </TooltipContent>
+                        </Tooltip>
+                </div>
+            }
+        >
             <Head title="Create Consignments" />
             <div className="flex flex-col h-full md:items-start rounded-xl p-4">
                 <div className="w-full flex gap-10 items-center">

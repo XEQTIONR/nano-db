@@ -3,7 +3,7 @@ import { InvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
@@ -20,7 +20,11 @@ import { LetterOfCredit } from '@/types';
 import ProductsTable from '@/components/product-table';
 import ProformaInvoiceForm from '@/components/proforma-invoice-form';
 import ConfirmLcForm from '@/components/confirm-lc-form';
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -94,7 +98,28 @@ export default function Create({apiToken} : {apiToken: string}) {
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout 
+            breadcrumbs={breadcrumbs}
+            controls={
+                <div className="flex items-end gap-2 justify-end">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    onClick={() => router.visit(route('lcs.index'))} 
+                                    className="hover:cursor-pointer text-xs" 
+                                    size="icon" 
+                                    variant="ghost"
+                                >
+                                    <ArrowLeft />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Back to letters of credit</p>
+                            </TooltipContent>
+                        </Tooltip>
+                </div>
+            }
+        >
             <Head title="Create LC" />
             <div className="flex flex-col h-full items-start rounded-xl p-4">
                 <div className="w-full flex gap-10 items-center">

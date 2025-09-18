@@ -168,7 +168,7 @@ export default function Returns({order} : {order: { data: Order }}) {
                                     <TableBody className="font-mono">
                                     { 
                                         items && items.map(({brand, size, pattern, lisi, qty, unit_price, id } , index) => (
-                                            <TableRow className="hover:bg-transparent">
+                                            <TableRow className="hover:bg-transparent text-xs">
                                                 <TableCell className="font-bold">{index + 1}</TableCell>
                                                 <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
                                                 <TableCell className="text-center max-w-40">
@@ -467,7 +467,7 @@ export default function Returns({order} : {order: { data: Order }}) {
                                         returnItems
                                             .filter(({qty}) => qty > 0)
                                             .map(({id, brand, size, pattern, lisi, qty, unit_price, } , index) => (
-                                            <TableRow className="hover:bg-transparent">
+                                            <TableRow className="hover:bg-transparent text-xs">
                                                 <TableCell className="font-bold">{index + 1}</TableCell>
                                                 <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
                                                 <TableCell className="text-center max-w-24">

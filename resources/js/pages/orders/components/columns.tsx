@@ -28,10 +28,12 @@ export const columns = [
   {
     accessorKey: "count",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count" label="# of items" config={v} />,
+    cell: ({ row }) => <div className="text-center">{row.getValue("count")}</div>
   },
   {
     accessorKey: "count_payments",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="count_payments" label="# of payments" config={v} />,
+    cell: ({ row }) => <div className="text-center">{row.getValue("count_payments")}</div>
   },
   {
     accessorKey: "grand_total",
