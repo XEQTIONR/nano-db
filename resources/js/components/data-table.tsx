@@ -85,7 +85,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable(options)
 
   return (
-    <div className="overflow-y-scroll max-h-[83vh] rounded-md border">
+    
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -130,6 +130,5 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-    </div>
   )
 }

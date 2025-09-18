@@ -63,7 +63,7 @@ export default function Show({ letterOfCredit } : {
         >
             <Head title={breadcrumbs[0].title} />
             <div className="w-full p-4">
-                <h1 className="text-4xl font-bold ml-1 mb-3">Letter of credit</h1>
+                <h1 className="text-2xl md:text-4xl font-bold ml-1 mb-3">Letter of credit</h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start">
                     <Card className="w-full lg:w-1/2 dark:bg-neutral-900 dark:border-none rounded-3xl">
                         <CardHeader>

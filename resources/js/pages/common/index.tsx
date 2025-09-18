@@ -163,8 +163,9 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
                 <Head title={title} />
                 <div className="flex h-full flex-1 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
-                    <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
-
+                    <div className="overflow-y-scroll max-h-[83vh] rounded-md border">
+                        <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
+                    </div>
                     <div className="flex justify-between w-full">
                         <div className="shrink-0 text-sm flex items-center gap-7">
                             <div>
