@@ -1,5 +1,16 @@
-import axios from 'axios'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import AppLayout from '@/layouts/app-layout';
+import axios from 'axios'
 import { Consignment, ContainerItem, type BreadcrumbItem } from '@/types';
 import {
   Carousel,
@@ -712,9 +723,29 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 <CardTitle>Confirm</CardTitle>
                                 <CardDescription>Confirm new consignment information</CardDescription>
                                 <CardAction>
-                                    <Button onClick={save}>
-                                        Create Consignment
-                                    </Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button>
+                                                Create Consignment
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Create new consignment?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Are you sure you want to create this consignment?
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>
+                                                    Cancel
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction onClick={save}>
+                                                    Confirm
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
                                 </CardAction>
                             </CardHeader>
                             <CardContent className="flex">
