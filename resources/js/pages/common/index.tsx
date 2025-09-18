@@ -162,9 +162,9 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
         <Drawer onOpenChange={(isOpen) => setDrawerOpen(isOpen)} open={drawerOpen}>
             <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
                 <Head title={title} />
-                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">{title}</h1>
-                <div className="flex h-screen basis-10/12 flex-col  gap-4 rounded-xl p-4 overflow-x-auto">
-                    <div className="overflow-y-scroll max-h-[83vh] rounded-md border">
+                <h1 className="text-2xl basis-[6%] md:text-4xl font-bold pl-4 mt-2">{title}</h1>
+                <div className="flex basis-[94%] flex-col  gap-4 px-4 pb-4 overflow-x-auto">
+                    <div className="overflow-y-scroll max-h-[77vh] rounded-md border">
                         <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
                     </div>
                     <div className="flex justify-between w-full">
@@ -172,7 +172,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                             <div>
                                 Showing { items.meta.from } to { items.meta.to } of <span className="font-semibold">{ items.meta.total }</span>
                             </div>
-                            <div className="flex gap-3 items-center">
+                            <div className="hidden md:flex gap-3 items-center">
                                 <Select
                                     defaultValue={items.meta.per_page.toString()}
                                     onValueChange={(val) => {
@@ -201,7 +201,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                         </div>
                         <div>
                             <Pagination className="justify-end">
-                                <PaginationContent >
+                                <PaginationContent className="hidden md:flex" >
                                     {
                                         items.meta.links.map((paginationItem, index) => {
                                             if (index == 0) {
@@ -217,6 +217,17 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                                                     </PaginationLink>
                                                 </PaginationItem>)
                                             }
+                                        })
+                                    }
+                                </PaginationContent>
+                                <PaginationContent className="md:hidden" >
+                                    {
+                                        items.meta.links.map((paginationItem, index) => {
+                                            if (index == 0) {
+                                                return (<PaginationItem><PaginationPrevious key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
+                                            } else if (index == (items.meta.links.length - 1)) {
+                                                return (<PaginationItem><PaginationNext key={index} href={paginationItem.url ?? "#"} /></PaginationItem>)
+                                            } 
                                         })
                                     }
                                 </PaginationContent>

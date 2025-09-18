@@ -121,7 +121,7 @@ export default function Create({apiToken} : {apiToken: string}) {
             }
         >
             <Head title="Create LC" />
-            <div className="flex flex-col h-full items-start rounded-xl px-4">
+            <div className="flex flex-col max-h-[92vh] overflow-y-scroll items-start rounded-xl px-4">
                 <div className="w-full">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new letter of credit</h1>
                 </div>
@@ -165,7 +165,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                     current == 0 && (
                         <Card 
                             className={cn(
-                                "w-full lg:w-1/2 transition-all relative",
+                                "w-full lg:w-1/2 transition-all relative mb-4",
                                 show ? "opacity-100" : "opacity-0",
                                 !dir && (show ? "-right-0" : "-right-16"), 
                                 dir && (show ? "-left-0" : "-left-16"), )}

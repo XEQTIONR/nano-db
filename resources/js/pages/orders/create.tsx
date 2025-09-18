@@ -223,7 +223,7 @@ export default function Create({apiToken} : {apiToken: string}) {
             }
         >
             <Head title="New Order" />
-            <div className="flex flex-col h-full items-start rounded-xl px-4">
+            <div className="flex flex-col max-h-[92vh] overflow-y-scroll items-start rounded-xl px-4">
                 <div className="w-full">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new order</h1>
                 </div>
@@ -260,7 +260,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                         
                     </div>
                 </div>
-                { current == 0 && <div className="w-full pt-5 flex gap-4 items-start">
+                { current == 0 && <div className="w-full pt-5 pb-4 flex gap-4 items-start">
                     <div className={cn(
                         "w-full transition-all relative flex flex-col gap-4 md:w-1/2",
                         show ? "opacity-100" : "opacity-0",
@@ -648,7 +648,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                     </div>
                     
                 </div>}
-                { current == 1 && <div className="w-full pt-5 flex gap-4 items-start justify-center">
+                { current == 1 && <div className="w-full pt-5 pb-4 flex gap-4 items-start justify-center">
                     <Card className={cn(
                         "w-1/2 print:w-full transition-all relative print:border-0 print:shadow-none",
                         show ? "opacity-100" : "opacity-0",
