@@ -60,7 +60,6 @@ const mainNavItems: NavCollapseGroup[] = [
         links: [
             { title: "View all products", href: relativeUrl(route('tyres.index'))},
             { title: "View current inventory", href: relativeUrl(route('stock.index'))},
-            { title: "View waste", href: relativeUrl(route('waste.index'))}
         ]
     },
     

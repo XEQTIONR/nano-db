@@ -41,7 +41,10 @@ class CustomerController extends ApiController
     {
         $customer = parent::store($request);
 
-        return redirect(route('customers.index'))
+        return redirect(route('customers.index', [
+            'sortBy' => 'created_at',
+            'sortDir' => 'desc',
+        ]))
             ->with('notification', [
                 'message' => 'New Customer ID:: '. $customer->id . ' created.',
                 'selected_value' => $customer->id,

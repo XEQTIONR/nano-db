@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/table"
 
 import { DataTableProps } from "@/components/ui/data-table/types"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { SortingState } from "@tanstack/react-table"
 
@@ -43,6 +43,31 @@ export function DataTable<TData, TValue>({
     return []
   })
 
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(() => {
+    if (primaryKey) {
+      if (selectedValue) {
+        const obj: RowSelectionState = {}
+        obj[0] = true
+        return obj
+      }
+    }
+    return {}
+  })
+  
+  useEffect(() => {
+    setRowSelection(() => {
+      if (primaryKey) {
+        if (selectedValue) {
+          const obj: RowSelectionState = {}
+          obj[0] = true
+          return obj
+        }
+      }
+
+      return {}
+    })
+  }, [primaryKey, selectedValue])
+
   const options : TableOptions<TData> = {
     data,
     columns,
@@ -50,18 +75,10 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     manualSorting: true,
     rowCount: meta.total,
-    //getRowId: 
+    // getRowId:  (row) => row[0],
     state: {
-      sorting
-    }
-  }
-
-  if (primaryKey) {
-    options.getRowId = (row) => row[primaryKey]
-    if (selectedValue) {
-      const obj: RowSelectionState = {}
-      obj[selectedValue] = true
-      options.state.rowSelection = obj
+      rowSelection,
+      sorting,
     }
   }
 

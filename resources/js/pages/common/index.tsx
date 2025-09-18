@@ -36,7 +36,7 @@ import { usePage } from '@inertiajs/react'
 import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
-import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import { Drawer } from '@/components/ui/drawer';
 import TyreCreateForm from '../tyres/components/create-form';
 import CustomerCreateForm from '../customers/components/create-form';
 
@@ -90,6 +90,10 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
 
             setDrawerOpen(false)
         }
+        if (notification?.selected_value && notification?.selected_key) {
+                setSelectedKey(notification.selected_key)
+                setSelectedVal(notification.selected_value)
+        }
     }, [notification])
     
     const [selectedVal, setSelectedVal] = useState<string|number|undefined>(notification?.selected_value)
@@ -100,7 +104,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             setTimeout(() => {
                 setSelectedKey(undefined)
                 setSelectedVal(undefined)
-            }, 20000)
+            }, 7000)
         }
     }, [selectedVal, selectedKey])
     let cols = []
