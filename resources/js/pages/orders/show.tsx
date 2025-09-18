@@ -316,14 +316,14 @@ export default function Show({ order } : {
                                                             <TableCell>
                                                                 {created_at &&(new Date(created_at)).toDateString()}
                                                             </TableCell>
-                                                            <TableCell className="text-right">৳ {data.grand_total && data.payments && (
+                                                            <TableCell className="text-right">{data.grand_total && data.payments && currencyFormat('BDT',(
                                                                 data.grand_total 
                                                                     - data.payments.slice(0, i).
                                                                         reduce((acc, cur) => acc + cur.amount, 0)
-                                                            ).toFixed(2)}
+                                                            ))}
                                                             </TableCell>
                                                             <TableCell className="text-right">- {currencyFormat('BDT', amount)}</TableCell>
-                                                            <TableCell className="text-right">৳ { currencyFormat('BDT', (
+                                                            <TableCell className="text-right">{ currencyFormat('BDT', (
                                                                 data.grand_total ?? 0 
                                                                     - data.payments.slice(0, i).reduce((acc, cur) => acc + cur.amount, 0)
                                                                     - amount
