@@ -20,6 +20,7 @@ export const columns = [
   {
     accessorKey: "customer_id",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="customer_id" label="Customer ID" config={v} />,
+    cell: ({ row }) => <div className="text-center">{row.getValue("customer_id")}</div>
   },
   {
     accessorKey: "customer_name",

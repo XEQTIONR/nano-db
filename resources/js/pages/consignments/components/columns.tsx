@@ -19,18 +19,26 @@ import { Link } from "@inertiajs/react"
 export const columns = [
   {
     accessorKey: "bol",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="bol" label="Bill of lading #" config={v} />,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="start" colKey="bol" label="Bill of lading #" config={v} />,
     cell: ({ row }) => {
-      return <div className="text-center">
+      return <div>
         <Link className="italic hover:underline" href={route('consignments.show', {consignment: row.getValue("bol")})}>{row.getValue("bol")}</Link>
         </div>
     }
   },
   {
     accessorKey: "land_date",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="land_date" label="Land Date" config={v} />,
-    cell: ({row}) => {
-      return <div className="text-center">{row.getValue("land_date")}</div>
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="start" colKey="land_date" label="Land Date" config={v} />,
+    // cell: ({row}) => {
+    //   return <div>{row.getValue("land_date")}</div>
+    // }
+  },
+  {
+    accessorKey: "exchange_rate",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="exchange_rate" label="Rate" config={v} />,
+    cell: ({ row }) => {
+        const amount = parseFloat(row.getValue("exchange_rate"))
+        return <div className="text-center">{amount.toFixed(2)}</div>
     }
   },
   {
@@ -51,14 +59,6 @@ export const columns = [
     }
   },
   {
-    accessorKey: "exchange_rate",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="exchange_rate" label="Rate" config={v} />,
-    cell: ({ row }) => {
-        const amount = parseFloat(row.getValue("exchange_rate"))
-        return <div className="text-center">{amount.toFixed(2)}</div>
-    }
-  },
-  {
     accessorKey: "tax",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="end" colKey="tax" label="Tax" config={v} />,
     cell: ({ row }) => {
@@ -71,9 +71,9 @@ export const columns = [
   },
   {
     accessorKey: "lc_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="lc_num" label="LC #" config={v} />,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="start" colKey="lc_num" label="LC #" config={v} />,
     cell: ({row}) => {
-      return <div className="text-center">
+      return <div>
           <Link className="italic hover:underline" href={route('lcs.show', { lc: row.getValue("lc_num")})}>{row.getValue("lc_num")}</Link>
         </div>
     }
