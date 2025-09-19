@@ -32,7 +32,7 @@ export default function Show({ letterOfCredit } : {
 }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: "Letter of Credit",
+            title: "Letters of credit",
             href: route('lcs.index'),
         },
         {
