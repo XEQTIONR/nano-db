@@ -12,7 +12,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-import { Activity, BanknoteArrowUp, ChartBar, Send, Tag, TrendingUp } from "lucide-react"
+import { Activity, BanknoteArrowDown, BanknoteArrowUp, ChartBar, Send, Tag, TrendingUp } from "lucide-react"
 import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 
@@ -46,6 +46,12 @@ const chartConfig = {
     
     icon: BanknoteArrowUp
   },
+
+  sumExpenses: {
+    label: "Expenditure",
+    
+    icon: BanknoteArrowDown
+  },
 } satisfies ChartConfig
 
 export default function Dashboard({
@@ -58,7 +64,8 @@ export default function Dashboard({
     revenue_percent,
     expenditure_percent,
     classified2,
-    orders
+    sales,
+    sales_percent,
 } : {
     count: number, 
     count_items: number, 
@@ -68,6 +75,8 @@ export default function Dashboard({
     count_items_percent: number,
     revenue_percent: number,
     expenditure_percent: number,
+    sales: number,
+    sales_percent: number,
 }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -105,8 +114,8 @@ export default function Dashboard({
                             <div>
                                 <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Sales</h3>
                             </div>
-                            <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", orders.data.reduce((carry, order) => order.grand_total + carry,0))}</span>
-                            <span className="text-lg xl:text-sm">nothing</span>
+                            <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat('BDT', sales)}</span>
+                            <span className="text-lg xl:text-sm">{sales_percent.toFixed(1)}% than yesterday</span>
                         </div>
                     </div>
                     <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
@@ -128,19 +137,9 @@ export default function Dashboard({
                             <span className="text-lg xl:text-sm">{count_items_percent.toFixed(1)}% than yesterday</span>
                         </div>
                     </div>
-                    
-                    {/* <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                        <div className="flex justify-between flex-col h-full">
-                            <div>
-                                <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Expenditure</h3>
-                            </div>
-                            <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", expenditure)}</span>
-                            <span className="text-lg xl:text-sm">{expenditure_percent.toFixed(1)}% than yesterday</span>
-                        </div>
-                    </div> */}
                 </div>
-                <div className="flex gap-4 w-full xl:w-3/4 h-[65%]">
-                    <ChartContainer className='w-full  border rounded-xl' config={chartConfig}>
+                <div className="flex flex-wrap xl:flex-nowrap gap-4 w-full">
+                    <ChartContainer className='w-full xl:w-3/4  border rounded-xl' config={chartConfig}>
                         <LineChart
                             accessibilityLayer
                             data={classified2}
@@ -189,9 +188,26 @@ export default function Dashboard({
                                 strokeWidth={2}
                                 dot={false}
                             />
+                            <Line
+                                dataKey="sumExpenses"
+                                type="linear"
+                                stroke="var(--chart-5)"
+                                strokeWidth={2}
+                                dot={false}
+                            />
                         </LineChart>
                     </ChartContainer>
-                    {/* <div className='hidden xl:flex bg-red-400'></div> */}
+                    <div className='w-full xl:w-1/4 relative shrink'>
+                        <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
+                            <div className="flex justify-between flex-col h-full">
+                                <div>
+                                    <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Expenditure</h3>
+                                </div>
+                                <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", expenditure)}</span>
+                                <span className="text-lg xl:text-sm">{expenditure_percent.toFixed(1)}% than yesterday</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
             </div>
