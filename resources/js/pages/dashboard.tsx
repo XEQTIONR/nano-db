@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/chart"
 
 import { Activity, BanknoteArrowDown, BanknoteArrowUp, ChartBar, Send, Tag, TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -54,7 +54,7 @@ export default function Dashboard({
     count_items_percent,
     revenue_percent,
     expenditure_percent,
-    classified2,
+    classified,
     sales,
     sales_percent,
 } : {
@@ -76,42 +76,10 @@ export default function Dashboard({
                 <div className="w-full flex justify-between">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Dashboard</h1>
                 </div>
-                {/* <div className="grid auto-rows-min gap-4 lg:grid-cols-2 xl:grid-cols-4">
-                    <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                        <div className="flex justify-between flex-col h-full">
-                            <div>
-                                <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">{new Date().toLocaleDateString('en-US', { weekday: 'long' })}</h3>
-                            </div>
-                            <span className="text-8xl md:text-7xl font-bold">{new Date().getDate()}<sup>th</sup></span>
-                            <span className="text-lg font-semibold">
-                                 {new Date().toLocaleDateString('en-US', { month: 'long' })}, {new Date().getFullYear()}
-                            </span>
-                        </div>
-                    </div>
-                    
-                </div> */}
                 <div className='w-full flex gap-4 items-start flex-wrap xl:flex-nowrap'>
                     <div className="flex flex-wrap gap-4 w-full xl:w-3/4">
                         <div className="flex gap-4 w-full flex-col xl:flex-row">
                             <div className='flex flex-col md:flex-row gap-4 xl:w-2/3'>
-                                {/* <div className="w-full  p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                                    <div className="flex justify-between flex-col h-full">
-                                        <div>
-                                            <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Revenue</h3>
-                                        </div>
-                                        <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", revenue)}</span>
-                                        <span className="text-lg xl:text-sm">{revenue_percent.toFixed(1)}% than yesterday</span>
-                                    </div>
-                                </div> */}
-                                {/* <div className="w-full  p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                                    <div className="flex justify-between flex-col h-full">
-                                        <div>
-                                            <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Sales</h3>
-                                        </div>
-                                        <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat('BDT', sales)}</span>
-                                        <span className="text-lg xl:text-sm">{sales_percent.toFixed(1)}% than yesterday</span>
-                                    </div>
-                                </div> */}
                                 <DashboardCard 
                                     className="w-full"
                                     title="Revenue"
@@ -129,15 +97,6 @@ export default function Dashboard({
                                     subtitle={sales_percent.toFixed(1) + "% than yesterday"}
                                 />
                             </div>
-                            {/* <div className="w-full xl:w-1/3 p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                                <div className="flex justify-between flex-col h-full">
-                                    <div>
-                                        <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Number of orders</h3>
-                                    </div>
-                                    <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{count}</span>
-                                    <span className="text-lg xl:text-sm">{count_percent.toFixed(1)}% than yesterday</span>
-                                </div>
-                            </div> */}
                             <DashboardCard 
                                 className="w-full xl:w-1/3"
                                 title="# of orders"
@@ -149,7 +108,7 @@ export default function Dashboard({
                         <ChartContainer className='w-full h-[50vh] md:h-[60vh] border rounded-xl' config={chartConfig}>    
                             <LineChart
                                 accessibilityLayer
-                                data={classified2}
+                                data={classified}
                                 margin={{
                                     left: 24,
                                     right: 24,
@@ -164,21 +123,13 @@ export default function Dashboard({
                                     axisLine={false}
                                     tickMargin={10}
                                     // minTickGap={50}
-                                    tickFormatter={(value) => value}
+                                    tickFormatter={(value) => value.toUpperCase()}
                                 />
+                                <YAxis mirror tickFormatter={(value) =>  value == 0 ? "" : currencyFormat("BDT", value)} />
                                 <ChartTooltip
                                     cursor={true}
                                     content={<ChartTooltipContent 
                                     labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
-                                    // formatter={(val) => <div className="flex w-full justify-between">
-                                    //     <div className="flex items-center gap-1.5">
-                                    //         <span className='text-teal-500'><Send size={10} /></span>    
-                                    //         <span className="font-bold">
-                                    //             Total sold:
-                                    //         </span>
-                                    //     </div>
-                                    //     <span className='font-mono'>{currencyFormat('BDT', val)}</span>
-                                    // </div>}
                                     className='pb-2 min-w-3xs' />}
                                 />
                                 <Line
@@ -212,16 +163,6 @@ export default function Dashboard({
                             stat={count_items}
                             subtitle={count_items_percent.toFixed(1) + "% than yesterday"}
                         />
-                        {/* <div className="w-full md:w-1/2 xl:w-full p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                            
-                            <div className="flex justify-between flex-col h-full">
-                                <div>
-                                    <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Number of items sold</h3>
-                                </div>
-                                <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{count_items}</span>
-                                <span className="text-lg xl:text-sm">{count_items_percent.toFixed(1)}% than yesterday</span>
-                            </div>
-                        </div> */}
                         <DashboardCard 
                             className="w-full md:w-1/2 xl:w-full"
                             title="Expenditure"
@@ -230,21 +171,8 @@ export default function Dashboard({
                             decimalPlaces={2}
                             subtitle={expenditure_percent.toFixed(1) + "% than yesterday"}
                         />
-                        {/* <div className="w-full md:w-1/2 xl:w-full p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                            <div className="flex justify-between flex-col h-full">
-                                <div>
-                                    <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Expenditure</h3>
-                                </div>
-                                <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", expenditure)}</span>
-                                <span className="text-lg xl:text-sm">{expenditure_percent.toFixed(1)}% than yesterday</span>
-                            </div>
-                        </div> */}
-
                     </div>
                 </div>
-                
-                
-                
             </div>
         </AppLayout>
     );

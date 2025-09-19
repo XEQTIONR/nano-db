@@ -18,7 +18,7 @@ class DashboardController extends Controller
      */
     public function __invoke()
     {
-        $todaysDate = Carbon::now()->subDays(1);
+        $todaysDate = Carbon::now();
         $orders = Order::with('contents')->whereDate('created_at', $todaysDate)->get();
         $payments = Payment::whereDate('created_at', $todaysDate)->get();
         $expenses = Expense::whereDate('date', $todaysDate)->get();
@@ -40,7 +40,7 @@ class DashboardController extends Controller
             return $grandTotal;
         })->reduce(fn($carry, $item) => $carry + $item, 0);
 
-        $yesterDaysDate = Carbon::now()->subDays(2);
+        $yesterDaysDate = Carbon::now()->subDay();
         $yesterdaysOrders = Order::with('contents')->whereDate('created_at', $yesterDaysDate)->get();
         $yesterdaysPayments = Payment::whereDate('created_at', $yesterDaysDate)->get();
         $yesterdaysExpenses = Expense::where('date', $yesterDaysDate)->get();
@@ -101,7 +101,7 @@ class DashboardController extends Controller
         $sumExpenses = 0;
         $hour = 0;
 
-        $classified2 = $classified->map(function($cla) use (&$sum, &$hour, &$sumPayments, &$sumExpenses) {
+        $classified = $classified->map(function($cla) use (&$sum, &$hour, &$sumPayments, &$sumExpenses) {
             $sum = $sum + $cla['orders'];
             $sumPayments = $sumPayments + $cla['payments'];
             $sumExpenses = $sumExpenses + $cla['expenses'];
@@ -124,15 +124,26 @@ class DashboardController extends Controller
             ];
         });
 
-        $orders = OrderResource::collection($orders);
-        return compact('todaysDate', 'orders', 'expenses' ,'count', 'count_items', 'revenue', 'expenditure', 'sales' , 'count_percent', 'count_items_percent', 'revenue_percent', 'expenditure_percent', 'sales_percent', 'classified2');
+        return compact(
+            'count', 
+            'count_items', 
+            'revenue', 
+            'expenditure', 
+            'sales' , 
+            'count_percent', 
+            'count_items_percent', 
+            'revenue_percent', 
+            'expenditure_percent', 
+            'sales_percent', 
+            'classified'
+        );
     }
 
     protected function intervals($count = 24) 
     {
         $length = 24/$count;
 
-        $start = Carbon::now()->subDay()->startOfDay();
+        $start = Carbon::now()->startOfDay();
 
         $k = 0;
 
