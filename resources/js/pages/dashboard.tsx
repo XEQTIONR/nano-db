@@ -140,7 +140,7 @@ export default function Dashboard({
                             </div> */}
                             <DashboardCard 
                                 className="w-full xl:w-1/3"
-                                title="Number of orders"
+                                title="# of orders"
                                 stat={count}
                                 subtitle={count_percent.toFixed(1) + "% than yesterday"}
                             />
@@ -208,7 +208,7 @@ export default function Dashboard({
                     <div className="flex flex-col md:flex-row xl:flex-col gap-4 w-full xl:w-1/4">
                         <DashboardCard 
                             className="w-full md:w-1/2 xl:w-full"
-                            title="Number of items sold"
+                            title="# of items sold"
                             stat={count_items}
                             subtitle={count_items_percent.toFixed(1) + "% than yesterday"}
                         />

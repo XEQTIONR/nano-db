@@ -45,16 +45,16 @@ export default function DashboardCard({title, stat, subtitle, className, decimal
     }
     return(
         <div className={cn(
-            "p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]",
+            "p-5 h-44 aspect-video overflow-hidden rounded-xl border dark:border-none shadow-md dark:shadow-none  dark:bg-[#121212]",
             className
         )}>                            
             <div className="flex justify-between flex-col h-full">
                 <div>
-                    <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">{title}</h3>
+                    <h3 className="font-bold text-2xl xl:text-lg">{title}</h3>
                 </div>
-                <span className="text-3xl sm:text-5xl md:text-xl lg:text-4xl  font-bold">
-                    {currencyCode && getCurrencySymbol(currencyCode)} <span ref={countupRef}>{stat}</span>
-                </span>
+                <div className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl font-bold whitespace-nowrap">
+                    <span className="text-emerald-500">{currencyCode && getCurrencySymbol(currencyCode)}</span> <span ref={countupRef}>{stat}</span>
+                </div>
                 <span className="text-lg xl:text-sm">{subtitle}</span>
             </div>
         </div>
