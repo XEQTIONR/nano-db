@@ -210,6 +210,9 @@ export default function CreateForm({ order } : {
                                         <SelectItem value="cash">Cash</SelectItem>
                                         <SelectItem value="deposit">Bank Deposit</SelectItem>
                                         <SelectItem value="check">Check</SelectItem>
+                                        { order.data.commission === 0 
+                                            && <SelectItem value="commission">Commission</SelectItem>
+                                        }
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>

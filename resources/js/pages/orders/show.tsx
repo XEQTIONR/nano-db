@@ -191,10 +191,14 @@ export default function Show({ order } : {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="w-full lg:w-1/3 flex ">
+                                        <div className="w-full lg:w-1/3 flex flex-col gap-4">
                                             <div className="flex flex-col gap-2">
                                                 <Label className="font-semibold">Order date</Label>
                                                 <span className=" text-sm">{ (new Date(data.order_on)).toDateString() }</span>
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                <Label className="font-semibold">Commission paid</Label>
+                                                <span className=" text-sm">{ currencyFormat("BDT", data.commission) }</span>
                                             </div>
                                         </div>
                                     </div>
@@ -291,8 +295,8 @@ export default function Show({ order } : {
                     </Card>
                     <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none bg-neutral-50 dark:bg-neutral-900 border-none dark:border-none">
                         <CardHeader>
-                            <CardTitle>Payments</CardTitle>
-                            <CardDescription>Payment made for order # {data.order_num}</CardDescription>
+                            <CardTitle>Payments / Commisions</CardTitle>
+                            <CardDescription>Payment made and commision payout for order # {data.order_num}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col justify-between h-full font-mono">
                             
@@ -303,7 +307,7 @@ export default function Show({ order } : {
                                                     <TableHead className="text-center">Trans ID</TableHead>
                                                     <TableHead>Date</TableHead>
                                                     <TableHead className="text-right">Owing</TableHead>
-                                                    <TableHead className="text-right">Payment</TableHead>
+                                                    <TableHead className="text-right">Amount</TableHead>
                                                     <TableHead className="text-right">Balance</TableHead>
                                                 </TableRow>
                                             </TableHeader>
@@ -324,14 +328,37 @@ export default function Show({ order } : {
                                                             </TableCell>
                                                             <TableCell className="text-right">- {currencyFormat('BDT', amount)}</TableCell>
                                                             <TableCell className="text-right">{ currencyFormat('BDT', (
-                                                                data.grand_total ?? 0 
-                                                                    - data.payments.slice(0, i).reduce((acc, cur) => acc + cur.amount, 0)
-                                                                    - amount
+                                                                (data.grand_total ?? 0) 
+                                                                    - 
+                                                            (data.payments?.slice(0, i).reduce((acc, cur) => acc + cur.amount, 0) ?? 0)
+                                                                     - amount
                                                             ))}
                                                             </TableCell>
                                                         </TableRow>
                                                     )
                                                 })
+                                            }
+                                            {
+                                                data.commission > 0 && 
+                                                <TableRow className="italic">
+                                                    <TableCell></TableCell>
+                                                    <TableCell>Commission</TableCell>
+                                                    <TableCell className="text-right">{
+                                                        currencyFormat('BDT', (
+                                                        (data.grand_total ?? 0) 
+                                                        - (data.payments?.reduce((acc, cur) => acc + cur.amount, 0) ?? 0)))
+                                                    }</TableCell>
+                                                    <TableCell className="text-right">- {currencyFormat('BDT', data.commission)}</TableCell>
+                                                    <TableCell className="text-right">
+                                                        {
+                                                            currencyFormat('BDT',(
+                                                                (data.grand_total ?? 0) 
+                                                                - (data.payments?.reduce((acc, cur) => acc + cur.amount, 0) ?? 0)
+                                                            )
+                                                            - data.commission)
+                                                        }
+                                                    </TableCell>
+                                                </TableRow>
                                             }
                                             </TableBody>
                                         </Table>

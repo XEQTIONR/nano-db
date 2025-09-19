@@ -190,6 +190,7 @@ export interface Order {
     order_num: number
     order_on: string | Date
     count?: number
+    commission: number
     sub_total: number
     discount_percent: number
     discount_amount: number

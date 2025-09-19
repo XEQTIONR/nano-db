@@ -44,6 +44,38 @@ class PaymentController extends ApiController
 
         $order = Order::find($order_num);
 
+        if ($type = 'commission') {
+            if ($order->commission == 0) {
+                $order->load(['contents', 'payments']);
+                $paymentsTotal = $order->payments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
+                $subTotal = $order->contents->reduce(fn($carry, $content) => $carry + ($content->qty * $content->unit_price) ,0);
+                $grandTotal = $subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100)) + $order->tax_amount - $order->discount_amount;
+                
+                if (($grandTotal - $paymentsTotal - $payment_amount) >= 0) {
+                    $order->commission = $payment_amount;
+                    $order->save();
+
+                    return redirect(route('orders.index'))->with('notification', [
+                        'message' => 'Commission ' 
+                            . ' of TK ' 
+                            . $payment_amount 
+                            . ' saved for Order #'
+                            . $order_num,
+                    ]);
+                } // commission overflows
+                return redirect(route('orders.index'))->with('notification', [
+                    'message' => 'Commission ' 
+                        . ' of TK ' 
+                        . $payment_amount 
+                        . ' is greater than order balance for Order #'
+                        . $order_num,
+                ]);
+                
+            } // commision already exists
+            return redirect(route('orders.index'))->with('notification', [
+                'message' => 'Commission already added for Order #' . $order_num
+            ]);
+        } // real payment (not commission)
         $payment = new Payment([
             'payment_amount' => $payment_amount,
             'type' => $type,
