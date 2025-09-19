@@ -79,6 +79,17 @@ export default function Dashboard({
                 <div className='w-full flex gap-4 items-start flex-wrap xl:flex-nowrap'>
                     <div className="flex flex-wrap gap-4 w-full xl:w-3/4">
                         <div className="flex gap-4 w-full flex-col xl:flex-row">
+                            <DashboardCard 
+                                className="w-full xl:w-1/3"
+                                
+                                
+
+                                title="Sales"
+                                    stat={sales}
+                                    decimalPlaces={2}
+                                    currencyCode="BDT"
+                                    subtitle={sales_percent.toFixed(1) + "% than yesterday"}
+                            />
                             <div className='flex flex-col md:flex-row gap-4 xl:w-2/3'>
                                 <DashboardCard 
                                     className="w-full"
@@ -90,19 +101,14 @@ export default function Dashboard({
                                 />
                                 <DashboardCard 
                                     className="w-full"
-                                    title="Sales"
-                                    stat={sales}
-                                    decimalPlaces={2}
+                                    title="Expenditure"
+                                    stat={expenditure}
                                     currencyCode="BDT"
-                                    subtitle={sales_percent.toFixed(1) + "% than yesterday"}
+                                    currencySymbolColorClass='text-rose-500 dark:text-rose-700'
+                                    decimalPlaces={2}
+                                    subtitle={expenditure_percent.toFixed(1) + "% than yesterday"}
                                 />
                             </div>
-                            <DashboardCard 
-                                className="w-full xl:w-1/3"
-                                title="# of orders"
-                                stat={count}
-                                subtitle={count_percent.toFixed(1) + "% than yesterday"}
-                            />
                         </div>
                         
                         <ChartContainer className='w-full h-[50vh] md:h-[60vh] border rounded-xl' config={chartConfig}>    
@@ -165,11 +171,10 @@ export default function Dashboard({
                         />
                         <DashboardCard 
                             className="w-full md:w-1/2 xl:w-full"
-                            title="Expenditure"
-                            stat={expenditure}
-                            currencyCode="BDT"
-                            decimalPlaces={2}
-                            subtitle={expenditure_percent.toFixed(1) + "% than yesterday"}
+                            title="# of orders"
+                                stat={count}
+                                subtitle={count_percent.toFixed(1) + "% than yesterday"}
+
                         />
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils"
 import { useEffect, useRef } from 'react'
-export default function DashboardCard({title, stat, subtitle, className, decimalPlaces = 0, currencyCode = undefined} 
-    : {title: string, stat: number, subtitle: string, className: string, decimalPlaces?: number, currencyCode?: string}) {
+export default function DashboardCard({title, stat, subtitle, className, decimalPlaces = 0, currencyCode = undefined, currencySymbolColorClass = undefined} 
+    : {title: string, stat: number, subtitle: string, className: string, decimalPlaces?: number, currencyCode?: string, currencySymbolColorClass?: string}) {
 
 
     // create a ref and declare an instance for each countUp animation
@@ -53,7 +53,9 @@ export default function DashboardCard({title, stat, subtitle, className, decimal
                     <h3 className="font-bold text-2xl xl:text-lg">{title}</h3>
                 </div>
                 <div className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl font-bold whitespace-nowrap">
-                    <span className="text-emerald-500">{currencyCode && getCurrencySymbol(currencyCode)}</span> <span ref={countupRef}>{stat}</span>
+                    <span className={cn(
+                        currencySymbolColorClass ?? "text-emerald-500"
+                    )}>{currencyCode && getCurrencySymbol(currencyCode)}</span> <span ref={countupRef}>{stat}</span>
                 </div>
                 <span className="text-lg xl:text-sm">{subtitle}</span>
             </div>

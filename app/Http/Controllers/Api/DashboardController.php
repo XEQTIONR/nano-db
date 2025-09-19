@@ -100,8 +100,9 @@ class DashboardController extends Controller
         $sumPayments = 0;
         $sumExpenses = 0;
         $hour = 0;
+        $now = Carbon::now();
 
-        $classified = $classified->map(function($cla) use (&$sum, &$hour, &$sumPayments, &$sumExpenses) {
+        $classified = $classified->map(function($cla) use (&$sum, &$hour, &$sumPayments, &$sumExpenses, $now) {
             $sum = $sum + $cla['orders'];
             $sumPayments = $sumPayments + $cla['payments'];
             $sumExpenses = $sumExpenses + $cla['expenses'];
@@ -118,12 +119,12 @@ class DashboardController extends Controller
 
             return [
                 'hours' => $hr,
-                'sumOrderGrandTotal' => $sum,
-                'sumPayments' => $sumPayments,
-                'sumExpenses' => $sumExpenses,
+                'sumOrderGrandTotal' => $now->hour < $hour ? null : $sum,
+                'sumPayments' => $now->hour < $hour ? null : $sumPayments,
+                'sumExpenses' => $now->hour < $hour ? null : $sumExpenses,
             ];
         });
-
+        $now = $now->hour;
         return compact(
             'count', 
             'count_items', 
@@ -135,7 +136,8 @@ class DashboardController extends Controller
             'revenue_percent', 
             'expenditure_percent', 
             'sales_percent', 
-            'classified'
+            'classified',
+            'now'
         );
     }
 
