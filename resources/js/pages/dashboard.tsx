@@ -115,13 +115,17 @@ export default function Dashboard({
                                 <DashboardCard 
                                     className="w-full"
                                     title="Revenue"
-                                    stat={currencyFormat("BDT", revenue)}
+                                    stat={revenue}
+                                    decimalPlaces={2}
+                                    currencyCode="BDT"
                                     subtitle={revenue_percent.toFixed(1) + "% than yesterday"}
                                 />
                                 <DashboardCard 
                                     className="w-full"
                                     title="Sales"
-                                    stat={currencyFormat("BDT", sales)}
+                                    stat={sales}
+                                    decimalPlaces={2}
+                                    currencyCode="BDT"
                                     subtitle={sales_percent.toFixed(1) + "% than yesterday"}
                                 />
                             </div>
@@ -221,7 +225,9 @@ export default function Dashboard({
                         <DashboardCard 
                             className="w-full md:w-1/2 xl:w-full"
                             title="Expenditure"
-                            stat={currencyFormat("BDT", expenditure)}
+                            stat={expenditure}
+                            currencyCode="BDT"
+                            decimalPlaces={2}
                             subtitle={expenditure_percent.toFixed(1) + "% than yesterday"}
                         />
                         {/* <div className="w-full md:w-1/2 xl:w-full p-5 h-44 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
