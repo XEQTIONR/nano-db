@@ -5,6 +5,17 @@ import { currencyFormat } from '@/lib/utils';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
+import { Activity, BanknoteArrowUp, ChartBar, Send, Tag, TrendingUp } from "lucide-react"
+import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
+
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
@@ -12,11 +23,30 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const today = () => {
-    const date = new Date()
+export const description = "A step area chart"
 
-    return date.toDateString();
-}
+const chartData = [
+  { month: "January", desktop: 186 },
+  { month: "February", desktop: 305 },
+  { month: "March", desktop: 73 },
+  { month: "April", desktop: 73 },
+  { month: "May", desktop: null },
+  { month: "June", desktop: null },
+]
+
+const chartConfig = {
+  sumOrderGrandTotal: {
+    label: "Total sold",
+    
+    icon: Tag,
+  },
+
+  sumPayments: {
+    label: "Revenue",
+    
+    icon: BanknoteArrowUp
+  },
+} satisfies ChartConfig
 
 export default function Dashboard({
     count, 
@@ -27,6 +57,8 @@ export default function Dashboard({
     count_items_percent,
     revenue_percent,
     expenditure_percent,
+    classified2,
+    orders
 } : {
     count: number, 
     count_items: number, 
@@ -40,11 +72,11 @@ export default function Dashboard({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div className="flex flex-col gap-4 max-h-[92vh] w-full overflow-y-scroll items-start rounded-xl p-4">
                 <div className="w-full flex justify-between">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Dashboard</h1>
                 </div>
-                <div className="grid auto-rows-min gap-4 lg:grid-cols-2 xl:grid-cols-4">
+                {/* <div className="grid auto-rows-min gap-4 lg:grid-cols-2 xl:grid-cols-4">
                     <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
                         <div className="flex justify-between flex-col h-full">
                             <div>
@@ -57,8 +89,26 @@ export default function Dashboard({
                         </div>
                     </div>
                     
-                </div>
-                <div className="grid auto-rows-min gap-4 lg:grid-cols-2 xl:grid-cols-4">
+                </div> */}
+                <div className="grid auto-rows-min gap-4 lg:grid-cols-2 xl:grid-cols-4 w-full">
+                    <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
+                        <div className="flex justify-between flex-col h-full">
+                            <div>
+                                <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Revenue</h3>
+                            </div>
+                            <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", revenue)}</span>
+                            <span className="text-lg xl:text-sm">{revenue_percent.toFixed(1)}% than yesterday</span>
+                        </div>
+                    </div>
+                    <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
+                        <div className="flex justify-between flex-col h-full">
+                            <div>
+                                <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Sales</h3>
+                            </div>
+                            <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", orders.data.reduce((carry, order) => order.grand_total + carry,0))}</span>
+                            <span className="text-lg xl:text-sm">nothing</span>
+                        </div>
+                    </div>
                     <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
                         <div className="flex justify-between flex-col h-full">
                             <div>
@@ -78,16 +128,8 @@ export default function Dashboard({
                             <span className="text-lg xl:text-sm">{count_items_percent.toFixed(1)}% than yesterday</span>
                         </div>
                     </div>
-                    <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
-                        <div className="flex justify-between flex-col h-full">
-                            <div>
-                                <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Revenue</h3>
-                            </div>
-                            <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", revenue)}</span>
-                            <span className="text-lg xl:text-sm">{revenue_percent.toFixed(1)}% than yesterday</span>
-                        </div>
-                    </div>
-                    <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
+                    
+                    {/* <div className="p-5 aspect-video overflow-hidden border-none rounded-xl bg-[#121212]">
                         <div className="flex justify-between flex-col h-full">
                             <div>
                                 <h3 className="font-bold text-2xl lg:text-xl xl:text-lg">Expenditure</h3>
@@ -95,7 +137,61 @@ export default function Dashboard({
                             <span className="text-5xl md:text-7xl lg:text-5xl xl:text-4xl font-bold">{currencyFormat("BDT", expenditure)}</span>
                             <span className="text-lg xl:text-sm">{expenditure_percent.toFixed(1)}% than yesterday</span>
                         </div>
-                    </div>
+                    </div> */}
+                </div>
+                <div className="flex gap-4 w-full xl:w-3/4 h-[65%]">
+                    <ChartContainer className='w-full  border rounded-xl' config={chartConfig}>
+                        <LineChart
+                            accessibilityLayer
+                            data={classified2}
+                            margin={{
+                                left: 24,
+                                right: 24,
+                                top: 24,
+                                bottom: 24,
+                            }}
+                        >
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="hours"
+                                tickLine={true}
+                                axisLine={false}
+                                tickMargin={10}
+                                // minTickGap={50}
+                                tickFormatter={(value) => value}
+                            />
+                            <ChartTooltip
+                                cursor={true}
+                                content={<ChartTooltipContent 
+                                labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
+                                // formatter={(val) => <div className="flex w-full justify-between">
+                                //     <div className="flex items-center gap-1.5">
+                                //         <span className='text-teal-500'><Send size={10} /></span>    
+                                //         <span className="font-bold">
+                                //             Total sold:
+                                //         </span>
+                                //     </div>
+                                //     <span className='font-mono'>{currencyFormat('BDT', val)}</span>
+                                // </div>}
+                                className='pb-2 min-w-3xs' />}
+                            />
+                            <Line
+                                dataKey="sumOrderGrandTotal"
+                                type="linear"
+                                stroke="var(--chart-4)"
+                                strokeWidth={2}
+                                dot={false}
+                            />
+                            <Line
+                                dataKey="sumPayments"
+                                type="linear"
+                                stroke="var(--chart-2)"
+                                strokeWidth={2}
+                                dot={false}
+                            />
+                        </LineChart>
+                    </ChartContainer>
+                    {/* <div className='hidden xl:flex bg-red-400'></div> */}
                 </div>
                 
             </div>
