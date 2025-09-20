@@ -78,7 +78,6 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
 export function AppSidebarHeaderControls({ addLink, apiToken, filters, filterConfigs } : { addLink?: string, apiToken?: string, filters: FilterType[], filterConfigs: FilterConfigType[] }) {
 
     const groups = Object.groupBy(filterConfigs, ({ group }) => group )
-    console.log('groups:', groups)
     const trasformFiltersToQuery = ([key, op, val] : FilterType): FilterTransformedType => {
         let operation = "eq"
         let value: StrOrNumType | StrOrNumType[] = ""
