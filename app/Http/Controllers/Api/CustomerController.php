@@ -58,7 +58,9 @@ class CustomerController extends Controller
                 ->query()
                 ->fromSub($query, 'customers');
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                if ($filters[$i][0] == '*') {
+                    $query->whereAny(Customer::$searchable, $filters[$i][1], $filters[$i][2]);
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
                     $query = $query->whereIn($filters[$i][0], $filters[$i][2]);
                 } else {
                     $query = $query->where(...$filters[$i]);

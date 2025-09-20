@@ -24,6 +24,15 @@ class Consignment extends Model
         'land_date',
         'lc',
     ];
+
+    public static $searchable = [
+        'BOL',
+        'value',
+        'exchange_rate',
+        'tax',
+        'land_date',
+        'lc',
+    ];
     
     protected function casts() : array  
     { 

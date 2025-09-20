@@ -21,6 +21,10 @@ class Container extends Model
         'BOL',
         'Container_num'
     ];
+    public static $searchable = [
+        'BOL',
+        'Container_num'
+    ];
 
     public function consignment(): BelongsTo
     {

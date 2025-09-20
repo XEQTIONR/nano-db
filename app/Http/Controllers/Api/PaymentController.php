@@ -35,7 +35,9 @@ class PaymentController extends Controller
 
         if ($filters->count() > 0) {
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                if ($filters[$i][0] == '*') {
+                    $query->whereAny(Payment::$searchable, $filters[$i][1], $filters[$i][2]);
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
                     if ($filters[$i][0] === 'amount') {
                          $query = $query->whereRaw("(payment_amount - refund_amount) IN(" .  implode(", ", $filters[$i][2]) . ")");
                     } else {
@@ -47,7 +49,6 @@ class PaymentController extends Controller
                     $query = $query->where(...$filters[$i]);
                 }
             }
-
             $query = $query->select();
         }
 

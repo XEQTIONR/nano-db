@@ -26,6 +26,17 @@ class Order extends Model
         'random'
     ];
 
+    public static $searchable = [
+        'Order_num',
+        'discount_percent',
+        'discount_amount',
+        'tax_percentage',
+        'tax_amount',
+        'commission',
+        'customer_id',
+        'order_on',
+    ];
+
     protected function casts(): array
     {
         return [

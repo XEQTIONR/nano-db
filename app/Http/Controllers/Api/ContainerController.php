@@ -46,7 +46,9 @@ class ContainerController extends Controller
         
         if ($filters->count() > 0) {
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                if ($filters[$i][0] == '*') {
+                    $query->whereAny(Container::$searchable, $filters[$i][1], $filters[$i][2]);
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
                     if ($filters[$i][0] == 'bol') {
                         $query = $query->whereIn('consignment_containers.BOL', $filters[$i][2]);
                     } else if ($filters[$i][0] == 'lc_num') {

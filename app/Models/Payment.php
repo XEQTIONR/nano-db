@@ -16,6 +16,14 @@ class Payment extends Model
         'type',
     ];
 
+    public static $searchable = [
+        'transaction_id',
+        'Order_num',
+        'payment_amount',
+        'refund_amount',
+        'type',
+    ];
+
     protected $appends = [
         'amount',
     ];

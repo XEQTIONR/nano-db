@@ -15,6 +15,13 @@ class Customer extends Model
         'notes',
     ];
 
+    public static $searchable = [
+        'id',
+        'name',
+        'address',
+        'phone',
+    ];
+
     public function orders(): HasMany {
         return $this->hasMany(Order::class);
     }

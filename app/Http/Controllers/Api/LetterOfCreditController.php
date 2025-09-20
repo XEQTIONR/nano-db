@@ -44,7 +44,9 @@ class LetterOfCreditController extends Controller
                 ->fromSub($query, 'lcs');
             
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                if ($filters[$i][0] == '*') {
+                    $query->whereAny(LetterOfCredit::$searchable, $filters[$i][1], $filters[$i][2]);
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
                     $query = $query->whereIn($filters[$i][0], $filters[$i][2]);
                 } else {
                     $query = $query->where(...$filters[$i]);
@@ -61,6 +63,8 @@ class LetterOfCreditController extends Controller
         return [
             'items' => $data,
             'filters' => $filters,
+            'sortBy' => $sortBy,
+            'sortDir' => $sortDir
         ];
     }
 

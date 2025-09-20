@@ -33,6 +33,22 @@ class LetterOfCredit extends Model
         'notes',
     ];
 
+    public static $searchable = [
+        'lc_num',
+        'date_issued',
+        'date_expiry',
+        'applicant',
+        'beneficiary',
+        'currency_code',
+        'foreign_amount',
+        'foreign_expense',
+        'domestic_expense',
+        'exchange_rate',
+        'port_depart',
+        'port_arrive',
+        'invoice_no',
+    ];
+
     protected function casts() {
         return [
             'lc_num' => 'string',

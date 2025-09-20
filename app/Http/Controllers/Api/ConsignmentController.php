@@ -34,7 +34,9 @@ class ConsignmentController extends Controller
         if ($filters->count() > 0) {
             
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                if ($filters[$i][0] == '*') {
+                    $query->whereAny(Consignment::$searchable, $filters[$i][1], $filters[$i][2]);
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
                     $query = $query->whereIn($filters[$i][0] == 'lc_num' ? 'lc' : $filters[$i][0], $filters[$i][2]);
                 } else {
                     $query = $query->where($filters[$i][0] == 'lc_num' ? 'lc' : $filters[$i][0], $filters[$i][1], $filters[$i][2]);

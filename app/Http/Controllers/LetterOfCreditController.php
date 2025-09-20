@@ -13,9 +13,6 @@ class LetterOfCreditController extends ApiController
      */
     public function index(Request $request)
     {
-        $sortBy = $request->input('sortBy') ?? 'created_at';
-
-        $sortDir = $request->input('sortDir') ?? 'desc';
 
         $data = parent::index($request);
 
@@ -25,8 +22,6 @@ class LetterOfCreditController extends ApiController
             'addLink' => route('lcs.create'),
             'title' => 'Letters of credit',
             'type' => 'lc',
-            'sortBy' => $sortBy,
-            'sortDir' => $sortDir
         ]);
     }
 

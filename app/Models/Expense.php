@@ -35,6 +35,15 @@ class Expense extends Model
         Order::class => 'Order',
     ];
 
+    public static $searchable = [
+        'id',
+        'expensable_type',
+        'expensable_id',
+        'date',
+        'amount',
+        'note',
+        'rate',
+    ];
 
     protected $fillable = [
         'expensable_type',
