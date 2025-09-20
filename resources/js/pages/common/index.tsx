@@ -41,9 +41,9 @@ import TyreCreateForm from '../tyres/components/create-form';
 import CustomerCreateForm from '../customers/components/create-form';
 import { Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useDebouncedCallback } from 'use-debounce';
 
-
-
+import { useRemember } from '@inertiajs/react'
 
 
 const perPageOptions: number[] = [
@@ -78,7 +78,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     }}>().props
 
     const searchInput = useRef(null)
-    const [q, setQ] = useState("")
+    const [q, setQ] = useRemember("")
 
     useEffect(() => {
         if (notification) {
@@ -96,6 +96,80 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                 setSelectedVal(notification.selected_value)
         }
     }, [notification])
+
+    const debounced = useDebouncedCallback(
+        async (val: {entries: string[][], filterArr: string[]}) => {
+          //console.log(val)
+          console.log('d func')
+          console.log(val)
+          const obj = {}
+
+          val.entries.forEach(([param, val]: string[]) => {
+            obj[param] = val
+          })
+
+          obj.filters = val.filterArr.join(";")
+          const url = route(type+'s.index', obj)
+          console.log(url)
+          router.visit(url, { preserveState: true })
+        },
+        1000
+    )
+
+    useEffect(() => {
+        console.log('Q changed to:', q)
+        const params = new URLSearchParams(document.location.search)
+        const filterStr = params.get('filters')
+        const entries = []
+
+        for (const [key, value] of params.entries()) {
+            if (key !== 'filters') {
+                entries.push([key, value])
+            }
+        }
+
+        if (filterStr) {
+            let filterArr = filterStr?.split(';') ?? []
+            let found = false
+
+            if (q.length > 0) {
+                filterArr = filterArr.map((filter: string) => {
+                    if (filter.split(".", 3) [0] === '*') {
+                        found = true
+                        const [f, o] = filter.split(".", 3);
+
+                        return f + '.' + o + '.' + q;
+                    }
+                    return filter
+                })
+                if (!found) {
+                    filterArr.push('*.like.' + q)
+                }
+            } else {
+                filterArr = filterArr.filter((filter: string) => filter.split(".")[0] !== "*")
+            }
+            console.log('calling debounced')
+            debounced({
+                filterArr,
+                entries
+            })
+            //console.log('filterArr', filterArr)
+        } else {
+            console.log('else')
+
+            if (q == "") {
+                //  debounced({
+                //     filterArr: [],
+                //     entries
+                // })
+            } else {
+                debounced({
+                    filterArr: ["*.like." + q],
+                    entries
+                })
+            }
+        }
+    }, [q])
     
     const [selectedVal, setSelectedVal] = useState<string|number|undefined>(notification?.selected_value)
     const [selectedKey, setSelectedKey] = useState<string|undefined>(notification?.selected_key)
@@ -174,7 +248,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                                     searchInput.current.focus()
                             }} size={26} />
                             <input 
-                                value={q} 
+                                 
                                 onChange={({target}) => setQ(target.value)} 
                                 ref={searchInput} className="w-full text-neutral-900 dark:text-neutral-200 text-sm border-none outline-none focus:border-none focus:outline-0 ring-0" 
                                 type="text" 

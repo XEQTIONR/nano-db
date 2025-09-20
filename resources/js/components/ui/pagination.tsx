@@ -68,6 +68,7 @@ function PaginationLink({
 
   return (
     <Link
+      preserveState
       aria-current={undefined}
       data-slot="pagination-link"
       data-active={isActive}
