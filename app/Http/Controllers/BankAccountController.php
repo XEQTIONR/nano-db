@@ -20,7 +20,7 @@ class BankAccountController extends ApiController
         return Inertia::render('common/index', [
             ...$data,
             'link' => route('bank_accounts.index'),
-            'title' => 'Bank Accounts',
+            'title' => 'Bank accounts',
             'type' => 'bank_account',
         ]);
     }

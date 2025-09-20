@@ -35,26 +35,23 @@ import { usePage } from '@inertiajs/react'
 
 import { AppSidebarHeaderControls } from '@/components/app-sidebar-header';
 import { toast } from 'sonner';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Drawer } from '@/components/ui/drawer';
 import TyreCreateForm from '../tyres/components/create-form';
 import CustomerCreateForm from '../customers/components/create-form';
+import { Search, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: '',
-        href: '',
-    },
-]
+
 
 const perPageOptions: number[] = [
     25, 50, 100, 500
 ]
 
 
-export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortDir, title, type, filters = [] } : { 
+export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortDir, title, type, filters = [], breadcrumbsLinks = [] } : { 
     apiToken? : string
     items: { 
         data: T[], 
@@ -70,7 +67,8 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     sortDir: 'asc' | 'desc'
     title: string
     type: string 
-    filters?: Filter[]
+    filters?: Filter[],
+    breadcrumbsLinks?: BreadcrumbItem[]
 }) {
     const { notification } = usePage<{ notification : {
         message: string
@@ -78,6 +76,9 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
         selected_key?: string
         selected_value?: string
     }}>().props
+
+    const searchInput = useRef(null)
+    const [q, setQ] = useState("")
 
     useEffect(() => {
         if (notification) {
@@ -155,15 +156,32 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             filterConfigs = tyreFilters
     }
 
-    breadcrumbs[0].title = title
-    breadcrumbs[0].href = link
+    const breadcrumbs = [...breadcrumbsLinks, {title: title, href: link}]
+
     const [drawerOpen, setDrawerOpen] = useState(false)
+
+    
     return (
         <Drawer onOpenChange={(isOpen) => setDrawerOpen(isOpen)} open={drawerOpen}>
             <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
                 <Head title={title} />
                 <div className="w-full basis-1/10">
-                    <h1 className="text-2xl md:text-4xl font-bold mt-6 pl-4">{title}</h1>
+                    <div className="mt-6 pl-4 flex gap-4">
+                        <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
+                        <div className="text-xl border-2 border-transparent text-neutral-500 focus-within:border-neutral-400 dark:focus-within:border-neutral-200 flex items-center px-1.5 gap-1.5 rounded-lg">
+                            <Search className="mx-1 hover:cursor-pointer" onClick={() => {
+                                if (searchInput.current)
+                                    searchInput.current.focus()
+                            }} size={26} />
+                            <input 
+                                value={q} 
+                                onChange={({target}) => setQ(target.value)} 
+                                ref={searchInput} className="w-full text-sm border-none outline-none focus:border-none focus:outline-0 ring-0" 
+                                type="text" 
+                            />
+                            <X onClick={() => setQ("")} className={cn(q.length > 0 ? "" : "opacity-0", "mr-1 hover:cursor-pointer")} size={18} />
+                        </div>
+                    </div>
                 </div>
                 <div className="flex basis-9/10 flex-col  gap-4 px-4 pb-4 overflow-x-auto">
                     <div className="overflow-y-scroll max-h-[77vh] rounded-md border">

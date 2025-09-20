@@ -29,7 +29,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, Banknote, Plus, ReceiptText, Undo2 } from "lucide-react"
 import { Order, type BreadcrumbItem } from '@/types'
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from 'sonner';
 import CreateForm from "@/pages/payments/components/create-form";
 import { currencyFormat } from "@/lib/utils";
@@ -57,6 +57,8 @@ export default function Show({ order } : {
         message: string
     }}>().props
 
+    const [drawerOpen, setDrawerOpen] = useState(false)
+
     useEffect(() => {
         if (notification) {
             toast.success(notification.message, {
@@ -65,6 +67,8 @@ export default function Show({ order } : {
                     onClick: () => window.print()
                 }
             })
+
+            setDrawerOpen(false)
         }
     }, [notification])
 
@@ -77,7 +81,7 @@ export default function Show({ order } : {
     }, [])
 
     return (
-        <Drawer>
+        <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <AppLayout 
                 breadcrumbs={breadcrumbs}
                 controls={

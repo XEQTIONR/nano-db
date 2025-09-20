@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Button } from '@/components/ui/button'
 import { cn, currencyFormat } from "@/lib/utils";
 import { router } from "@inertiajs/react";
@@ -220,22 +231,55 @@ export default function CreateForm({ order } : {
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button
-                        disabled={
-                            editPaymentAmount 
-                            || typeof newPaymentAmount == 'number'
-                                && (newPaymentAmount <= 0 
-                                    ||  ( !!order.data.balance && newPaymentAmount > order.data.balance)
-                                )
-                        } 
-                        onClick={() => {
-                            router.post(route('payments.store'), {
-                                order_num: order.data.order_num,
-                                payment_amount: newPaymentAmount,
-                                payment_type: paymentType
-                            })
-                        }}
-                    >Make Payment</Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger>
+                            <Button
+                                className="w-full"
+                                type="button"
+                                disabled={
+                                    editPaymentAmount 
+                                    || typeof newPaymentAmount == 'number'
+                                        && (newPaymentAmount <= 0 
+                                            ||  ( !!order.data.balance && newPaymentAmount > order.data.balance)
+                                        )
+                                } 
+                                
+                            >
+                                Make Payment
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Create new payment?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Are you sure you want to pay <b className="dark:text-neutral-50">{
+                                        typeof newPaymentAmount == 'string' 
+                                            ? currencyFormat('BDT', parseFloat(newPaymentAmount))
+                                            : currencyFormat('BDT', newPaymentAmount)
+                                    }</b> towards Order <b className="dark:text-neutral-50">#{order.data.order_num}</b> new balance will be <b className="dark:text-neutral-50">{
+                                        typeof newPaymentAmount == "number" && typeof order.data.balance == "number"
+                                            ? (currencyFormat('BDT',order.data.balance - newPaymentAmount))
+                                            : currencyFormat('BDT', order.data.balance ?? 0)
+                                    }</b>?
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>
+                                    Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction onClick={() => {
+                                    router.post(route('payments.store'), {
+                                        order_num: order.data.order_num,
+                                        payment_amount: newPaymentAmount,
+                                        payment_type: paymentType
+                                    })
+                                }}>
+                                    Confirm
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    
                     <DrawerClose asChild>
                         <Button onClick={() => setNewPaymentAmount(0)} variant="outline">Cancel</Button>
                     </DrawerClose>

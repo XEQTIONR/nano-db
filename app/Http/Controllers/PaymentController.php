@@ -44,7 +44,7 @@ class PaymentController extends ApiController
 
         $order = Order::find($order_num);
 
-        if ($type = 'commission') {
+        if ($type == 'commission') {
             if ($order->commission == 0) {
                 $order->load(['contents', 'payments']);
                 $paymentsTotal = $order->payments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
@@ -55,7 +55,7 @@ class PaymentController extends ApiController
                     $order->commission = $payment_amount;
                     $order->save();
 
-                    return redirect(route('orders.index'))->with('notification', [
+                    return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
                         'message' => 'Commission ' 
                             . ' of TK ' 
                             . $payment_amount 
@@ -63,7 +63,7 @@ class PaymentController extends ApiController
                             . $order_num,
                     ]);
                 } // commission overflows
-                return redirect(route('orders.index'))->with('notification', [
+                return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
                     'message' => 'Commission ' 
                         . ' of TK ' 
                         . $payment_amount 
@@ -72,7 +72,7 @@ class PaymentController extends ApiController
                 ]);
                 
             } // commision already exists
-            return redirect(route('orders.index'))->with('notification', [
+            return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
                 'message' => 'Commission already added for Order #' . $order_num
             ]);
         } // real payment (not commission)
@@ -90,7 +90,7 @@ class PaymentController extends ApiController
 
         $payment->fresh();
 
-        return redirect(route('orders.index'))->with('notification', [
+        return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
             'message' => 'New payment (ID: ' 
                 . $payment->transaction_id 
                 . ') of TK ' 
