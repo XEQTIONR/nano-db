@@ -168,15 +168,15 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                 <div className="w-full basis-1/10">
                     <div className="mt-6 pl-4 flex gap-4">
                         <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
-                        <div className="text-xl border-2 border-transparent text-neutral-500 focus-within:border-neutral-400 dark:focus-within:border-neutral-200 flex items-center px-1.5 gap-1.5 rounded-lg">
-                            <Search className="mx-1 hover:cursor-pointer" onClick={() => {
+                        <div className="text-xl border-2 border-transparent text-neutral-500 focus-within:border-neutral-400 dark:focus-within:border-neutral-500 flex items-center px-1.5 gap-1.5 rounded-lg">
+                            <Search className="mx-1 hover:cursor-pointer dark:hover:stroke-neutral-400" onClick={() => {
                                 if (searchInput.current)
                                     searchInput.current.focus()
                             }} size={26} />
                             <input 
                                 value={q} 
                                 onChange={({target}) => setQ(target.value)} 
-                                ref={searchInput} className="w-full text-sm border-none outline-none focus:border-none focus:outline-0 ring-0" 
+                                ref={searchInput} className="w-full text-neutral-900 dark:text-neutral-200 text-sm border-none outline-none focus:border-none focus:outline-0 ring-0" 
                                 type="text" 
                             />
                             <X onClick={() => setQ("")} className={cn(q.length > 0 ? "" : "opacity-0", "mr-1 hover:cursor-pointer")} size={18} />

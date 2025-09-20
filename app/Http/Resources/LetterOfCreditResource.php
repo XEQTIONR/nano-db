@@ -43,7 +43,9 @@ class LetterOfCreditResource extends JsonResource
                 fn() => ProformaInvoiceItemResource::collection($this->items)
             ),
 
-            'consignments' => ConsignmentResource::collection($this->whenLoaded('consignments')),
+            $this->mergeWhen(method_exists($this, 'relationLoaded') && $this->relationLoaded('consignments'), fn() => [
+                'consignments' => ConsignmentResource::collection($this->consignments),
+            ]),
             'toString' => $this->lc_num
         ];
     }
