@@ -43,6 +43,15 @@ export function DataTable<TData, TValue>({
     return []
   })
 
+  useEffect(() => {
+    if (sortBy.length > 0 && sortDir.length > 0) {
+      setSorting([{ id: sortBy, desc: sortDir == 'desc'}])
+    } else {
+      setSorting([])
+    }
+
+  }, [sortBy, sortDir])
+
   const [rowSelection, setRowSelection] = useState<RowSelectionState>(() => {
     if (primaryKey) {
       if (selectedValue) {

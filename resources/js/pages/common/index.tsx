@@ -253,7 +253,12 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                                 ref={searchInput} className="w-full text-neutral-900 dark:text-neutral-200 text-sm border-none outline-none focus:border-none focus:outline-0 ring-0" 
                                 type="text" 
                             />
-                            <X onClick={() => setQ("")} className={cn(q.length > 0 ? "" : "opacity-0", "mr-1 hover:cursor-pointer")} size={18} />
+                            <X onClick={() => {{
+                                if(searchInput.current) {
+                                    searchInput.current.value = ""
+                                    setQ("")
+                                }
+                            }} } className={cn(q.length > 0 ? "" : "opacity-0", "mr-1 hover:cursor-pointer")} size={18} />
                         </div>
                     </div>
                 </div>

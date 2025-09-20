@@ -2,7 +2,7 @@ import { ArrowUpDown, ArrowDownNarrowWide, ArrowDownWideNarrow } from "lucide-re
 import { cn } from "@/lib/utils"
 import { router } from '@inertiajs/react'
 import { SortingState, ColumnSort } from "@tanstack/react-table"
-import { Button } from "../button"
+import { Button } from "@/components/ui/button"
 
 export function DataTableCustomColumnHeader({
     label, 
@@ -18,21 +18,16 @@ export function DataTableCustomColumnHeader({
     },
 }) {
     let sortParam: ColumnSort | undefined = undefined
-    let icon = <ArrowUpDown strokeWidth={2.2} />
 
     if (config) {
         const st :{sorting: SortingState} =  config.table.getState()
         sortParam = st.sorting.find(({ id }) => id == colKey)
-        
-        if (sortParam) {
-            icon = sortParam.desc ? <ArrowDownWideNarrow strokeWidth={2.2} /> : <ArrowDownNarrowWide strokeWidth={2.2} />
-        }
     }
+
     const toggleSorting = () => {
         if (config) {
             const st :{sorting: SortingState} =  config.table.getState()
             sortParam = st.sorting.find(({ id }) => id == colKey)
-
             let dir = 'asc'
 
             if (sortParam) {
@@ -42,10 +37,20 @@ export function DataTableCustomColumnHeader({
             }
             const url = new URL(window.location.href)
 
-            url.searchParams.set('sortDir', dir)
-            url.searchParams.set('sortBy', colKey)
-            console.log('URL: ', url.toString());
-            router.get(url)
+            const data = {}
+            for (const [key, value] of url.searchParams) {
+                data[key] = value
+                if (key == 'sortDir') {
+                    dir = (value == 'asc') ? 'desc' : 'asc'
+                }
+            }
+            data.sortDir = dir
+            data.sortBy = config.column.id
+            const v = [{id: colKey, desc: dir == 'desc'}]
+
+            config.table.setSorting(v)
+
+            router.get(url.pathname, data, { preserveState: true })
         }
     }
 
@@ -62,7 +67,14 @@ export function DataTableCustomColumnHeader({
             )}
             onClick={toggleSorting}
         >
-            { icon }
+            {
+                config.table.getState().sorting.find(({ id }) => id == colKey)
+                    ? (config.table.getState().sorting.find(({ id }) => id == colKey).desc 
+                        ? <ArrowDownWideNarrow strokeWidth={2.2} /> 
+                        : <ArrowDownNarrowWide strokeWidth={2.2} /> 
+                    )
+                    : <ArrowUpDown strokeWidth={2.2} /> 
+            }
         </Button>
     </div>)
 }
