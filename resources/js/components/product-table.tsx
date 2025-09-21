@@ -7,13 +7,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { ChevronLeft, ChevronRight, ChevronFirst, ChevronLast, LoaderCircleIcon, RefreshCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronFirst, ChevronLast, LoaderCircleIcon, RefreshCcw, Search } from "lucide-react";
 
 import { Button } from "./ui/button";
 
 import { useEffect, useState } from "react"
 import axios from 'axios';
 import { Tyre } from "@/types";
+import { useDebouncedCallback } from 'use-debounce';
 
 export default function ProductsTable({ apiToken, addItem = undefined, showStock = false, all = false } : { 
     apiToken: string,
@@ -60,6 +61,23 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
                 setError(err.message)
             })
     }
+
+    const debounced = useDebouncedCallback(
+        (q: string) => {
+
+            if (q == "") {
+                paginate()
+            } else {
+                const rt = route(all ? 'api.tyres.index' : 'api.stocks.index', {
+                    filters: "*.like." + q
+                })
+
+                paginate(rt)
+            }
+            
+        },
+        1000
+    )
     useEffect(() => {
         paginate()
     }, [])
@@ -69,6 +87,20 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
         <Table>
             {/* <TableCaption>{ apiToken }</TableCaption> */}
             <TableHeader>
+                <TableRow className="hover:bg-transparent">
+                    <TableHead className="px-0 pb-6" colSpan={5 + (showStock ? 1 : 0)}>
+                        <div className="flex items-center gap-3 border-2 p-2 rounded-lg">
+                            <Search size={16} />
+                            <input
+                                onChange={({target}) => debounced(target.value)} 
+                                placeholder="Search" 
+                                className="w-full border-none outline-none" 
+                                type="text" 
+                            />
+
+                        </div>
+                    </TableHead>
+                </TableRow>
                 <TableRow>
                     <TableHead>ID</TableHead>
                     <TableHead>Brand</TableHead>
@@ -86,14 +118,14 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
                     <>
                         { items.length === 0 &&
                             <TableRow>
-                                <TableCell colSpan={5}>
-                                    
-                                        <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} />
+                                <TableCell className="text-center" colSpan={showStock ? 6 : 5}>
+                                        No products found
+                                        {/* <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} /> */}
                                 </TableCell>
                             </TableRow>
                         }
                         { items.map((item) => (
-                            <TableRow onClick={() => {
+                            <TableRow className="cursor-pointer" onClick={() => {
                                 if (addItem) {
                                     addItem(item)
                                 }
@@ -136,7 +168,10 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
                         className="cursor-pointer"  variant="secondary"><ChevronLeft /></Button>
                 case 'next':
                     return <Button 
-                        onClick={() => paginate(buttons[label])}
+                        onClick={() => {
+                            console.log('paginate', buttons[label])
+                            paginate(buttons[label])
+                        }}
                         className="cursor-pointer"  variant="secondary"><ChevronRight /></Button>
                 case 'last':
                     return <Button 
