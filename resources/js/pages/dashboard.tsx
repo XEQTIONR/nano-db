@@ -48,18 +48,19 @@ const chartConfig = {
 export default function Dashboard({
     count, 
     count_items, 
+    chart_data,
     expenditure, 
     revenue,
     count_percent,
     count_items_percent,
     revenue_percent,
     expenditure_percent,
-    classified,
     sales,
     sales_percent,
 } : {
     count: number, 
-    count_items: number, 
+    count_items: number,
+    chart_data: [], 
     expenditure: number, 
     revenue: number,
     count_percent: number,
@@ -114,7 +115,7 @@ export default function Dashboard({
                         <ChartContainer className='w-full h-[50vh] md:h-[60vh] border rounded-xl' config={chartConfig}>    
                             <LineChart
                                 accessibilityLayer
-                                data={classified}
+                                data={chart_data}
                                 margin={{
                                     left: 24,
                                     right: 24,

@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderReceiptController;
 use App\Http\Controllers\OrderReturnController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TyreController;
 use App\Http\Controllers\WasteController;
@@ -77,6 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
     Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
     Route::get('/expenses/create', [ExpenseController::class, 'create'])->name('expenses.create');
+
+    Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
 
 });
 

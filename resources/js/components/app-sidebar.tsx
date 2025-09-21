@@ -68,9 +68,9 @@ const mainNavItems: NavCollapseGroup[] = [
         icon: ChartColumnIncreasing,
         links: [
             { title: "Summary", href: '/reports/summary' },
-            { title: "Sales", href: '/reports/summary' },
-            { title: "Expense", href: '/reports/summary' },
-            { title: "Revenue", href: '/reports/summary' },
+            { title: "Sales", href: relativeUrl(route('reports.sales')) },
+            // { title: "Expense", href: '/reports/summary' },
+            // { title: "Revenue", href: '/reports/summary' },
 
         ]
     },
