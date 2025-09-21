@@ -77,10 +77,10 @@ export const columns = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
+              <div className="flex justify-end pr-3">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal size={16} className="ml-3 dark:hover:stroke-white" />
+              </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
