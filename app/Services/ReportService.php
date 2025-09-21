@@ -147,7 +147,6 @@ class ReportService {
             case "daily":
             default:
             $today = new Carbon($date)->startOfDay();
-            $yesterday = $today->copy()->subDay()->startOfDay();
 
             $orders = Order::with('contents')->whereDate('created_at', $today)->get();
             $count = $orders->count();
@@ -164,7 +163,8 @@ class ReportService {
                 
                 return $grandTotal;
             })->reduce(fn($carry, $item) => $carry + $item, 0);
-
+            
+            $yesterday = $today->copy()->subDay()->startOfDay();
             $yesterdaysOrders = Order::with('contents')->whereDate('created_at', $yesterday)->get();
             $yesterdaysCount = $yesterdaysOrders->count();
             $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty), 0);
@@ -223,8 +223,6 @@ class ReportService {
 
             $sum = 0;
             $sum2 = 0;
-            $sumPayments = 0;
-            $sumExpenses = 0;
             $hour = 0;
             $now = Carbon::now();
 

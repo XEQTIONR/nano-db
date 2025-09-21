@@ -25,7 +25,7 @@ const chartConfig = {
     icon: Tag,
   },
   sumLastOrderGrandTotal: {
-    label: "Total sold",
+    label: "Total sold yesterday",
     
     icon: Tag,
   },

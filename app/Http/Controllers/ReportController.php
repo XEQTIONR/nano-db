@@ -22,17 +22,12 @@ class ReportController extends Controller
         $type = $request->type ?? 'daily';
         
         $date = Carbon::now();
-
-        $orders = Order::with(['contents'])
-            ->whereDate('order_on', $date)
-            ->get();
         
         $data = ReportService::sales('daily', $date->toDateString());
 
         return Inertia::render('reports/sales', [
             'type' => $type,
             'date' => $date->toDateString(),
-            'other' => ReportService::dashboard(),
             ...$data
         ]);
     }
