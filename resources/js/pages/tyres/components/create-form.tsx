@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import InputError from '@/components/input-error';
+import { Tyre } from '@/types';
 
 interface TyreFields {
     brand: string
@@ -27,8 +28,10 @@ const emptyFields: TyreFields = {
         pattern: "",
         lisi: ""
 }
-export default function CreateForm() {
-    const [data, setData] = useState<TyreFields>({...emptyFields})
+export default function CreateForm({ edit } : {edit?: {
+    data: Tyre
+}}) {
+    const [data, setData] = useState<TyreFields | Tyre>(() => edit ? edit.data : {...emptyFields})
 
     const [errors, setErrors] = useState<TyreFields>({...emptyFields})
 
@@ -74,8 +77,21 @@ export default function CreateForm() {
                 }}
             >
                 <DrawerHeader>
-                    <DrawerTitle className="text-center">Add New Tyre</DrawerTitle>
-                    <DrawerDescription className="text-center">Create a new tyre</DrawerDescription>
+                    <DrawerTitle className="text-center">
+                        {
+                            edit 
+                                ? "Edit tyre ID: " + edit.data.id
+                                : "Add new tyre" 
+                        }
+                    </DrawerTitle>
+                    <DrawerDescription className="text-center">
+                        {
+                            edit
+                                ? "Edit existing tyre"
+                                : "Create a new tyre"
+                        }
+                        Create a new tyre
+                    </DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-8 flex flex-col gap-6">
                     <div className="flex flex-col gap-3">

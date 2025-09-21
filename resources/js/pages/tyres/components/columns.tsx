@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
 import { FilterConfig } from "@/types"
+import { router } from "@inertiajs/react"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
@@ -59,8 +60,18 @@ export const columns = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View</DropdownMenuItem>
-            <DropdownMenuItem>Add Proforma Invoice</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Button
+                  onClick={() => router.visit(route('tyres.edit', {
+                    tyre: row.getValue("id")
+                  }))} 
+                  className="hover:cursor-pointer" 
+                  size="icon" 
+                  variant="ghost"
+              >
+                  Edit
+              </Button>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

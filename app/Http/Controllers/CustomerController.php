@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 use App\Http\Controllers\Api\CustomerController as ApiController;
+use App\Http\Resources\CustomerResource;
 
 class CustomerController extends ApiController
 {
@@ -63,9 +64,18 @@ class CustomerController extends ApiController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Customer $customer)
+    public function edit(Customer $customer, Request $request)
     {
-        //
+        $data = parent::index($request);
+
+        return Inertia::render('common/index', [
+            ...$data,
+            'addLink' => 'drawer',
+            'link' => route('customers.index'),
+            'title' => 'Customers',
+            'type' => 'customer',
+            'edit' => new CustomerResource($customer)
+        ]);   
     }
 
     /**

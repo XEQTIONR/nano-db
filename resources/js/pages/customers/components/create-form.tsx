@@ -24,6 +24,7 @@ import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import InputError from '@/components/input-error';
+import { Customer } from "@/types";
 
 interface NewCustomerFields {
     name: string
@@ -38,8 +39,10 @@ const emptyFields: NewCustomerFields = {
         phone: "",
         notes: ""
 }
-export default function CreateForm() {
-    const [data, setData] = useState<NewCustomerFields>({...emptyFields})
+export default function CreateForm({ edit } : {edit?: {
+    data: Customer
+}}) {
+    const [data, setData] = useState<NewCustomerFields | Customer>(() => edit ? edit.data : {...emptyFields})
 
     const [errors, setErrors] = useState<NewCustomerFields>({...emptyFields})
 
@@ -80,8 +83,20 @@ export default function CreateForm() {
                 }}
             >
                 <DrawerHeader>
-                    <DrawerTitle className="text-center">Add New Customer</DrawerTitle>
-                    <DrawerDescription className="text-center">Create a new customer</DrawerDescription>
+                    <DrawerTitle className="text-center">
+                    {
+                        edit 
+                                ? "Edit customer ID: " + edit.data.id
+                                : "Add new customer" 
+                    }    
+                    </DrawerTitle>
+                    <DrawerDescription className="text-center">
+                        {
+                            edit
+                                ? "Edit existing customer"
+                                : "Create a new customer"
+                        }
+                    </DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-8 flex flex-col gap-6">
                     <div className="flex flex-col gap-3">

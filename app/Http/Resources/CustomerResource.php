@@ -26,7 +26,9 @@ class CustomerResource extends JsonResource
                 ? $this->created_at->toDateTimeString()
                 : (new Carbon($this->created_at))->toDateTimeString(),
             'route' => $request->route()->getName(),
-            $this->mergeWhen(($request->route()->getName() === 'customers.index'), [
+            $this->mergeWhen((
+                in_array($request->route()->getName(), ['customers.index', 'customers.edit'])
+            ), [
                 'grand_total' => floatval($this->grand_total),
                 'payment_total' => floatval($this->payment_total),
                 'balance' => floatval($this->balance),

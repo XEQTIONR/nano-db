@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react'
 import AppLayout from '@/layouts/app-layout';
-import { Filter, FilterConfig, type BreadcrumbItem } from '@/types';
+import { Customer, Filter, FilterConfig, Tyre, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { DataTable } from '@/components/data-table';
 import { columns as bankAccountCols } from "@/pages/bank-accounts/components/columns";
@@ -51,7 +51,7 @@ const perPageOptions: number[] = [
 ]
 
 
-export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortDir, title, type, filters = [], breadcrumbsLinks = [] } : { 
+export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortDir, title, type, filters = [], breadcrumbsLinks = [], edit = undefined } : { 
     apiToken? : string
     items: { 
         data: T[], 
@@ -69,6 +69,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     type: string 
     filters?: Filter[],
     breadcrumbsLinks?: BreadcrumbItem[]
+    edit?: { data: Customer | Tyre }
 }) {
     const { notification } = usePage<{ notification : {
         message: string
@@ -79,6 +80,12 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
 
     const searchInput = useRef(null)
     const [q, setQ] = useRemember("")
+
+    useEffect(() => {
+        if (edit) {
+            setDrawerOpen(true)
+        }
+    }, [edit])
 
     useEffect(() => {
         if (notification) {
@@ -229,9 +236,15 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
 
     
     return (
-        <Drawer onOpenChange={(isOpen) => setDrawerOpen(isOpen)} open={drawerOpen}>
+        <Drawer onOpenChange={(isOpen) => {
+            setDrawerOpen(isOpen)
+            if (edit) {
+                router.visit(route(type + 's.index'))
+            }
+        }} open={drawerOpen}>
             <AppLayout breadcrumbs={breadcrumbs} controls={<AppSidebarHeaderControls addLink={addLink} apiToken={apiToken} filters={filters} filterConfigs={filterConfigs} />}>
                 <Head title={title} />
+                
                 <div className="w-full basis-1/10">
                     <div className="mt-6 pl-4 flex gap-4">
                         <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
@@ -330,13 +343,13 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                 {
                     type == 'tyre'
                     && (
-                        <TyreCreateForm />
+                        <TyreCreateForm edit={ edit }/>
                     ) 
                 }
                 {
                     type == 'customer'
                     && (
-                        <CustomerCreateForm />
+                        <CustomerCreateForm edit={ edit } />
                     ) 
                 }
             </AppLayout>

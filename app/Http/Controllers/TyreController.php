@@ -61,9 +61,18 @@ class TyreController extends ApiController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, Tyre $tyre)
     {
-        //
+        $data = parent::index($request);
+
+        return Inertia::render('common/index', [
+            ...$data,
+            'addLink' => 'drawer',
+            'link' => route('tyres.index'),
+            'title' => 'Tyres',
+            'type' => 'tyre',
+            'edit' => new TyreResource($tyre), 
+        ]);
     }
 
     /**

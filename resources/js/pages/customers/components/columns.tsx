@@ -14,6 +14,8 @@ import axios from 'axios'
 import { type Option } from "@/types"
 
 import { FilterConfig } from "@/types"
+import { DrawerTrigger } from "@/components/ui/drawer"
+import { router } from "@inertiajs/react"
 
 export const columns = [
   {
@@ -85,8 +87,21 @@ export const columns = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View</DropdownMenuItem>
-            <DropdownMenuItem>Add Proforma Invoice</DropdownMenuItem>
+            
+            <DropdownMenuItem>
+                  <Button
+                      onClick={() => router.visit(route('customers.edit', {
+                        customer: row.getValue("id")
+                      }))} 
+                      className="hover:cursor-pointer" 
+                      size="icon" 
+                      variant="ghost"
+                  >
+                      Edit
+                  </Button>
+            </DropdownMenuItem>
+            {/* <DropdownMenuItem>View</DropdownMenuItem> */}
+            {/* <DropdownMenuItem>Add Proforma Invoice</DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
       )
