@@ -1,4 +1,4 @@
-import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, useSidebar } from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub, SidebarMenuSubButton, SidebarMenuSubItem, SidebarMenuSubLabel, useSidebar } from '@/components/ui/sidebar';
 import { type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@radix-ui/react-collapsible';
@@ -21,7 +21,7 @@ import {
 import { ChevronRight, LayoutGrid } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { relativeUrl } from '@/lib/utils';
+import { cn, relativeUrl } from '@/lib/utils';
 
 export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     const page = usePage();
@@ -40,29 +40,36 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             asChild 
             className="group/collapsible"
             open={index == current || item.links.some((link) => relativeUrl(window.location.href).startsWith(link.href))}
-            onOpenChange={(opened) => opened ? setCurrent(index) : null}
+            onOpenChange={(opened) => {
+                if (opened) {
+                    setCurrent(index)
+                } else {
+                    setCurrent(-1)
+                }
+            }}
         >
             <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                    <SidebarMenuButton tooltip={item.title}>
+                    <SidebarMenuButton className="cursor-pointer" tooltip={item.title}>
                         {item.icon && <span><item.icon className={colorClasses} size={iconSize}  strokeWidth={iconStroke} /></span>}
-                        {<span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>{item.title}</span>}
-                        <ChevronRight className={"ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 "
-                            + colorClasses
-                        } />
+                        {<span className={cn("overflow-x-visible text-nowrap font-normal", colorClasses)}>{item.title}</span>}
+                        <ChevronRight className={cn(
+                            "ml-auto transition-all duration-200 group-data-[state=open]/collapsible:rotate-90",
+                            colorClasses
+                        )} />
                     </SidebarMenuButton>
                 </CollapsibleTrigger>
-                <CollapsibleContent>
-                    <SidebarMenuSub>
+                <CollapsibleContent className="pt-0.5">
+                    <SidebarMenuSub> 
                         {
                             item.links.map((link) => (
-                                <SidebarMenuSubItem>
-                                    <SidebarMenuSubButton isActive={page.url === link.href || (page.url.startsWith(link.href) && !page.url.endsWith('create'))}>
                                         <Link href={link.href}>
-                                            <span className="overflow-x-visible text-nowrap">{link.title}</span>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubLabel isActive={page.url === link.href || (page.url.startsWith(link.href) && !page.url.endsWith('create'))}>
+                                                        <span className="overflow-x-visible text-nowrap">{link.title}</span>
+                                                </SidebarMenuSubLabel>
+                                            </SidebarMenuSubItem>
                                         </Link>
-                                    </SidebarMenuSubButton>
-                                </SidebarMenuSubItem>
                             ))
                         }
                     </SidebarMenuSub>
@@ -91,7 +98,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             }
         }, [isOpen])
         return (<MenubarMenu>
-            <MenubarTrigger ref={elem} className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <MenubarTrigger ref={elem} className="py-[9px] hover:bg-neutral-100 dark:hover:bg-neutral-800">
                 {
                     !isOpen 
                         ? (<Tooltip>
