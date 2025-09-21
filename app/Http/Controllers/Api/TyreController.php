@@ -103,9 +103,17 @@ class TyreController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Tyre $tyre)
     {
         //
+        $tyre->brand = $request->brand;
+        $tyre->size = $request->size;
+        $tyre->pattern = $request->pattern;
+        $tyre->lisi = $request->lisi;
+
+        $tyre->save();
+
+        return new TyreResource($tyre);
     }
 
     /**

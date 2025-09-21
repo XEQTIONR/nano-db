@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import InputError from '@/components/input-error';
 import { Tyre } from '@/types';
+import { AlertDialog } from '@radix-ui/react-alert-dialog';
+import { AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 interface TyreFields {
     brand: string
@@ -66,16 +68,7 @@ export default function CreateForm({ edit } : {edit?: {
 
     return (
         <DrawerContent>
-            <form 
-                className="mx-auto w-full max-w-md"
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    const k = validate()
-                    if (k === 0) {
-                        router.post(route('tyres.store'), { ...data })
-                    }
-                }}
-            >
+            <form className="mx-auto w-full max-w-md">
                 <DrawerHeader>
                     <DrawerTitle className="text-center">
                         {
@@ -90,7 +83,6 @@ export default function CreateForm({ edit } : {edit?: {
                                 ? "Edit existing tyre"
                                 : "Create a new tyre"
                         }
-                        Create a new tyre
                     </DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-8 flex flex-col gap-6">
@@ -156,7 +148,44 @@ export default function CreateForm({ edit } : {edit?: {
                     </div>
                 </div>
                 <DrawerFooter>
-                    <Button type="submit">Submit</Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button type="button">Submit</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                {
+                                    edit ? `Update tyre ID:${edit.data.id} ?` : "Create new tyre?"
+                                }
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                {
+                                    edit ? "Are you sure you want to save changes?" : "Are you sure you want to create a new tyre?"
+                                }
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>
+                                    Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction onClick={() => {
+                                    const k = validate()
+                                    if (k === 0) {
+                                        if (edit) {
+                                            router.put(route('tyres.update', {
+                                                tyre: edit.data.id
+                                            }), { ...data })
+                                        } else {
+                                            router.post(route('tyres.store'), { ...data })
+                                        }
+                                    }
+                                }}>
+                                    Confirm
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                     <DrawerClose asChild>
                         <Button onClick={() =>{
                             setErrors({...emptyFields})

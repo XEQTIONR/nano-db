@@ -94,4 +94,17 @@ class CustomerController extends Controller
 
         return new CustomerResource($customer);
     }
+
+    public function update(Request $request, Customer $customer)
+    {
+        //
+        $customer->name = $request->name;
+        $customer->address = $request->address;
+        $customer->phone = $request->phone;
+        $customer->notes = $request->notes;
+
+        $customer->save();
+
+        return new CustomerResource($customer);
+    }
 }

@@ -25,6 +25,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import InputError from '@/components/input-error';
 import { Customer } from "@/types";
+import { Textarea } from "@/components/ui/textarea";
 
 interface NewCustomerFields {
     name: string
@@ -72,16 +73,7 @@ export default function CreateForm({ edit } : {edit?: {
 
     return (
         <DrawerContent>
-            <form 
-                className="mx-auto w-full max-w-md"
-                onSubmit={(e) => {
-                    e.preventDefault()
-                    const k = validate()
-                    if (k === 0) {
-                        router.post(route('customers.store'), { ...data })
-                    }
-                }}
-            >
+            <form className="mx-auto w-full max-w-md">
                 <DrawerHeader>
                     <DrawerTitle className="text-center">
                     {
@@ -91,11 +83,11 @@ export default function CreateForm({ edit } : {edit?: {
                     }    
                     </DrawerTitle>
                     <DrawerDescription className="text-center">
-                        {
-                            edit
-                                ? "Edit existing customer"
-                                : "Create a new customer"
-                        }
+                    {
+                        edit
+                            ? "Edit existing customer"
+                            : "Create a new customer"
+                    }
                     </DrawerDescription>
                 </DrawerHeader>
                 <div className="px-4 pb-8 flex flex-col gap-6">
@@ -116,7 +108,7 @@ export default function CreateForm({ edit } : {edit?: {
                     </div>
                     <div className="flex flex-col gap-3">
                         <Label>Address</Label>
-                        <Input
+                        <Textarea
                             className={cn( errors.address.length && "border-red-400")} 
                             value={data.address}
                             onChange={({target}) => {
@@ -146,7 +138,7 @@ export default function CreateForm({ edit } : {edit?: {
                     </div>
                     <div className="flex flex-col gap-3">
                         <Label>Notes</Label>
-                        <Input
+                        <Textarea
                             className={cn( errors.notes.length && "border-red-400")} 
                             value={data.notes}
                             onChange={({target}) => {
@@ -167,9 +159,15 @@ export default function CreateForm({ edit } : {edit?: {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                            <AlertDialogTitle>Create new customer?</AlertDialogTitle>
+                            <AlertDialogTitle>
+                            {
+                                edit ? `Update customer ID:${edit.data.id} ?` : "Create new customer?"
+                            }
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                                Are you sure you want to create this new customer?
+                            {
+                                edit ? "Are you sure you want to save changes?" : "Are you sure you want to create this new customer?"
+                            }    
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
@@ -179,7 +177,13 @@ export default function CreateForm({ edit } : {edit?: {
                             <AlertDialogAction onClick={() => {
                                 const k = validate()
                                 if (k === 0) {
-                                    router.post(route('customers.store'), { ...data })
+                                    if (edit) {
+                                        router.put(route('customers.update', {
+                                            customer: edit.data.id
+                                        }), { ...data })
+                                    } else {
+                                        router.post(route('customers.store'), { ...data })
+                                    }
                                 }
                             }}>
                                 Confirm

@@ -41,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/tyres', [TyreController::class, 'index'])->name('tyres.index');
     Route::post('/tyres', [TyreController::class, 'store'])->name('tyres.store');
     Route::get('/tyres/{tyre}/edit', [TyreController::class, 'edit'])->name('tyres.edit');
+    Route::put('/tyres/{tyre}', [TyreController::class, 'update'])->name('tyres.update');
 
     Route::get('/consignments/create', [ConsignmentController::class, 'create'])->name('consignments.create');
     Route::get('/consignments', [ConsignmentController::class, 'index'])->name('consignments.index');
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
     Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+    Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
 
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

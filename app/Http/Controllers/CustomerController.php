@@ -84,6 +84,13 @@ class CustomerController extends ApiController
     public function update(Request $request, Customer $customer)
     {
         //
+        $customer = parent::update($request, $customer);
+
+        return redirect(route('customers.index'))->with([
+            'notification' => [
+                'message' => 'Customer ID: ' . $customer->id . " updated."
+            ]
+        ]);
     }
 
     /**

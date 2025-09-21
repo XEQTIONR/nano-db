@@ -78,9 +78,15 @@ class TyreController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Tyre $tyre)
     {
-        //
+        $tyre = parent::update($request, $tyre);
+
+        return redirect(route('tyres.index'))->with([
+            'notification' => [
+                'message' => 'Tyre ID:' . $tyre->tyre_id . " updated."
+            ]
+            ]);
     }
 
     /**
