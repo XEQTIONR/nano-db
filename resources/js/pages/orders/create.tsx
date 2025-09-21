@@ -289,6 +289,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         }
                                         </Label>
                                         <Combobox
+                                            placeholder="Select customer"
                                             dataType="int"
                                             onSelect={(customerId) => {
                                                 if (customerId === 0) {
@@ -307,7 +308,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                             })}
                                             getOptions={async(search: string) => {
                                                 const endpoint = route('api.customers.index', {
-                                                    filters: "name.like." + search
+                                                    filters: "*.like." + search
                                                 })
                                                 const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
                                                 console.log(response)

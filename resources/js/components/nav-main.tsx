@@ -127,7 +127,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             <SidebarMenu className={open ? "flex flex-col mt-4 " : "hidden"}>
                 <SidebarMenuItem>
                     <Link href={route('dashboard')}>
-                        <SidebarMenuButton isActive={route().current('dashboard')} tooltip="Dashboard">
+                        <SidebarMenuButton className="cursor-pointer" isActive={route().current('dashboard')} tooltip="Dashboard">
                             <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
                             <span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>Dashboard</span>
                         </SidebarMenuButton>
