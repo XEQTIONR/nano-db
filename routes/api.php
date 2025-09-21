@@ -46,7 +46,7 @@ Route::name('api.')->middleware('auth:sanctum')->group(function() {
         ->name('tyres.index');
 
     Route::get('/stock', StockController::class)
-        ->name('stock.index');
+        ->name('stocks.index');
 });
 
 

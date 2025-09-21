@@ -15,6 +15,13 @@ class Tyre extends Model
         'lisi',
     ];
 
+    public static $searchable = [
+        'brand',
+        'size',
+        'pattern',
+        'lisi',
+    ];
+
     // protected $appends = [
     //     'supplied_qty',
     //     'ordered_qty',

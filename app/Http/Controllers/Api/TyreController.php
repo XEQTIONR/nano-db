@@ -42,13 +42,16 @@ class TyreController extends Controller
 
         if ($filters->count() > 0) {
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
-                    $query = $query->whereIn(
+                if ($filters[$i][0] == '*') {
+                    $query->whereAny(Tyre::$searchable, $filters[$i][1], $filters[$i][2]);
+                    $query->OrWhereRaw('IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0) LIKE ?', '%'.$filters[$i][2].'%');
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                    $query->whereIn(
                         $filters[$i][0] == 'id' ? "tyres.tyre_id" : $filters[$i][0], 
                         $filters[$i][2]
                     );
                 } else {
-                    $query = $query->where(
+                    $query->where(
                         $filters[$i][0] == 'id' ? "tyres.tyre_id" : $filters[$i][0], 
                         $filters[$i][1],
                         $filters[$i][2]

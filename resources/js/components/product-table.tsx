@@ -29,7 +29,7 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
 
     const labels = ['first', 'prev', 'next', 'last']
     const tyreRoute = route('api.tyres.index', { perPage: 15 })
-    const stockRoute = route('api.stock.index', { perPage: 15 })
+    const stockRoute = route('api.stocks.index', { perPage: 15 })
     const paginate = (link?: string) => {
         const r = all ? tyreRoute : stockRoute
         axios.get(link ?? r, { headers: { 

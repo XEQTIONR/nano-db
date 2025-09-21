@@ -6,6 +6,7 @@ use App\Http\Resources\StockResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\FilterService;
+use Illuminate\Support\Facades\Log;
 
 class StockController extends Controller
 {
@@ -26,17 +27,28 @@ class StockController extends Controller
 
         $query = resolve(StockResource::class);
 
-        $query = $query->whereRaw('(IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0)) > 0');
-
         if ($filters->count() > 0) {
             for ($i=0; $i<$filters->count(); $i++) {
-                if (  strtoupper($filters[$i][1]) === 'IN' ) {
-                    $query = $query->whereIn($filters[$i][0], $filters[$i][2]);
+                if ($filters[$i][0] == '*') {
+                    // $query->whereAny(Customer::$searchable, $filters[$i][1], $filters[$i][2]);
+                        $query->where(function($q) use ($filters, $i) {
+                            $q->whereRaw('tyres.tyre_id LIKE ?', '%'.$filters[$i][2].'%');
+                            $q->OrWhereRaw('brand LIKE ?', '%'.$filters[$i][2].'%');
+                            $q->OrWhereRaw('size LIKE ?', '%'.$filters[$i][2].'%');
+                            $q->OrWhereRaw('pattern LIKE ?', '%'.$filters[$i][2].'%');
+                            $q->OrWhereRaw('lisi LIKE ?', '%'.$filters[$i][2].'%');
+                            $q->OrWhereRaw('IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0) LIKE ?', '%'.$filters[$i][2].'%');
+                        });
+                    
+                } else if (  strtoupper($filters[$i][1]) === 'IN' ) {
+                    $query->whereIn($filters[$i][0], $filters[$i][2]);
                 } else {
-                    $query = $query->where(...$filters[$i]);
+                    $query->where(...$filters[$i]);
                 }
             }
         }
+
+        $query->whereRaw('(IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0)) > 0');
 
         $supply = $query->orderBy($sortBy, $sortDir)
             ->paginate($perPage)

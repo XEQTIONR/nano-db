@@ -17,12 +17,11 @@ export default function StockTable({ apiToken } : { apiToken: string }) {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-        axios.get(route('api.stock.index'), { headers: { Authorization: 'Bearer ' + apiToken } })
+        axios.get(route('api.stocks.index'), { headers: { Authorization: 'Bearer ' + apiToken } })
             .then((res) => {
-                console.log('api.stock.index response:', res.data.items)
                 setItems(res.data.items)
             })
-            .catch((err) => console.log('api.stock.index err:', err))
+            .catch((err) => console.log('err:', err))
     }, [apiToken])
 
     return (

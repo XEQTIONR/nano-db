@@ -11,7 +11,7 @@ import { columns as containerCols, filterConfigs as containerFilters } from '@/p
 import { columns as customerCols, filterConfigs as customerFilters } from '@/pages/customers/components/columns';
 import { columns as orderCols, filterConfigs as orderFilters } from '@/pages/orders/components/columns';
 import { columns as paymentCols, filterConfigs as paymentFilters } from '@/pages/payments/components/columns';
-import { columns as stockCols } from '@/pages//stock/components/columns';
+import { columns as stockCols } from '@/pages/stock/components/columns';
 import { columns as wasteCols, filterConfigs as wasteFilters } from '@/pages/waste/components/columns';
 import { columns as expensesCols } from '@/pages/expenses/components/columns';
 import {
@@ -99,7 +99,6 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
 
     const debounced = useDebouncedCallback(
         async (val: {entries: string[][], filterArr: string[]}) => {
-          //console.log(val)
           console.log('d func')
           console.log(val)
           const obj = {}
@@ -117,7 +116,6 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
     )
 
     useEffect(() => {
-        console.log('Q changed to:', q)
         const params = new URLSearchParams(document.location.search)
         const filterStr = params.get('filters')
         const entries = []
@@ -148,20 +146,15 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             } else {
                 filterArr = filterArr.filter((filter: string) => filter.split(".")[0] !== "*")
             }
-            console.log('calling debounced')
             debounced({
                 filterArr,
                 entries
             })
-            //console.log('filterArr', filterArr)
         } else {
             console.log('else')
 
             if (q == "") {
-                //  debounced({
-                //     filterArr: [],
-                //     entries
-                // })
+                //
             } else {
                 debounced({
                     filterArr: ["*.like." + q],

@@ -18,7 +18,7 @@ class StockController extends ApiController
 
         return Inertia::render('common/index', [
             ...$data,
-            'link' => route('stock.index'),
+            'link' => route('stocks.index'),
             'title' => 'Inventory',
             'type' => 'stock',
         ]);
