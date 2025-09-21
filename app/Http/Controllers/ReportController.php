@@ -20,8 +20,7 @@ class ReportController extends Controller
     public function sales(Request $request)
     {
         $type = $request->type ?? 'daily';
-        
-        $date = Carbon::now();
+        $date = $request->date ? new Carbon($request->date) : Carbon::now();
         
         $data = ReportService::sales('daily', $date->toDateString());
 

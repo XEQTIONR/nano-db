@@ -33,10 +33,9 @@ class ReportService {
                 fn($carry, $content) => $carry + $content->item_total, 
                 0
             );
-            $grandTotal = $subTotal 
+            $grandTotal = ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0))) 
                 - $order->discount_amount 
-                + $order->tax_amount 
-                + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
+                + $order->tax_amount;
             
             return $grandTotal;
         })->reduce(fn($carry, $item) => $carry + $item, 0);
@@ -81,10 +80,10 @@ class ReportService {
                         fn($carry, $content) => $carry + $content->item_total, 
                         0
                     );
-                    $grandTotal = $subTotal 
+                    $grandTotal = ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)))
                         - $order->discount_amount 
                         + $order->tax_amount 
-                        + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
+                        ;
                     
                     return $grandTotal;
                 })->reduce(fn($carry, $item) => $carry + $item, 0),
@@ -156,10 +155,9 @@ class ReportService {
                     fn($carry, $content) => $carry + $content->item_total, 
                     0
                 );
-                $grandTotal = $subTotal 
+                $grandTotal = ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)))
                     - $order->discount_amount 
-                    + $order->tax_amount 
-                    + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
+                    + $order->tax_amount;
                 
                 return $grandTotal;
             })->reduce(fn($carry, $item) => $carry + $item, 0);
@@ -173,10 +171,10 @@ class ReportService {
                     fn($carry, $content) => $carry + $content->item_total, 
                     0
                 );
-                $grandTotal = $subTotal 
+                $grandTotal = ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0))) 
                     - $order->discount_amount 
                     + $order->tax_amount 
-                    + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
+                    ;
                 
                 return $grandTotal;
             })->reduce(fn($carry, $item) => $carry + $item, 0);
@@ -197,10 +195,10 @@ class ReportService {
                             fn($carry, $content) => $carry + $content->item_total, 
                             0
                         );
-                        $grandTotal = $subTotal 
+                        $grandTotal = ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)))
                             - $order->discount_amount 
                             + $order->tax_amount 
-                            + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
+                            ;
                         
                         return $grandTotal;
                     })->reduce(fn($carry, $item) => $carry + $item, 0),
