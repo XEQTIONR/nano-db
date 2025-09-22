@@ -22,7 +22,7 @@ class ReportController extends Controller
         $type = $request->type ?? 'daily';
         $date = $request->date ? new Carbon($request->date) : Carbon::now();
         
-        $data = ReportService::sales('daily', $date->toDateString());
+        $data = ReportService::sales($type, $date->toDateString());
 
         return Inertia::render('reports/sales', [
             'routeName' => 'reports.sales',
