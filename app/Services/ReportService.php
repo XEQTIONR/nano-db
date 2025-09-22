@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\ExpenseResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\PaymentResource;
 use Illuminate\Support\Carbon;
@@ -140,6 +141,102 @@ class ReportService {
             'chart_data',
         );
     }
+
+    public static function expense(string $type, string $date)
+    {
+        
+        $thisPeriod = new Carbon($date);
+        $now = Carbon::now();
+
+        //@TODO: optimize queries, getting too many results in single trip
+        switch($type) {
+            case "yearly":
+                $expenses = Expense::whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastExpenses = Expense::whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                break;
+            case "monthly":
+                $expenses = Expense::whereMonth('created_at', '' . $thisPeriod->month)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastExpenses = Expense::whereMonth('created_at', '' . $lastPeriod->month)
+                    ->whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                break;
+            case "daily":
+            default:
+                $expenses = Expense::whereDate('created_at', $thisPeriod)->get();
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastExpenses = Expense::whereDate('created_at', $lastPeriod)->get();
+        }
+
+        $count = $expenses->count();
+        $sumExpenses = $expenses->reduce(fn($carry, $item) => $carry + $item->amount_local, 0);
+
+        $lastCount = $lastExpenses->count();
+        $lastSumExpenses = $lastExpenses->reduce(fn($carry, $item) => $carry + $item->amount_local, 0);
+
+        $count_percent = $lastCount ? (floatval($count - $lastCount)/floatval($lastCount)) * 100.0 : 0;
+        $expense_percent = $lastSumExpenses ? (floatval($sumExpenses - $lastSumExpenses)/floatval($lastSumExpenses)) * 100.0 : 0;
+
+        $intervals = self::intervals($thisPeriod->copy()->startOf(self::$typeItemNames[$type]), $type);
+        $chart_data = $intervals->map(function($interval) use ($expenses) {
+            return [
+                'interval' => $interval,
+                'expenses' => $expenses->filter(function($item) use ($interval) {
+                    return $item->created_at->isBetween(...$interval);
+                })->reduce(fn($carry, $item) => $carry + $item->amount_local, 0),
+            ];
+        });
+
+        $intervals = self::intervals($lastPeriod->copy(), $type);
+        $chart_data = $chart_data->map(function($chart_row, $index) use ($intervals, $lastExpenses) {
+            $row = $chart_row;
+            $row['lastExpenses'] =  $lastExpenses->filter(function($item) use ($intervals, $index) {
+                return $item->created_at->isBetween(...$intervals[$index]);
+            })->reduce(fn($carry, $item) => $carry + $item->amount_local, 0);
+
+            return $row;
+
+        });
+
+        $sum = 0;
+        $sum2 = 0;
+        $hour = 0;
+
+        $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now, $thisPeriod, $type) {
+            $sum = $sum + $data['expenses'];
+            $sum2 = $sum2 + $data['lastExpenses'];
+            return [
+                'hours' => self::intervalLabel($hour++, $type),
+                'sumExpenses' => ($type == "yearly"
+                    ? (($now->year <= $thisPeriod->year) && ($hour > ($now->month)) ? null : $sum ) 
+                    : ($type == "monthly"
+                        ? (($now->year <= $thisPeriod->year) && ($hour > ($now->day)) ? null : $sum)
+                        : ($thisPeriod->isSameDay($now) 
+                            ? ($hour > ($now->hour + 1) ? null : $sum) 
+                            : $sum))),
+                'sumLastExpenses' => $sum2,
+            ];
+        });
+
+        $expenses = ExpenseResource::collection($expenses);
+        $expense = $sumExpenses;
+            
+        return compact(
+            'count', 
+            'count_percent', 
+            'expense', 
+            'expense_percent', 
+            'chart_data', 
+            'expenses'
+        );
+    }
+
 
     public static function revenue(string $type, string $date)
     {

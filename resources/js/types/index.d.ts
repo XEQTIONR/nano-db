@@ -222,3 +222,14 @@ export interface Payment {
     created_at?: string
 
 }
+
+export interface Expense {
+    id: number
+    expensable_type: string
+    expensable_id: string
+    date: string
+    currency_code: string
+    amount: number
+    amount_local: number
+    created_at: string
+}

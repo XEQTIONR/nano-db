@@ -17,6 +17,21 @@ class ReportController extends Controller
         'yearly'
     ];
 
+    public function expenses(Request $request)
+    {
+        $type = $request->type ?? 'daily';
+        $date = $request->date ? new Carbon($request->date) : Carbon::now();
+        
+        $data = ReportService::expense($type, $date->toDateString());
+
+        return Inertia::render('reports/expense', [
+            'routeName' => 'reports.expenses',
+            'type' => $type,
+            'date' => $date->toDateString(),
+            ...$data
+        ]);
+    }
+
     public function revenue(Request $request)
     {
         $type = $request->type ?? 'daily';

@@ -81,6 +81,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
     Route::get('/reports/revenue', [ReportController::class, 'revenue'])->name('reports.revenue');
+    Route::get('/reports/expenses', [ReportController::class, 'expenses'])->name('reports.expenses');
 
 });
 
