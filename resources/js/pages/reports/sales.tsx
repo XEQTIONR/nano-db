@@ -113,19 +113,19 @@ export default function SalesReport({
     return <AppLayout breadcrumbs={breadcrumbs}>
 
         <Head title="Sales Report"></Head>
-        <div className="w-full basis-1/10">
-            <div className="p-4 flex flex-col gap-4 max-h-[92vh] overflow-y-scroll">
-                <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report</h1>
+        <div className="w-full basis-1/10 ">
+            <div className="p-4 flex flex-col gap-4 overflow-y-scroll">
+                <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report <span className="text-muted text-2xl">{date}</span></h1>
                 <div className="w-full">
                     <Tabs defaultValue="day" className="w-full">
                         <div className="w-full flex justify-between">
-                            <TabsList className="mb-1">
+                            <TabsList className="mb-1 print:hidden">
                                 <TabsTrigger className="cursor-pointer" onClick={() => console.log('account tigger')} value="day">Day</TabsTrigger>
                                 <TabsTrigger className="cursor-pointer" value="spin">Password</TabsTrigger>
                                 <TabsTrigger className="cursor-pointer" value="month">Month</TabsTrigger>
                                 <TabsTrigger className="cursor-pointer" value="year">Year</TabsTrigger>
                             </TabsList>
-                            <div className="flex justify-end gap-2">
+                            <div className="flex justify-end gap-2 print:hidden">
 
                                 <Button type="button" className="cursor-pointer" onClick={goPrevious} variant="secondary">
                                     <ChevronLeftIcon /> {previousLabel()}
@@ -137,49 +137,12 @@ export default function SalesReport({
                         </div>
                         <TabsContent value="day">
                             <div className="w-full flex flex-col lg:flex-row gap-4">
-                                {/* <div className="w-full flex gap-4">
-                                    <DashboardCard 
-                                        className="w-1/3"
-                                        title="Sales"
-                                        subtitle={sales_percent + "% since yesterday"}
-                                        stat={sales}
-                                        currencyCode="BDT"
-                                        decimalPlaces={2}
-                                    />
-                                    <DashboardCard 
-                                        className="w-1/3"
-                                        title="# of orders"
-                                        subtitle={count_percent + "% since yesterday"}
-                                        stat={count}
-                                    />
-                                    
-                                </div>
-                                <div className="w-full flex gap-4">
-                                    <div className="w-2/3">
-                                        
-                                    </div>
-                                    <div className="w-1/3 bg-red-300">x</div>
-                                </div> */}
-                                    {/* <DashboardCard 
-                                        className="w-1/3"
-                                        title="Sales"
-                                        subtitle={sales_percent + "% since yesterday"}
-                                        stat={sales}
-                                        currencyCode="BDT"
-                                        decimalPlaces={2}
-                                    />
-                                    <DashboardCard 
-                                        className="w-1/3"
-                                        title="# of orders"
-                                        subtitle={count_percent + "% since yesterday"}
-                                        stat={count}
-                                    />  */}
                                 <div className="w-full lg:w-2/3 flex flex-col gap-4">
                                     <div className="w-full flex gap-4">
                                         <DashboardCard 
                                             className="w-1/2"
                                             title="Sales"
-                                            subtitle={sales_percent + "% since yesterday"}
+                                            subtitle={sales_percent.toFixed(2) + "% since yesterday"}
                                             stat={sales}
                                             currencyCode="BDT"
                                             decimalPlaces={2}
@@ -187,7 +150,7 @@ export default function SalesReport({
                                         <DashboardCard 
                                             className="w-1/2"
                                             title="# of orders"
-                                            subtitle={count_percent + "% since yesterday"}
+                                            subtitle={count_percent.toFixed(2) + "% since yesterday"}
                                             stat={count}
                                         />
                                     </div>

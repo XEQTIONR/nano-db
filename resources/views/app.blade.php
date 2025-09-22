@@ -23,6 +23,7 @@
         <style>
             html {
                 background-color: oklch(1 0 0);
+                height: 100%;
             }
 
             html.dark {
@@ -44,7 +45,7 @@
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased h-full">
         @inertia
     </body>
 </html>
