@@ -25,6 +25,7 @@ class ReportController extends Controller
         $data = ReportService::sales('daily', $date->toDateString());
 
         return Inertia::render('reports/sales', [
+            'routeName' => 'reports.sales',
             'type' => $type,
             'date' => $date->toDateString(),
             ...$data

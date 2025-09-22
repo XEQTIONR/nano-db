@@ -1,22 +1,21 @@
-import DashboardCard from "@/components/ui/dashboard-card";
-// import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AppLayout from "@/layouts/app-layout";
-import { Head } from "@inertiajs/react";
-//import { SelectItem } from "@radix-ui/react-select";
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LoaderCircleIcon, Tag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import DashboardCard from "@/components/ui/dashboard-card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Head, router } from "@inertiajs/react";
 import { Order } from "@/types";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react";
 
 const chartConfig = {
   sumOrderGrandTotal: {
@@ -31,8 +30,31 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function SalesReport({ type, chart_data, date, count, count_percent, count_items, count_items_percent, orders, sales, sales_percent  } 
-    : { type: string, date: string, orders: {data: Order[]}}) {
+export default function SalesReport({ 
+    type, 
+    chart_data, 
+    date, 
+    count, 
+    count_percent, 
+    count_items, 
+    count_items_percent, 
+    orders,
+    routeName, 
+    sales, 
+    sales_percent  
+} : { 
+    type: string, 
+    chart_data: [], 
+    date: string, 
+    count: number, 
+    count_percent: number,
+    count_items: number,
+    count_items_percent: number,
+    orders: {data: Order[]},
+    routeName: string,
+    sales: number,
+    sales_percent: number
+})  {
 
     const breadcrumbs = [{
         title: "Reports", 
@@ -44,6 +66,50 @@ export default function SalesReport({ type, chart_data, date, count, count_perce
 
     const [typ, setTyp] = useState<undefined | string>(undefined)
 
+    const goNext = () => {
+        const localDate = new Date(date)
+        localDate.setDate(localDate.getDate() + 1)
+
+        router.visit(route(routeName, {
+            date: localDate.toISOString().split('T')[0]
+        }))
+    }
+
+    const goPrevious = () => {
+        const localDate = new Date(date)
+        localDate.setDate(localDate.getDate() - 1)
+
+        router.visit(route(routeName, {
+            date: localDate.toISOString().split('T')[0]
+        }))
+    }
+
+    const dateOptions = {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+    };
+
+    const nextLabel = () => {
+
+        const d = new Date(date)
+        if (d.toDateString() === new Date().toDateString()) {
+            return "Tomorrow"
+        }
+        d.setDate(d.getDate() + 1)
+        return  new Intl.DateTimeFormat("en-IN", dateOptions).format(d)
+    }
+
+    const previousLabel = () => {
+
+        const d = new Date(date)
+        if (d.toDateString() === new Date().toDateString()) {
+            return "Yesterday"
+        }
+        d.setDate(d.getDate() - 1)
+        return  new Intl.DateTimeFormat("en-IN", dateOptions).format(d)
+    }
+
     return <AppLayout breadcrumbs={breadcrumbs}>
 
         <Head title="Sales Report"></Head>
@@ -51,25 +117,24 @@ export default function SalesReport({ type, chart_data, date, count, count_perce
             <div className="p-4 flex flex-col gap-4 max-h-[92vh] overflow-y-scroll">
                 <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report</h1>
                 <div className="w-full">
-                    {/* <Select value={typ}
-                        onValueChange={(x) => setTyp(x)}
-                    >
-                        <SelectTrigger className="w-50">
-                            <SelectValue placeholder="Select a value"/>
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="daily">Daily</SelectItem>
-                            <SelectItem value="monthly">Monthly</SelectItem>
-                            <SelectItem value="yearly">Yearly</SelectItem>
-                        </SelectContent>
-                    </Select> */}
                     <Tabs defaultValue="day" className="w-full">
-                        <TabsList className="mb-1">
-                            <TabsTrigger className="cursor-pointer" onClick={() => console.log('account tigger')} value="day">Day</TabsTrigger>
-                            <TabsTrigger className="cursor-pointer" value="spin">Password</TabsTrigger>
-                            <TabsTrigger className="cursor-pointer" value="month">Month</TabsTrigger>
-                            <TabsTrigger className="cursor-pointer" value="year">Year</TabsTrigger>
-                        </TabsList>
+                        <div className="w-full flex justify-between">
+                            <TabsList className="mb-1">
+                                <TabsTrigger className="cursor-pointer" onClick={() => console.log('account tigger')} value="day">Day</TabsTrigger>
+                                <TabsTrigger className="cursor-pointer" value="spin">Password</TabsTrigger>
+                                <TabsTrigger className="cursor-pointer" value="month">Month</TabsTrigger>
+                                <TabsTrigger className="cursor-pointer" value="year">Year</TabsTrigger>
+                            </TabsList>
+                            <div className="flex justify-end gap-2">
+
+                                <Button type="button" className="cursor-pointer" onClick={goPrevious} variant="secondary">
+                                    <ChevronLeftIcon /> {previousLabel()}
+                                </Button>
+                                <Button type="button" className="cursor-pointer" onClick={goNext} variant="secondary">
+                                    {nextLabel()} <ChevronRightIcon />
+                                </Button>
+                            </div>
+                        </div>
                         <TabsContent value="day">
                             <div className="w-full flex flex-col lg:flex-row gap-4">
                                 {/* <div className="w-full flex gap-4">
