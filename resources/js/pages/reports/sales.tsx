@@ -34,6 +34,12 @@ const reportTypes = [ 'daily', 'monthly', 'yearly' ]
 
 type ReportType = 'daily' | 'monthly' | 'yearly'
 
+const reportTypeMappings = {
+    daily: 'day',
+    monthly: 'month',
+    yearly: 'year'
+}
+
 
 export default function SalesReport({ 
     type, 
@@ -69,23 +75,32 @@ export default function SalesReport({
         href: route('reports.sales')
     }]
 
-    const goNext = () => {
+    const go = (unit: number) => {
         const localDate = new Date(date)
-        localDate.setDate(localDate.getDate() + 1)
+
+        switch(type) {
+            case "yearly":
+                localDate.setDate(1)
+                localDate.setFullYear(localDate.getFullYear() + unit)
+            break;
+            case "monthly":
+                localDate.setDate(1)
+                localDate.setMonth(localDate.getMonth() + unit)
+            break;
+            case "daily":
+                localDate.setDate(localDate.getDate() + unit)
+            break;
+        }
 
         router.visit(route(routeName, {
-            date: localDate.toISOString().split('T')[0]
+            date: localDate.toISOString().split('T')[0],
+            type: type
         }))
     }
 
-    const goPrevious = () => {
-        const localDate = new Date(date)
-        localDate.setDate(localDate.getDate() - 1)
+    const goNext = () => go(1)
 
-        router.visit(route(routeName, {
-            date: localDate.toISOString().split('T')[0]
-        }))
-    }
+    const goPrevious = () => go(-1)
 
     const dateOptions = {
         weekday: "short",
@@ -96,21 +111,113 @@ export default function SalesReport({
     const nextLabel = () => {
 
         const d = new Date(date)
-        if (d.toDateString() === new Date().toDateString()) {
-            return "Tomorrow"
+
+        switch(type) {
+
+            case "yearly":
+                if (d.getFullYear() === (new Date().getFullYear())) {
+                    return "Next Year"
+                } else if (d.getFullYear() === (new Date().getFullYear() - 1)) {
+                    return "Current year"
+                }
+
+                d.setFullYear(d.getFullYear() + 1)
+                return  new Intl.DateTimeFormat("en-IN", { year: "numeric" }).format(d)
+            case "monthly":
+                if (d.getFullYear() === (new Date().getFullYear())
+                    && d.getMonth() === (new Date().getMonth())) {
+                    return "Next Month"
+                } else if (
+                    (
+                        d.getFullYear() === (new Date().getFullYear())
+                        && d.getMonth() === (new Date().getMonth() - 1)
+                    )
+                    ||
+                    (
+                        d.getFullYear() === (new Date().getFullYear() - 1)
+                        && d.getMonth() === 12
+                    )
+                ) {
+                    return "Current Month"
+                }
+
+                d.setMonth(d.getMonth() + 1)
+                return  new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" }).format(d)
+            
+            case "daily":
+            default:
+                if (d.toDateString() === new Date().toDateString()) {
+                    return "Tomorrow"
+                } 
+                
+                if (true) {
+                    const dt = new Date()
+                    dt.setDate(dt.getDate() - 1)
+                    if (d.toDateString() === dt.toDateString()) {
+                        return "Today"
+                    }
+                }
+                
+                d.setDate(d.getDate() + 1)
+                return  new Intl.DateTimeFormat("en-IN", dateOptions).format(d)
         }
-        d.setDate(d.getDate() + 1)
-        return  new Intl.DateTimeFormat("en-IN", dateOptions).format(d)
+
+        
     }
 
     const previousLabel = () => {
 
         const d = new Date(date)
-        if (d.toDateString() === new Date().toDateString()) {
-            return "Yesterday"
+
+        switch(type) {
+
+            case "yearly":
+                if (d.getFullYear() === (new Date().getFullYear())) {
+                    return "Previous Year"
+                } else if (d.getFullYear() === (new Date().getFullYear() + 1)) {
+                    return "Current year"
+                }
+                
+                d.setFullYear(d.getFullYear() - 1)
+                return  new Intl.DateTimeFormat("en-IN", { year: "numeric" }).format(d)
+                
+            case "monthly":
+                if (d.getFullYear() === (new Date().getFullYear())
+                    && d.getMonth() === (new Date().getMonth())) {
+                    return "Previous Month"
+                } else if (
+                    (
+                        d.getFullYear() === (new Date().getFullYear())
+                        && d.getMonth() === (new Date().getMonth() + 1)
+                    )
+                    ||
+                    (
+                        d.getFullYear() === (new Date().getFullYear() + 1)
+                        && d.getMonth() === 1
+                    )
+                ) {
+                    return "Current Month"
+                }
+
+                d.setMonth(d.getMonth() - 1)
+                return  new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" }).format(d)
+            case "daily":
+            default:
+                if (d.toDateString() === new Date().toDateString()) {
+                    return "Yesterday"
+                }
+
+                if (true) {
+                    const dt = new Date()
+                    dt.setDate(dt.getDate() + 1)
+                    if (d.toDateString() === dt.toDateString()) {
+                        return "Today"
+                    }
+                }
+                
+                d.setDate(d.getDate() - 1)
+                return  new Intl.DateTimeFormat("en-IN", dateOptions).format(d)
         }
-        d.setDate(d.getDate() - 1)
-        return  new Intl.DateTimeFormat("en-IN", dateOptions).format(d)
     }
 
     return <AppLayout breadcrumbs={breadcrumbs}>
@@ -118,7 +225,12 @@ export default function SalesReport({
         <Head title="Sales Report"></Head>
         <div className="w-full basis-1/10 ">
             <div className="p-4 flex flex-col gap-4 overflow-y-scroll">
-                <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report <span className="text-muted text-2xl">{date}</span></h1>
+                <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report <span className="text-muted text-2xl">
+                        {type == "daily" && date}
+                        { type == "monthly" && new Date(date).toLocaleString('default', { month: 'long', year: "numeric" })}
+                        { type == "yearly" && new Date(date).toLocaleString('default', { year: "numeric" })}
+                    </span>
+                </h1>
                 <div className="w-full">
                     <Tabs defaultValue={type} className="w-full">
                         <div className="w-full flex justify-between">
@@ -159,7 +271,7 @@ export default function SalesReport({
                                                     <DashboardCard 
                                                         className="w-1/2"
                                                         title="Sales"
-                                                        subtitle={sales_percent.toFixed(2) + "% since yesterday"}
+                                                        subtitle={sales_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                         stat={sales}
                                                         currencyCode="BDT"
                                                         decimalPlaces={2}
@@ -167,7 +279,7 @@ export default function SalesReport({
                                                     <DashboardCard 
                                                         className="w-1/2"
                                                         title="# of orders"
-                                                        subtitle={count_percent.toFixed(2) + "% since yesterday"}
+                                                        subtitle={count_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                         stat={count}
                                                     />
                                                 </div>
@@ -190,7 +302,7 @@ export default function SalesReport({
                                                                 axisLine={false}
                                                                 tickMargin={10}
                                                                 // minTickGap={50}
-                                                                tickFormatter={(value) => value.toUpperCase()}
+                                                                tickFormatter={(value) => value}
                                                             />
                                                             <YAxis mirror tickFormatter={(value) =>  value == 0 ? "" : currencyFormat("BDT", value)} />
                                                             <ChartTooltip
@@ -221,7 +333,7 @@ export default function SalesReport({
                                                 <DashboardCard 
                                                     className="w-full shrink-0"
                                                     title="# of items"
-                                                    subtitle={count_items_percent + "% since yesterday"}
+                                                    subtitle={count_items_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                     stat={count_items}
                                                 />
                                                 <Card className="h-full">
