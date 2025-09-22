@@ -23,12 +23,24 @@
         <style>
             html {
                 background-color: oklch(1 0 0);
-                height: 100%;
+
+                @media print {
+                    @page {
+                        size: A4; /* Or Letter, Legal, etc. */
+                        margin: 0; /* Or a specific margin like 1cm */
+                    }
+                    html, body {
+                        width: 210mm; /* Or corresponding width for your chosen size */
+                        overflow-y: visible;
+                    }
+                }
             }
 
             html.dark {
                 background-color: oklch(0.145 0 0);
             }
+
+            
         </style>
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
@@ -45,7 +57,7 @@
         @vite(['resources/js/app.tsx', "resources/js/pages/{$page['component']}.tsx"])
         @inertiaHead
     </head>
-    <body class="font-sans antialiased h-full">
+    <body class="font-sans antialiased h-full print:overflow-y-visible">
         @inertia
     </body>
 </html>

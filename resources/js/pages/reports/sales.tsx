@@ -329,19 +329,19 @@ export default function SalesReport({
                                                     </ChartContainer>
                                                 </div>
                                             </div>
-                                            <div className="w-full lg:w-1/3 flex flex-col gap-4">
+                                            <div className="w-full lg:w-1/3 flex flex-col gap-4 break-after-page">
                                                 <DashboardCard 
-                                                    className="w-full shrink-0"
+                                                    className="w-full shrink-0 break-after-page"
                                                     title="# of items"
                                                     subtitle={count_items_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                     stat={count_items}
                                                 />
-                                                <Card className="h-full">
+                                                <Card className="h-full overflow-visible print:mb-[100%]">
                                                     <CardHeader>
                                                         <CardTitle>Orders</CardTitle>
                                                     </CardHeader>
-                                                    <CardContent>
-                                                        <Table>
+                                                    <CardContent className="print:overflow-y-visible">
+                                                        <Table className="print:overflow-y-visible">
                                                             <TableHeader>
                                                                 <TableRow>
                                                                     <TableHead>Order #</TableHead>
@@ -350,7 +350,7 @@ export default function SalesReport({
                                                                     <TableHead className="text-right">Grand Total</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody>
+                                                            <TableBody className="print:overflow-y-visible">
                                                             {
                                                                 orders.data.map((order) => (
                                                                     <TableRow>
@@ -365,6 +365,8 @@ export default function SalesReport({
                                                         </Table>
                                                     </CardContent>
                                                 </Card>
+                                                
+                                                
                                             </div>
                                             
                                         </div>
