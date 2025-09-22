@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Expense;
 use App\Models\Order;
 use App\Models\Payment;
-
+use Illuminate\Support\Facades\Log;
 
 class ReportService {
 
@@ -25,7 +25,7 @@ class ReportService {
         $expenses = Expense::whereDate('date', $todaysDate)->get();
 
         $count = $orders->count();
-        $count_items = $orders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty), 0);
+        $count_items = $orders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
         $revenue = $payments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
         $expenditure = $expenses->reduce(fn($carry, $expense) => $carry + $expense->amount_local, 0);
         $sales = $orders->map(function($order){ 
@@ -47,7 +47,7 @@ class ReportService {
         
 
         $yesterdaysCount = $yesterdaysOrders->count();
-        $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty), 0);
+        $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
         $yesterdaysRevenue = $yesterdaysPayments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
         $yesterdaysExpenditure = $yesterdaysExpenses->reduce(fn($carry, $expense) => $carry + $expense->amount_local, 0);
         $yesterdaysSales = $yesterdaysOrders->map(function($order){ 
@@ -145,11 +145,11 @@ class ReportService {
         switch($type) {
             case "daily":
             default:
-            $today = new Carbon($date)->startOfDay();
-
+            $today = new Carbon($date);
+            $now = Carbon::now();
             $orders = Order::with('contents')->whereDate('created_at', $today)->get();
             $count = $orders->count();
-            $count_items = $orders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty), 0);
+            $count_items = $orders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
             $sales = $orders->map(function($order){ 
                 $subTotal =  $order->contents->reduce(
                     fn($carry, $content) => $carry + $content->item_total, 
@@ -161,11 +161,12 @@ class ReportService {
                 
                 return $grandTotal;
             })->reduce(fn($carry, $item) => $carry + $item, 0);
-            
-            $yesterday = $today->copy()->subDay()->startOfDay();
+
+
+            $yesterday = new Carbon($date)->subDay()->startOfDay();
             $yesterdaysOrders = Order::with('contents')->whereDate('created_at', $yesterday)->get();
             $yesterdaysCount = $yesterdaysOrders->count();
-            $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty), 0);
+            $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
             $yesterdaysSales = $yesterdaysOrders->map(function($order){ 
                 $subTotal =  $order->contents->reduce(
                     fn($carry, $content) => $carry + $content->item_total, 
@@ -184,7 +185,7 @@ class ReportService {
             $sales_percent = $yesterdaysSales ? (floatval($sales - $yesterdaysSales)/floatval($yesterdaysSales)) * 100.0 : 0;
 
             
-            $intervals = self::intervals($today);
+            $intervals = self::intervals($today->copy());
             $chart_data = $intervals->map(function($interval) use ($orders, $yesterdaysOrders) {
                 return [
                     'interval' => $interval,
@@ -202,29 +203,36 @@ class ReportService {
                         
                         return $grandTotal;
                     })->reduce(fn($carry, $item) => $carry + $item, 0),
-                    'lastOrders' => $yesterdaysOrders->filter(function($item) use ($interval) {
-                        return $item->created_at->isBetween(...$interval);
-                    })->map(function($order){ 
-                        $subTotal =  $order->contents->reduce(
-                            fn($carry, $content) => $carry + $content->item_total, 
-                            0
-                        );
-                        $grandTotal = $subTotal 
-                            - $order->discount_amount 
-                            + $order->tax_amount 
-                            + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
-                        
-                        return $grandTotal;
-                    })->reduce(fn($carry, $item) => $carry + $item, 0),
                 ];
+            });
+
+            $intervals = self::intervals($yesterday->copy());
+            $chart_data = $chart_data->map(function($chart_row, $index) use ($intervals, $yesterdaysOrders) {
+                $row = $chart_row;
+                $row['lastOrders'] =  $yesterdaysOrders->filter(function($item) use ($intervals, $index) {
+                    return $item->created_at->isBetween(...$intervals[$index]);
+                })->map(function($order){ 
+                    $subTotal =  $order->contents->reduce(
+                        fn($carry, $content) => $carry + $content->item_total, 
+                        0
+                    );
+                    $grandTotal = $subTotal 
+                        - $order->discount_amount 
+                        + $order->tax_amount 
+                        + ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)));
+                    
+                    return $grandTotal;
+                })->reduce(fn($carry, $item) => $carry + $item, 0);
+
+                return $row;
+
             });
 
             $sum = 0;
             $sum2 = 0;
             $hour = 0;
-            $now = Carbon::now();
 
-            $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now) {
+            $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now, $today) {
                 $sum = $sum + $data['orders'];
                 $sum2 = $sum2 + $data['lastOrders'];
                 if ($hour == 0) {
@@ -240,11 +248,11 @@ class ReportService {
 
                 return [
                     'hours' => $hr,
-                    'sumOrderGrandTotal' => $now->hour < $hour - 1 ? null : $sum,
-                    'sumLastOrderGrandTotal' => $now->hour < $hour - 1 ? null : $sum2,
+                    'sumOrderGrandTotal' => $today->isSameDay($now) ? ($hour > ($now->hour + 1) ? null : $sum) : $sum, //$hour > $now->hour ? null : $sum, // $to
+                    'sumLastOrderGrandTotal' => $sum2,
                 ];
             });
-            
+
             $orders = OrderResource::collection($orders);
             
             return compact(
@@ -263,8 +271,6 @@ class ReportService {
     protected static function intervals(Carbon $start, $count = 24)
     {
         $length = 24/$count;
-
-        // $start = Carbon::now()->startOfDay();
 
         $k = 0;
 
