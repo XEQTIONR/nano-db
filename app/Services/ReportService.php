@@ -155,6 +155,15 @@ class ReportService {
         $now = Carbon::now();
 
         switch($type) {
+            case "yearly":
+                $orders = Order::with('contents')
+                    ->whereYear('created_at', '' . $today->year)
+                    ->get();
+                $yesterday = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $yesterdaysOrders = Order::with('contents')
+                    ->whereYear('created_at', '' . $yesterday->year)
+                    ->get();
+                break;
             case "monthly":
                 $orders = Order::with('contents')
                     ->whereMonth('created_at', '' . $today->month)
@@ -214,10 +223,13 @@ class ReportService {
         $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now, $today, $type) {
             $sum = $sum + $data['orders'];
             $sum2 = $sum2 + $data['lastOrders'];
-
             return [
                 'hours' => self::intervalLabel($hour++, $type),
-                'sumOrderGrandTotal' => $today->isSameDay($now) ? ($hour > ($now->hour + 1) ? null : $sum) : $sum, //$hour > $now->hour ? null : $sum, // $to
+                'sumOrderGrandTotal' => ($type == "yearly"
+                    ? ($hour > ($now->month) ? null : $sum) 
+                    :($today->isSameDay($now) 
+                        ? ($hour > ($now->hour + 1) ? null : $sum) 
+                        : $sum)),
                 'sumLastOrderGrandTotal' => $sum2,
             ];
         });
@@ -257,6 +269,23 @@ class ReportService {
     protected static function intervalLabel($n, $type = "daily")
     {
         switch($type) {
+            case "yearly":
+                $months = [
+                    'Jan',
+                    'Feb',
+                    'Mar',
+                    'Apr',
+                    'May',
+                    'Jun',
+                    'Jul',
+                    'Aug',
+                    'Sep',
+                    'Oct',
+                    'Nov',
+                    'Dec'
+                ];
+
+                return $months[$n];
             case "monthly":
                 return strval($n+1);
             case "daily":
