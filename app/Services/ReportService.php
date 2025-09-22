@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\PaymentResource;
 use Illuminate\Support\Carbon;
 use App\Models\Expense;
 use App\Models\Order;
@@ -137,6 +138,98 @@ class ReportService {
             'expenditure_percent', 
             'sales_percent', 
             'chart_data',
+        );
+    }
+
+    public static function revenue(string $type, string $date)
+    {
+        
+        $thisPeriod = new Carbon($date);
+        $now = Carbon::now();
+
+        //@TODO: optimize queries, getting too many results in single trip
+        switch($type) {
+            case "yearly":
+                $payments = Payment::whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPayments = Payment::whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                break;
+            case "monthly":
+                $payments = Payment::whereMonth('created_at', '' . $thisPeriod->month)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPayments = Payment::whereMonth('created_at', '' . $lastPeriod->month)
+                    ->whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                break;
+            case "daily":
+            default:
+                $payments = Payment::whereDate('created_at', $thisPeriod)->get();
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPayments = Payment::whereDate('created_at', $lastPeriod)->get();
+        }
+
+        $count = $payments->count();
+        $revenue = $payments->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+
+        $lastCount = $lastPayments->count();
+        $lastRevenue = $lastPayments->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+
+        $count_percent = $lastCount ? (floatval($count - $lastCount)/floatval($lastCount)) * 100.0 : 0;
+        $revenue_percent = $lastRevenue ? (floatval($revenue - $lastRevenue)/floatval($lastRevenue)) * 100.0 : 0;
+
+        $intervals = self::intervals($thisPeriod->copy()->startOf(self::$typeItemNames[$type]), $type);
+        $chart_data = $intervals->map(function($interval) use ($payments) {
+            return [
+                'interval' => $interval,
+                'payments' => $payments->filter(function($item) use ($interval) {
+                    return $item->created_at->isBetween(...$interval);
+                })->reduce(fn($carry, $item) => $carry + $item->amount, 0),
+            ];
+        });
+
+        $intervals = self::intervals($lastPeriod->copy(), $type);
+        $chart_data = $chart_data->map(function($chart_row, $index) use ($intervals, $lastPayments) {
+            $row = $chart_row;
+            $row['lastPayments'] =  $lastPayments->filter(function($item) use ($intervals, $index) {
+                return $item->created_at->isBetween(...$intervals[$index]);
+            })->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+
+            return $row;
+
+        });
+
+        $sum = 0;
+        $sum2 = 0;
+        $hour = 0;
+
+        $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now, $thisPeriod, $type) {
+            $sum = $sum + $data['payments'];
+            $sum2 = $sum2 + $data['lastPayments'];
+            return [
+                'hours' => self::intervalLabel($hour++, $type),
+                'sumPayments' => ($type == "yearly"
+                    ? ($hour > ($now->month) ? null : $sum) 
+                    :($thisPeriod->isSameDay($now) 
+                        ? ($hour > ($now->hour + 1) ? null : $sum) 
+                        : $sum)),
+                'sumLastPayments' => $sum2,
+            ];
+        });
+
+        $payments = PaymentResource::collection($payments);
+            
+        return compact(
+            'count', 
+            'count_percent', 
+            'revenue', 
+            'revenue_percent', 
+            'chart_data', 
+            'payments'
         );
     }
 

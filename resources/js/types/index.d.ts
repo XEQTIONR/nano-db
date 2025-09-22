@@ -200,7 +200,7 @@ export interface Order {
     items?: OrderContentItem[]
     returns?: OrderReturnItem[],
     returns_consolidated?: OrderReturnItem[],
-    payments?: Payments[]
+    payments?: Payment[]
     customer?: Customer
     customer_name?: string
     customer_id?: number
@@ -210,8 +210,9 @@ export interface Order {
     balance?: number
 }
 
-export interface Payments {
+export interface Payment {
     transaction_id: number
+    order_num: number
     account: number | null
     amount: number
     payment_amount: number
