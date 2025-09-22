@@ -154,52 +154,52 @@ class ReportService {
             return $grandTotal;
         };
         
-        $today = new Carbon($date);
+        $thisPeriod = new Carbon($date);
         $now = Carbon::now();
 
         //@TODO: optimize queries, getting too many results in single trip
         switch($type) {
             case "yearly":
                 $orders = Order::with('contents')
-                    ->whereYear('created_at', '' . $today->year)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
-                $yesterday = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
-                $yesterdaysOrders = Order::with('contents')
-                    ->whereYear('created_at', '' . $yesterday->year)
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastOrders = Order::with('contents')
+                    ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
                 break;
             case "monthly":
                 $orders = Order::with('contents')
-                    ->whereMonth('created_at', '' . $today->month)
-                    ->whereYear('created_at', '' . $today->year)
+                    ->whereMonth('created_at', '' . $thisPeriod->month)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
 
-                $yesterday = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
-                $yesterdaysOrders = Order::with('contents')
-                    ->whereMonth('created_at', '' . $yesterday->month)
-                    ->whereYear('created_at', '' . $yesterday->year)
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastOrders = Order::with('contents')
+                    ->whereMonth('created_at', '' . $lastPeriod->month)
+                    ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
                 break;
             case "daily":
             default:
-                $orders = Order::with('contents')->whereDate('created_at', $today)->get();
-                $yesterday = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
-                $yesterdaysOrders = Order::with('contents')->whereDate('created_at', $yesterday)->get();
+                $orders = Order::with('contents')->whereDate('created_at', $thisPeriod)->get();
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastOrders = Order::with('contents')->whereDate('created_at', $lastPeriod)->get();
         }
 
         $count = $orders->count();
         $count_items = $orders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
         $sales = $orders->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
 
-        $yesterdaysCount = $yesterdaysOrders->count();
-        $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
-        $yesterdaysSales = $yesterdaysOrders->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
+        $lastCount = $lastOrders->count();
+        $lastCount_items = $lastOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
+        $lastSales = $lastOrders->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
 
-        $count_percent = $yesterdaysCount ? (floatval($count - $yesterdaysCount)/floatval($yesterdaysCount)) * 100.0 : 0;
-        $count_items_percent = $yesterdaysCount_items ? (floatval($count_items - $yesterdaysCount_items)/floatval($yesterdaysCount_items)) * 100.0 : 0;
-        $sales_percent = $yesterdaysSales ? (floatval($sales - $yesterdaysSales)/floatval($yesterdaysSales)) * 100.0 : 0;
+        $count_percent = $lastCount ? (floatval($count - $lastCount)/floatval($lastCount)) * 100.0 : 0;
+        $count_items_percent = $lastCount_items ? (floatval($count_items - $lastCount_items)/floatval($lastCount_items)) * 100.0 : 0;
+        $sales_percent = $lastSales ? (floatval($sales - $lastSales)/floatval($lastSales)) * 100.0 : 0;
 
-        $intervals = self::intervals($today->copy()->startOf(self::$typeItemNames[$type]), $type);
+        $intervals = self::intervals($thisPeriod->copy()->startOf(self::$typeItemNames[$type]), $type);
         $chart_data = $intervals->map(function($interval) use ($orders, $func) {
             return [
                 'interval' => $interval,
@@ -209,10 +209,10 @@ class ReportService {
             ];
         });
 
-        $intervals = self::intervals($yesterday->copy(), $type);
-        $chart_data = $chart_data->map(function($chart_row, $index) use ($intervals, $yesterdaysOrders, $func) {
+        $intervals = self::intervals($lastPeriod->copy(), $type);
+        $chart_data = $chart_data->map(function($chart_row, $index) use ($intervals, $lastOrders, $func) {
             $row = $chart_row;
-            $row['lastOrders'] =  $yesterdaysOrders->filter(function($item) use ($intervals, $index) {
+            $row['lastOrders'] =  $lastOrders->filter(function($item) use ($intervals, $index) {
                 return $item->created_at->isBetween(...$intervals[$index]);
             })->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
 
@@ -224,14 +224,14 @@ class ReportService {
         $sum2 = 0;
         $hour = 0;
 
-        $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now, $today, $type) {
+        $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$hour, $now, $thisPeriod, $type) {
             $sum = $sum + $data['orders'];
             $sum2 = $sum2 + $data['lastOrders'];
             return [
                 'hours' => self::intervalLabel($hour++, $type),
                 'sumOrderGrandTotal' => ($type == "yearly"
                     ? ($hour > ($now->month) ? null : $sum) 
-                    :($today->isSameDay($now) 
+                    :($thisPeriod->isSameDay($now) 
                         ? ($hour > ($now->hour + 1) ? null : $sum) 
                         : $sum)),
                 'sumLastOrderGrandTotal' => $sum2,
@@ -251,6 +251,8 @@ class ReportService {
             'orders'
         );
     }
+
+
 
     protected static function intervals(Carbon $start, $type = "daily")
     {
