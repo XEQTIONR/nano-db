@@ -49,10 +49,12 @@ class ReportService {
         };
 
         $todaysDate = Carbon::now()->startOfDay();
-        $orders = Order::with('contents')->whereDate('created_at', $todaysDate)->get();
+        //@TODO: optimize queries
+        $orders = Order::with('contents')->whereDate('created_at', $todaysDate)->get(); 
         $payments = Payment::whereDate('created_at', $todaysDate)->get();
         $expenses = Expense::whereDate('date', $todaysDate)->get();
 
+        //@TODO: optimize queries
         $count = $orders->count();
         $count_items = $orders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
         $revenue = $payments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
@@ -60,11 +62,12 @@ class ReportService {
         $sales = $orders->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
 
         $yesterDaysDate = Carbon::now()->subDay();
+        //@TODO: optimize queries
         $yesterdaysOrders = Order::with('contents')->whereDate('created_at', $yesterDaysDate)->get();
         $yesterdaysPayments = Payment::whereDate('created_at', $yesterDaysDate)->get();
         $yesterdaysExpenses = Expense::where('date', $yesterDaysDate)->get();
         
-
+        //@TODO: optimize queries
         $yesterdaysCount = $yesterdaysOrders->count();
         $yesterdaysCount_items = $yesterdaysOrders->reduce(fn($carry, $order) => $carry + $order->contents->reduce(fn($carry, $content) => $carry + $content->qty, 0), 0);
         $yesterdaysRevenue = $yesterdaysPayments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
@@ -154,6 +157,7 @@ class ReportService {
         $today = new Carbon($date);
         $now = Carbon::now();
 
+        //@TODO: optimize queries, getting too many results in single trip
         switch($type) {
             case "yearly":
                 $orders = Order::with('contents')
