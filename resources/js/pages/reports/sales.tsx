@@ -30,6 +30,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+const reportTypes = [ 'daily', 'monthly', 'yearly' ]
+
+type ReportType = 'daily' | 'monthly' | 'yearly'
+
+
 export default function SalesReport({ 
     type, 
     chart_data, 
@@ -43,7 +48,7 @@ export default function SalesReport({
     sales, 
     sales_percent  
 } : { 
-    type: string, 
+    type: ReportType, 
     chart_data: [], 
     date: string, 
     count: number, 
@@ -63,8 +68,6 @@ export default function SalesReport({
         title: "Sales Report", 
         href: route('reports.sales')
     }]
-
-    const [typ, setTyp] = useState<undefined | string>(undefined)
 
     const goNext = () => {
         const localDate = new Date(date)
@@ -117,13 +120,24 @@ export default function SalesReport({
             <div className="p-4 flex flex-col gap-4 overflow-y-scroll">
                 <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report <span className="text-muted text-2xl">{date}</span></h1>
                 <div className="w-full">
-                    <Tabs defaultValue="day" className="w-full">
+                    <Tabs defaultValue={type} className="w-full">
                         <div className="w-full flex justify-between">
                             <TabsList className="mb-1 print:hidden">
-                                <TabsTrigger className="cursor-pointer" onClick={() => console.log('account tigger')} value="day">Day</TabsTrigger>
-                                <TabsTrigger className="cursor-pointer" value="spin">Password</TabsTrigger>
-                                <TabsTrigger className="cursor-pointer" value="month">Month</TabsTrigger>
-                                <TabsTrigger className="cursor-pointer" value="year">Year</TabsTrigger>
+                                {
+                                    reportTypes.map((reportType) => (
+                                        <TabsTrigger 
+                                            className="cursor-pointer" 
+                                            value={reportType}
+                                            onClick={() => {
+                                                router.visit(route(routeName, {
+                                                    type: reportType
+                                                }))
+                                            }}
+                                        >
+                                            {reportType.charAt(0).toUpperCase() + reportType.slice(1)}
+                                        </TabsTrigger>
+                                    ))
+                                }
                             </TabsList>
                             <div className="flex justify-end gap-2 print:hidden">
 
@@ -135,114 +149,122 @@ export default function SalesReport({
                                 </Button>
                             </div>
                         </div>
-                        <TabsContent value="day">
-                            <div className="w-full flex flex-col lg:flex-row gap-4">
-                                <div className="w-full lg:w-2/3 flex flex-col gap-4">
-                                    <div className="w-full flex gap-4">
-                                        <DashboardCard 
-                                            className="w-1/2"
-                                            title="Sales"
-                                            subtitle={sales_percent.toFixed(2) + "% since yesterday"}
-                                            stat={sales}
-                                            currencyCode="BDT"
-                                            decimalPlaces={2}
-                                        />
-                                        <DashboardCard 
-                                            className="w-1/2"
-                                            title="# of orders"
-                                            subtitle={count_percent.toFixed(2) + "% since yesterday"}
-                                            stat={count}
-                                        />
-                                    </div>
-                                    <div className="w-full">
-                                        <ChartContainer className='w-full h-[50vh] md:h-[55vh] border rounded-xl' config={chartConfig}>    
-                                            <LineChart
-                                                accessibilityLayer
-                                                data={chart_data}
-                                                margin={{
-                                                    left: 24,
-                                                    right: 24,
-                                                    top: 24,
-                                                    bottom: 24,
-                                                }}
-                                            >
-                                                <CartesianGrid vertical={false} />
-                                                <XAxis
-                                                    dataKey="hours"
-                                                    tickLine={true}
-                                                    axisLine={false}
-                                                    tickMargin={10}
-                                                    // minTickGap={50}
-                                                    tickFormatter={(value) => value.toUpperCase()}
+                        {
+                            reportTypes.map((reportType) => {
+                                if (reportType == type) {
+                                    return <TabsContent value={reportType}>
+                                        <div className="w-full flex flex-col lg:flex-row gap-4">
+                                            <div className="w-full lg:w-2/3 flex flex-col gap-4">
+                                                <div className="w-full flex gap-4">
+                                                    <DashboardCard 
+                                                        className="w-1/2"
+                                                        title="Sales"
+                                                        subtitle={sales_percent.toFixed(2) + "% since yesterday"}
+                                                        stat={sales}
+                                                        currencyCode="BDT"
+                                                        decimalPlaces={2}
+                                                    />
+                                                    <DashboardCard 
+                                                        className="w-1/2"
+                                                        title="# of orders"
+                                                        subtitle={count_percent.toFixed(2) + "% since yesterday"}
+                                                        stat={count}
+                                                    />
+                                                </div>
+                                                <div className="w-full">
+                                                    <ChartContainer className='w-full h-[50vh] md:h-[55vh] border rounded-xl' config={chartConfig}>    
+                                                        <LineChart
+                                                            accessibilityLayer
+                                                            data={chart_data}
+                                                            margin={{
+                                                                left: 24,
+                                                                right: 24,
+                                                                top: 24,
+                                                                bottom: 24,
+                                                            }}
+                                                        >
+                                                            <CartesianGrid vertical={false} />
+                                                            <XAxis
+                                                                dataKey="hours"
+                                                                tickLine={true}
+                                                                axisLine={false}
+                                                                tickMargin={10}
+                                                                // minTickGap={50}
+                                                                tickFormatter={(value) => value.toUpperCase()}
+                                                            />
+                                                            <YAxis mirror tickFormatter={(value) =>  value == 0 ? "" : currencyFormat("BDT", value)} />
+                                                            <ChartTooltip
+                                                                cursor={true}
+                                                                content={<ChartTooltipContent 
+                                                                labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
+                                                                className='pb-2 min-w-3xs' />}
+                                                            />
+                                                            <Line
+                                                                dataKey="sumOrderGrandTotal"
+                                                                type="linear"
+                                                                stroke="var(--chart-2)"
+                                                                strokeWidth={2}
+                                                                dot={false}
+                                                            />
+                                                            <Line
+                                                                dataKey="sumLastOrderGrandTotal"
+                                                                type="linear"
+                                                                stroke="var(--chart-3)"
+                                                                strokeWidth={2}
+                                                                dot={false}
+                                                            />
+                                                        </LineChart>
+                                                    </ChartContainer>
+                                                </div>
+                                            </div>
+                                            <div className="w-full lg:w-1/3 flex flex-col gap-4">
+                                                <DashboardCard 
+                                                    className="w-full shrink-0"
+                                                    title="# of items"
+                                                    subtitle={count_items_percent + "% since yesterday"}
+                                                    stat={count_items}
                                                 />
-                                                <YAxis mirror tickFormatter={(value) =>  value == 0 ? "" : currencyFormat("BDT", value)} />
-                                                <ChartTooltip
-                                                    cursor={true}
-                                                    content={<ChartTooltipContent 
-                                                    labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
-                                                    className='pb-2 min-w-3xs' />}
-                                                />
-                                                <Line
-                                                    dataKey="sumOrderGrandTotal"
-                                                    type="linear"
-                                                    stroke="var(--chart-2)"
-                                                    strokeWidth={2}
-                                                    dot={false}
-                                                />
-                                                <Line
-                                                    dataKey="sumLastOrderGrandTotal"
-                                                    type="linear"
-                                                    stroke="var(--chart-3)"
-                                                    strokeWidth={2}
-                                                    dot={false}
-                                                />
-                                            </LineChart>
-                                        </ChartContainer>
-                                    </div>
-                                </div>
-                                <div className="w-full lg:w-1/3 flex flex-col gap-4">
-                                    <DashboardCard 
-                                        className="w-full shrink-0"
-                                        title="# of items"
-                                        subtitle={count_items_percent + "% since yesterday"}
-                                        stat={count_items}
-                                    />
-                                    <Card className="h-full">
-                                        <CardHeader>
-                                            <CardTitle>Orders</CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead>Order #</TableHead>
-                                                        <TableHead className="text-center">Customer ID</TableHead>
-                                                        <TableHead className="text-center"># of items</TableHead>
-                                                        <TableHead className="text-right">Grand Total</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                {
-                                                    orders.data.map((order) => (
-                                                        <TableRow>
-                                                            <TableCell>{order.order_num}</TableCell>
-                                                            <TableCell className="text-center">{order.customer_id}</TableCell>
-                                                            <TableCell className="text-center">{order.count}</TableCell>
-                                                            <TableCell className="text-right">{ currencyFormat("BDT", order.grand_total) }</TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                }
-                                                </TableBody>
-                                            </Table>
-                                        </CardContent>
-                                    </Card>
-                                </div>
+                                                <Card className="h-full">
+                                                    <CardHeader>
+                                                        <CardTitle>Orders</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <Table>
+                                                            <TableHeader>
+                                                                <TableRow>
+                                                                    <TableHead>Order #</TableHead>
+                                                                    <TableHead className="text-center">Customer ID</TableHead>
+                                                                    <TableHead className="text-center"># of items</TableHead>
+                                                                    <TableHead className="text-right">Grand Total</TableHead>
+                                                                </TableRow>
+                                                            </TableHeader>
+                                                            <TableBody>
+                                                            {
+                                                                orders.data.map((order) => (
+                                                                    <TableRow>
+                                                                        <TableCell>{order.order_num}</TableCell>
+                                                                        <TableCell className="text-center">{order.customer_id}</TableCell>
+                                                                        <TableCell className="text-center">{order.count}</TableCell>
+                                                                        <TableCell className="text-right">{ currencyFormat("BDT", order.grand_total) }</TableCell>
+                                                                    </TableRow>
+                                                                ))
+                                                            }
+                                                            </TableBody>
+                                                        </Table>
+                                                    </CardContent>
+                                                </Card>
+                                            </div>
+                                            
+                                        </div>
+                                    </TabsContent>
+                                } 
+                                return <TabsContent value={reportType} className="w-full absolute bottom-[45vh]">                            
+                                    <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} />
+                                </TabsContent>
+
                                 
-                            </div>
-                        </TabsContent>
-                        <TabsContent className="w-full absolute bottom-[45vh]" value="spin">                            
-                            <LoaderCircleIcon className="block mx-auto my-4 animate-spin" size={30} />
-                        </TabsContent>
+                            })
+                        }
                     </Tabs>
                 </div>
                 
