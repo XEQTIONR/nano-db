@@ -213,7 +213,7 @@ class ReportService {
             return [
                 'hours' => self::intervalLabel($hour++, $type),
                 'sumPayments' => ($type == "yearly"
-                    ? ($hour > ($now->month) ? null : $sum) 
+                    ? (($now->year <= $thisPeriod->year) && ($hour > ($now->month)) ? null : $sum ) 
                     :($thisPeriod->isSameDay($now) 
                         ? ($hour > ($now->hour + 1) ? null : $sum) 
                         : $sum)),
@@ -323,7 +323,7 @@ class ReportService {
             return [
                 'hours' => self::intervalLabel($hour++, $type),
                 'sumOrderGrandTotal' => ($type == "yearly"
-                    ? ($hour > ($now->month) ? null : $sum) 
+                    ? (($now->year <= $thisPeriod->year) && ($hour > ($now->month)) ? null : $sum) 
                     :($thisPeriod->isSameDay($now) 
                         ? ($hour > ($now->hour + 1) ? null : $sum) 
                         : $sum)),

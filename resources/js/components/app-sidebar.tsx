@@ -69,8 +69,8 @@ const mainNavItems: NavCollapseGroup[] = [
         links: [
             { title: "Summary", href: '/reports/summary' },
             { title: "Sales", href: relativeUrl(route('reports.sales')) },
-            // { title: "Expense", href: '/reports/summary' },
-            // { title: "Revenue", href: '/reports/summary' },
+            { title: "Revenue", href: relativeUrl(route('reports.revenue')) },
+            { title: "Expense", href: '/reports/expense' },
 
         ]
     },
