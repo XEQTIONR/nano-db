@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {
+    Card,
   CardAction,
   CardContent,
   CardDescription,
@@ -27,10 +28,11 @@ import {
   TableCaption
 } from "@/components/ui/table"
 
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, NotebookPen, StickyNote } from "lucide-react";
 
 import { LetterOfCredit, type InvoiceItem } from "@/types";
 import { Button } from "./ui/button";
+import { currencyFormat } from "@/lib/utils";
 
 export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
     lcData: LetterOfCredit,
@@ -131,28 +133,28 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                         </div>
                         <div className="grid gap-2 w-1/3">
                             <Label htmlFor="lc_num">Value</Label>
-                            {lcData.foreign_amount}
+                            {currencyFormat(lcData.currency_code, lcData.foreign_amount)}
                         </div>
                     </div>
                     <div className="flex gap-6 mb-6">
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Foreign Expense</Label>
-                            {lcData.foreign_expense}
+                            {currencyFormat(lcData.currency_code, lcData.foreign_expense)}
                         </div>
                         <div className="grid gap-2 w-1/2">
                             <Label htmlFor="lc_num">Domestic Expense</Label>
-                            {lcData.domestic_expense}
+                            {currencyFormat("BDT", lcData.domestic_expense)}
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-full lg:w-1/2">
-                    <div className="flex gap-6 mb-6">
+                <div className="flex flex-col w-full gap-6 lg:w-1/2">
+                    <div className="flex gap-6">
                         <div className="grid gap-2">
                             <Label htmlFor="lc_num">Proforma Invoice Number</Label>
                             {lcData.invoice_no}
                         </div>
                     </div>
-                    <Table className="">
+                    <Table>
                         <TableCaption>Confirm the proforma invoice details</TableCaption>
                         <TableHeader>
                             <TableRow>
@@ -173,16 +175,25 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                                         {qty} 
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {unit_price}
+                                        {currencyFormat(lcData.currency_code, unit_price)}
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        {(qty * unit_price).toFixed(2)}
+                                        {currencyFormat(lcData.currency_code, qty * unit_price)}
                                     </TableCell>
                                 </TableRow>
                             )) 
                         }
                         </TableBody>
                     </Table>
+                    { (lcData.notes && lcData.notes.length > 0) && <Card className="flex gap-6">
+                        <CardHeader className="grid gap-2">
+                            <CardTitle className="flex items-center gap-2"><StickyNote size={18} /> Note</CardTitle>
+                            
+                        </CardHeader>
+                        <CardContent>
+                            {lcData.notes}
+                        </CardContent>
+                    </Card> }
                 </div>
                 
             </form>
