@@ -9,6 +9,7 @@ use Illuminate\Support\Carbon;
 use App\Models\Expense;
 use App\Models\Order;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Log;
 
 class ReportService {
 
@@ -32,7 +33,7 @@ class ReportService {
 
     protected static $counts = [
         "daily" => 24,
-        "monthly" => 31,
+        "monthly" => 30,
         "yearly" => 12,
     ];
 
@@ -439,6 +440,166 @@ class ReportService {
             'sales_percent', 
             'chart_data', 
             'orders'
+        );
+    }
+
+    public static function summary(string $type, string $date)
+    {
+        $func = function($order){ 
+
+            $subTotal =  $order->contents->reduce(
+                fn($carry, $content) => $carry + $content->item_total, 
+                0
+            );
+            $grandTotal = ($subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100.0)))
+                - $order->discount_amount 
+                + $order->tax_amount;
+            
+            return $grandTotal;
+        };
+        
+        $thisPeriod = new Carbon($date);
+        $now = Carbon::now();
+
+        //@TODO: optimize queries, getting too many results in single trip
+        switch($type) {
+            case "yearly":
+                $orders = Order::with('contents')
+                    ->whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $expenses = Expense::whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $payments = Payment::whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastOrders = Order::with('contents')
+                    ->whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                $lastExpenses = Expense::whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                $lastPayments = Payment::whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                break;
+            case "monthly":
+                $orders = Order::with('contents')->whereMonth('created_at', '' . $thisPeriod->month)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $expenses = Expense::whereMonth('created_at', '' . $thisPeriod->month)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+                $payments = Payment::whereMonth('created_at', '' . $thisPeriod->month)
+                    ->whereYear('created_at', '' . $thisPeriod->year)
+                    ->get();
+
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastOrders = Order::with('contents')->whereMonth('created_at', '' . $lastPeriod->month)
+                    ->whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                $lastExpenses = Expense::whereMonth('created_at', '' . $lastPeriod->month)
+                    ->whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                $lastPayments = Payment::whereMonth('created_at', '' . $lastPeriod->month)
+                    ->whereYear('created_at', '' . $lastPeriod->year)
+                    ->get();
+                break;
+            case "daily":
+            default:
+                $orders = Order::with('contents')->whereDate('created_at', $thisPeriod)->get();
+                $expenses = Expense::whereDate('created_at', $thisPeriod)->get();
+                $payments = Payment::whereDate('created_at', $thisPeriod)->get();
+                
+                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastOrders = Order::with('contents')->whereDate('created_at', $lastPeriod)->get();
+                $lastExpenses = Expense::whereDate('created_at', $lastPeriod)->get();
+                $lastPayments = Payment::whereDate('created_at', $lastPeriod)->get();
+        }
+
+        $ordersCount = $orders->count();
+        $expensesCount = $expenses->count();
+        $paymentsCount = $payments->count();
+
+        $revenue = $payments->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+        $totalExpenses = $expenses->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+        $totalSales = $orders->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
+
+        $lastOrdersCount = $lastOrders->count();
+        $lastExpensesCount = $lastExpenses->count();
+        $lastPaymentsCount = $lastPayments->count();
+
+        $lastRevenue = $lastPayments->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+        $lastTotalExpenses = $lastExpenses->reduce(fn($carry, $item) => $carry + $item->amount, 0);
+        $lastTotalSales = $lastOrders->map($func)->reduce(fn($carry, $item) => $carry + $item, 0);
+        
+        
+        $ordersCountPercent = $lastOrdersCount ? (floatval($ordersCount - $lastOrdersCount)/floatval($lastOrdersCount)) * 100.0 : 0;
+        $expensesCountPercent = $lastExpensesCount ? (floatval($expensesCount - $lastExpensesCount)/floatval($lastExpensesCount)) * 100.0 : 0;
+        $paymentsCountPercent = $lastPaymentsCount ? (floatval($paymentsCount - $lastPaymentsCount)/floatval($lastPaymentsCount)) * 100.0 : 0;
+        
+        $revenue_percent = $lastRevenue ? (floatval($revenue - $lastRevenue)/floatval($lastRevenue)) * 100.0 : 0;
+        $sales_percent = $lastTotalSales ? (floatval($totalSales - $lastTotalSales)/floatval($lastTotalSales)) * 100.0 : 0;
+        $expense_percent = $lastTotalExpenses ? (floatval($totalExpenses - $lastTotalExpenses)/floatval($lastTotalExpenses)) * 100.0 : 0;
+        
+
+        $intervals = self::intervals($thisPeriod->copy()->startOf(self::$typeItemNames[$type]), $type);
+        // return [
+        //         'orders' => $orders,
+        //         'payments' => $payments,
+        //         'expenses' => $expenses,
+        //         'intervals' => $intervals
+        // ];
+        $chart_data = $intervals->map(function($interval) use ($payments, $orders, $expenses, $func) {
+            
+            
+            
+            return [
+                'interval' => $interval,
+                'orders' => $orders->filter(function($item) use ($interval) {
+                    return $item->created_at->isBetween(...$interval);
+                })->map($func)->reduce(fn($carry, $item) => $carry + $item, 0),
+                'payments' => $payments->filter(function($item) use ($interval) {
+                    return $item->created_at->isBetween(...$interval);
+                })->map(fn($payment) => $payment->amount)->reduce(fn($carry, $item) => $carry + $item, 0),
+                'expenses' => $expenses->filter(function($item) use ($interval) {
+                    return $item->created_at->isBetween(...$interval);
+                })->map(fn($expense) => $expense->amount_local)->reduce(fn($carry, $item) => $carry + $item, 0),
+            ];
+        });
+
+        $sum = 0;
+        $sum2 = 0;
+        $sum3 = 0;
+        $hour = 0;
+
+        $chart_data = $chart_data->map(function($data) use (&$sum, &$sum2, &$sum3, &$hour, $now, $thisPeriod, $type) {
+            $sum = $sum + $data['orders'];
+            $sum2 = $sum2 + $data['payments'];
+            $sum3 = $sum3 + $data['expenses'];
+            return [
+                'hours' => self::intervalLabel($hour++, $type),
+                'sumSales' => $sum,
+                'sumRevenue' => $sum2,
+                'sumExpenses' => $sum3
+            ];
+        });
+            
+        return compact(
+            'ordersCount',
+            'expensesCount',
+            'paymentsCount',
+
+            'ordersCountPercent',
+            'expensesCountPercent',
+            'paymentsCountPercent',
+
+            'revenue',
+            'totalSales',
+            'totalExpenses',
+
+            'revenue_percent',
+            'sales_percent',
+            'expense_percent',
+
+            'chart_data', 
         );
     }
 
