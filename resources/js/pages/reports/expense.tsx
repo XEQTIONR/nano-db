@@ -370,7 +370,11 @@ export default function ExpenseReport({
                                                                 expenses.data.slice(expensesPage * expensesPerPage, (expensesPage+1) * expensesPerPage).map((exp) => (
                                                                     <TableRow>
                                                                         <TableCell>{exp.id}</TableCell>
-                                                                        <TableCell className="text-center">{exp.expensable_type}</TableCell>
+                                                                        <TableCell className="text-center">{
+                                                                            exp.expensable_type.startsWith("App\\Models\\")
+                                                                                ? exp.expensable_type.slice(("App\\Models\\").length)
+                                                                                : (exp.expensable_type.charAt(0).toUpperCase() + exp.expensable_type.slice(1))
+                                                                        }</TableCell>
                                                                         <TableCell>{exp.expensable_id}</TableCell>
                                                                         <TableCell className="text-right">{ currencyFormat("BDT", exp.amount_local) }</TableCell>
                                                                         
@@ -400,7 +404,11 @@ export default function ExpenseReport({
                                                                 expenses.data.map((exp) => (
                                                                     <TableRow>
                                                                         <TableCell>{exp.id}</TableCell>
-                                                                        <TableCell className="text-center">{exp.expensable_type}</TableCell>
+                                                                        <TableCell className="text-center">{
+                                                                            exp.expensable_type.startsWith("App\\Models\\")
+                                                                                ? exp.expensable_type.slice(("App\\Models\\").length)
+                                                                                : (exp.expensable_type.charAt(0).toUpperCase() + exp.expensable_type.slice(1))
+                                                                        }</TableCell>
                                                                         <TableCell>{exp.expensable_id}</TableCell>
                                                                         <TableCell className="text-right">{ currencyFormat("BDT", exp.amount_local) }</TableCell> 
                                                                     </TableRow>
