@@ -324,14 +324,14 @@ export default function ExpenseReport({
                                                             <Line
                                                                 dataKey="sumExpenses"
                                                                 type="linear"
-                                                                stroke="var(--chart-2)"
+                                                                stroke="var(--chart-5)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />
                                                             <Line
                                                                 dataKey="sumLastExpenses"
                                                                 type="linear"
-                                                                stroke="var(--chart-3)"
+                                                                stroke="var(--chart-4)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />

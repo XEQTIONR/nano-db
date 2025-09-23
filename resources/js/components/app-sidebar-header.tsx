@@ -64,7 +64,7 @@ export function AppSidebarHeader({ breadcrumbs = [], controls }: { breadcrumbs?:
     return (
         <header className="flex print:hidden h-16 shrink-0 items-center gap-2 border-b border-sidebar-border/50 px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
             <div className="flex h-3/5 w-full items-center justify-start gap-1 ">
-                <SidebarTrigger className="-ml-1 mr-1" />
+                <SidebarTrigger className="-ml-1 mr-1 cursor-pointer" />
                 <Separator className="mr-3" orientation="vertical" />
                 <div className="w-full grow flex items-center justify-between">
                     <Breadcrumbs breadcrumbs={breadcrumbs} />

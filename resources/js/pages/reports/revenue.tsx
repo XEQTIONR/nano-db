@@ -324,14 +324,14 @@ export default function RevenueReport({
                                                             <Line
                                                                 dataKey="sumPayments"
                                                                 type="linear"
-                                                                stroke="var(--chart-2)"
+                                                                stroke="var(--chart-4)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />
                                                             <Line
                                                                 dataKey="sumLastPayments"
                                                                 type="linear"
-                                                                stroke="var(--chart-3)"
+                                                                stroke="var(--chart-2)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />

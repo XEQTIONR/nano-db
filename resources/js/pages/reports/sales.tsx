@@ -329,14 +329,14 @@ export default function SalesReport({
                                                             <Line
                                                                 dataKey="sumOrderGrandTotal"
                                                                 type="linear"
-                                                                stroke="var(--chart-2)"
+                                                                stroke="var(--chart-3)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />
                                                             <Line
                                                                 dataKey="sumLastOrderGrandTotal"
                                                                 type="linear"
-                                                                stroke="var(--chart-3)"
+                                                                stroke="var(--chart-4)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />

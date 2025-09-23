@@ -131,7 +131,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <div className="flex items-center gap-4">
                                 <Badge className={cn(
                                     "h-7 min-w-7 px-1.5 py-1 rounded-full text-xs font-bold font-mono ",
-                                    index == current ? "bg-indigo-500 text-white" : "bg-neutral-400 dark:bg-neutral-800 dark:text-neutral-400"
+                                    index == current ? "bg-indigo-500 text-white" : "bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-400"
                                 )}>
                                     {index + 1}
                                 </Badge>
