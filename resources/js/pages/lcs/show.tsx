@@ -154,12 +154,12 @@ export default function Show({ letterOfCredit } : {
                         </CardContent>
                     </Card>
                     <div className="flex flex-col gap-4 w-full lg:w-1/2">
-                        <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
+                        <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
                             <CardHeader>
                                 <CardTitle>Proforma Invoice</CardTitle>
                                 <CardDescription># {letterOfCredit.data.invoice_no}</CardDescription>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="overflow-x-scroll">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="hover:bg-transparent">
@@ -209,12 +209,12 @@ export default function Show({ letterOfCredit } : {
                             </Table>
                             </CardContent>
                         </Card>
-                        <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
+                        <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
                             <CardHeader>
                                 <CardTitle>Consignments</CardTitle>
                                 <CardDescription>Consignemnts imported under this letter of credit.</CardDescription>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="overflow-x-scroll">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="hover:bg-transparent">

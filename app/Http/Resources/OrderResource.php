@@ -31,51 +31,11 @@ class OrderResource extends JsonResource
             'tax_percentage' => $this->tax_percentage,
             'tax_amount' => $this->tax_amount,
             'contents' => OrderContentResource::collection($this->whenLoaded('contents')),
-            'customer' => (new CustomerResource($this->whenLoaded('customer'))),
+            'customer' => (new CustomerSqlResource($this->whenLoaded('customer'))),
             $this->mergeWhen($this->relationLoaded('customer'), fn() => [
                 'customer_name' => $this->customer->name,
             ]),
 
-            $this->mergeWhen($this->relationLoaded('contents'), fn () => [
-                'sub_total' => $this->contents->reduce($subTotalFn, 0),
-                'grand_total' => ($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
-                    + $this->tax_amount - $this->discount_amount,
-                'count' => $this->contents->reduce($countFn, 0),
-                
-                'items' => collect($this->contents)
-                    ->groupBy(['tyre_id', fn($item) => $item['unit_price']], preserveKeys: true)
-                    ->map(function($item, $tyreId) {
-                        return $item->map(function($items, $price) {
-                            $qty = $items->reduce(function($carry, $itm) {
-                                return $carry + $itm['qty'];
-                            }, 0);
-
-                            $itm = $items->first();
-
-                            $itm->qty = $qty;
-
-                            return [
-                                'order_num' => $itm->Order_num,
-                                'tyre_id' => $itm->tyre_id,
-                                'qty' => $itm->qty,
-                                'unit_price' => $itm->unit_price,
-                                'item_total' => $itm->item_total,
-                                'tyre' => $itm->tyre,
-                                'brand' => $itm->tyre->brand,
-                                'size' => $itm->tyre->size,
-                                'pattern' => $itm->tyre->pattern,
-                                'lisi' => $itm->tyre->lisi
-                            ];
-                        });
-                    })
-                    ->values()
-                    ->map(function($itm, $key) {
-                        return $itm->values();
-                    })
-                    ->collapse()
-                    ->filter(fn($value) => $value['qty'] > 0)
-                    ->values(),
-            ]),
             'returns' => OrderItemReturnResource::collection($this->whenLoaded('returns')),
             'payments' => PaymentResource::collection($this->whenLoaded('payments')),
             $this->mergeWhen($this->relationLoaded('returns'), fn() => [ 
@@ -105,9 +65,13 @@ class OrderResource extends JsonResource
 
             $this->mergeWhen(
                 $this->relationLoaded('contents') && $this->relationLoaded('payments'), fn() => [
-                    'balance' => (($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
-                    + $this->tax_amount - $this->discount_amount - $this->commission)
-                    - $this->payments->reduce($paymentsTotalFn, 0)
+                    // 'kontentsReduce' => $this->items->reduce($subTotalFn, 0),
+                     
+                    'balance' => ($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
+                        + $this->tax_amount 
+                        - $this->discount_amount 
+                        - $this->commission
+                        - $this->payments->reduce($paymentsTotalFn, 0),
                 ]
             ),
 
@@ -116,6 +80,48 @@ class OrderResource extends JsonResource
             'random' => $this->random,
             'created_at' => $this->created_at->toDateTimeString(),
             'toString' => $this->Order_num,
+
+            $this->mergeWhen($this->relationLoaded('contents'), fn () => [
+                'sub_total' => $this->contents->reduce($subTotalFn, 0),
+                'grand_total' => ($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
+                    + $this->tax_amount - $this->discount_amount,
+                'count' => $this->contents->reduce($countFn, 0),
+                
+                //'items' => [],
+                'items' => collect($this->contents()->get())
+                    ->groupBy(['tyre_id', fn($item) => $item['unit_price']], preserveKeys: true)
+                    ->map(function($item, $tyreId) {
+                        return $item->map(function($items, $price) {
+                            $qty = $items->reduce(function($carry, $itm) {
+                                return $carry + $itm['qty'];
+                            }, 0);
+
+                            $itum = $items->first();
+
+                            $itum->qty = $qty;
+
+                            return [
+                                'order_num' => $itum->Order_num,
+                                'tyre_id' => $itum->tyre_id,
+                                'qty' => $itum->qty,
+                                'unit_price' => $itum->unit_price,
+                                'item_total' => $itum->item_total,
+                                'tyre' => $itum->tyre,
+                                'brand' => $itum->tyre->brand,
+                                'size' => $itum->tyre->size,
+                                'pattern' => $itum->tyre->pattern,
+                                'lisi' => $itum->tyre->lisi
+                            ];
+                        });
+                    })
+                    ->values()
+                    ->map(function($itm, $key) {
+                        return $itm->values();
+                    })
+                    ->collapse()
+                    ->filter(fn($value) => $value['qty'] > 0)
+                    ->values(),
+            ]),
 
         ];
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Resources\CustomerResource;
+use App\Http\Resources\CustomerSqlResource;
 use App\Models\Customer;
 use App\Models\OrderContent;
 use App\Models\Order;
@@ -75,7 +75,7 @@ class CustomerController extends Controller
         ->paginate($perPage)->withQueryString();
 
         return [
-            'items' => CustomerResource::collection($data),
+            'items' => CustomerSqlResource::collection($data),
             'filters' => $filters,
             'sortBy' => $sortBy,
             'sortDir' => $sortDir
@@ -92,7 +92,7 @@ class CustomerController extends Controller
         $customer = new Customer(compact('name', 'address', 'phone', 'notes'));
         $customer->save();
 
-        return new CustomerResource($customer);
+        return new CustomerSqlResource($customer);
     }
 
     public function update(Request $request, Customer $customer)
@@ -105,6 +105,6 @@ class CustomerController extends Controller
 
         $customer->save();
 
-        return new CustomerResource($customer);
+        return new CustomerSqlResource($customer);
     }
 }

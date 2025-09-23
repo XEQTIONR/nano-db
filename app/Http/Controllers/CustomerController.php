@@ -8,6 +8,7 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\Api\CustomerController as ApiController;
 use App\Http\Resources\CustomerResource;
+use App\Http\Resources\CustomerSqlResource;
 
 class CustomerController extends ApiController
 {
@@ -58,7 +59,11 @@ class CustomerController extends ApiController
      */
     public function show(Customer $customer)
     {
-        //
+        $customer->load(['orders.contents.tyre', 'orders.payments', 'orders.returns']);
+        //return new CustomerResource($customer);
+        return Inertia::render('customers/show', [
+            'customer' => new CustomerResource($customer)
+        ]);
     }
 
     /**
@@ -74,7 +79,7 @@ class CustomerController extends ApiController
             'link' => route('customers.index'),
             'title' => 'Customers',
             'type' => 'customer',
-            'edit' => new CustomerResource($customer)
+            'edit' => new CustomerSqlResource($customer)
         ]);   
     }
 

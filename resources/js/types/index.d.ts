@@ -93,7 +93,9 @@ export interface Customer {
     name: string
     address: string
     phone: string
+    created_at: string
     notes?: string
+    orders?: Order[]
 }
 
 export interface LetterOfCredit {
