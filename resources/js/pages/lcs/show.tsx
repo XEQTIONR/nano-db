@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/tooltip"
 import { ArrowLeft } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
+import ExpenseCard from "@/components/expense-card";
 
 export default function Show({ letterOfCredit } : { 
     letterOfCredit: {data: LetterOfCredit}
@@ -188,7 +189,7 @@ export default function Show({ letterOfCredit } : {
                                     )) 
                                 }
                                 </TableBody>
-                                <TableFooter>
+                                <TableFooter className="bg-transparent">
                                     <TableRow>
                                         <TableCell></TableCell>
                                         <TableCell>Total</TableCell>
@@ -254,6 +255,10 @@ export default function Show({ letterOfCredit } : {
                             </Table>
                             </CardContent>
                         </Card>
+                        {
+                            (letterOfCredit.data.expenses && letterOfCredit.data.expenses.length > 0)
+                                && <ExpenseCard expenses={letterOfCredit.data.expenses} /> 
+                        }
                     </div>
                 </div>
             </div>

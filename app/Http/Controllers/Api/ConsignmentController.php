@@ -106,7 +106,7 @@ class ConsignmentController extends Controller
      */
     public function show(Consignment $consignment)
     {
-        $consignment->load('letterOfCredit', 'containers.contents.tyre');
+        $consignment->load('letterOfCredit', 'containers.contents.tyre', 'expenses');
         return new ConsignmentResource($consignment);
     }
 

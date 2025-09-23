@@ -46,6 +46,11 @@ class LetterOfCreditResource extends JsonResource
                 ($request->route()->getName() === 'lcs.show'),
                 fn() => ConsignmentResource::collection($this->whenLoaded('consignments'))
             ),
+
+            'expenses' => $this->when( 
+                ($request->route()->getName() === 'lcs.show'),
+                fn() => ExpenseResource::collection($this->whenLoaded('expenses'))
+            ),
             'toString' => $this->lc_num
         ];
     }

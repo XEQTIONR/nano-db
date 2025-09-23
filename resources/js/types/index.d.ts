@@ -113,6 +113,7 @@ export interface LetterOfCredit {
     invoice_no?: string
     items?: InvoiceItem[]
     consignments?: Consignment[]
+    expenses?: Expense[]
 }
 
 export interface Container {
@@ -135,6 +136,7 @@ export interface Consignment {
     value_local?: number
     currency_code?: string
     containers?: Container[]
+    expenses?: Expense[]
 }
 
 export interface Tyre {
@@ -208,6 +210,7 @@ export interface Order {
     grand_total?: number
     payments_total?: number
     balance?: number
+    expenses?: Expense[]
 }
 
 export interface Payment {
@@ -232,4 +235,5 @@ export interface Expense {
     amount: number
     amount_local: number
     created_at: string
+    note: string
 }

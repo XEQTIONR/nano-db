@@ -112,9 +112,11 @@ class OrderResource extends JsonResource
             ),
 
             'commission' => $this->commission,
+            'expenses' => ExpenseResource::collection($this->whenLoaded('expenses')),
             'random' => $this->random,
             'created_at' => $this->created_at->toDateTimeString(),
             'toString' => $this->Order_num,
+
         ];
     }
 }

@@ -21,6 +21,7 @@ class ExpenseResource extends JsonResource
             'expensable_id' => $this->expensable_id,
             'date' => $this->date->toDateString(),
             'currency_code' => $this->currency_code,
+            'note' => $this->note,
             'amount' => $this->amount,
             'amount_local' => $this->amount_local,
             'created_at' => $this->created_at->toDateTimeString(),

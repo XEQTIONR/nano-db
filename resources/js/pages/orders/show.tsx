@@ -33,6 +33,7 @@ import { useEffect, useState } from "react";
 import { toast } from 'sonner';
 import CreateForm from "@/pages/payments/components/create-form";
 import { currencyFormat } from "@/lib/utils";
+import ExpenseCard from "@/components/expense-card";
 
 export default function Show({ order } : { 
     order: { 
@@ -372,9 +373,9 @@ export default function Show({ order } : {
                 </div>
                 {   
                     data.returns && data.returns.length > 0 &&
-                    (<div className="flex flex-wrap xl:flex-nowrap pb-8 px-4 print:py-0 gap-6">
-                        <div className="hidden lg:flex lg:w-1/2 spacer" />
-                        <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none">
+                    (<div className="flex flex-wrap xl:flex-nowrap pb-8 px-4 gap-6 print:py-0">
+                        
+                        <Card className="w-full overflow-x-scroll print:w-full print:border-0 print:shadow-none">
                             <CardHeader>
                                 <CardTitle>Returns</CardTitle>
                                 <CardDescription>Items previously from the order that have been returned</CardDescription>
@@ -426,6 +427,13 @@ export default function Show({ order } : {
                                     </div>
                             </CardContent>
                         </Card>
+                        {
+                            (data.expenses && data.expenses.length > 0) 
+                                ? (<div className="flex flex-wrap w-full">
+                                    <ExpenseCard className="w-full" expenses={data.expenses} />
+                                </div>)
+                                : <div className="w-full spacer" />
+                        }
                         
                     </div>)
                 }

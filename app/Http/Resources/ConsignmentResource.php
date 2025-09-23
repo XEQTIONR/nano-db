@@ -35,6 +35,10 @@ class ConsignmentResource extends JsonResource
             $this->mergeWhen($this->relationLoaded('containers'), fn() => [
                 'containers' => ContainerResource::collection($this->containers)
             ]),
+
+            $this->mergeWhen($this->relationLoaded('expenses'), fn() => [
+                'expenses' => ExpenseResource::collection($this->expenses)
+            ]),
             
         ];
     }

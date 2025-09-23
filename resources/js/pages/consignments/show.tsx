@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/tooltip"
 import { ArrowLeft } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
+import ExpenseCard from "@/components/expense-card";
 
 export default function Show({ consignment } : { 
     consignment: {data: Consignment}
@@ -264,6 +265,10 @@ export default function Show({ consignment } : {
                             </Table> */}
                             </CardContent>
                         </Card>
+                        {
+                            (consignment.data.expenses && consignment.data.expenses.length > 0)
+                                && <ExpenseCard expenses={consignment.data.expenses} />
+                        }
                         {/* <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
                             <CardHeader>
                                 <CardTitle>Consignments</CardTitle>
