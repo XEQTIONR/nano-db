@@ -2,14 +2,14 @@ import AppLayout from "@/layouts/app-layout";
 import { Button } from "@/components/ui/button";
 import DashboardCard from "@/components/ui/dashboard-card";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, Bar, BarChart, XAxis, YAxis } from "recharts"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
+import { BanknoteArrowDown, BanknoteArrowUp, ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
 import { Order } from "@/types";
@@ -27,12 +27,25 @@ const chartConfig = {
   sumRevenue: {
     label: "Revenue:",
     
-    icon: Tag,
+    icon: BanknoteArrowUp,
   },
   sumExpenses: {
     label: "Expenses:",
     
+    icon: BanknoteArrowDown,
+  },
+  periodSales: {
+    label: "Sales:",
     icon: Tag,
+  },
+  periodRevenue: {
+    label: "Revenue:",
+    icon: BanknoteArrowUp,
+  },
+
+  periodExpense: {
+    label: "Expenses:",
+    icon: BanknoteArrowDown,
   },
 } satisfies ChartConfig
 
@@ -242,15 +255,12 @@ export default function SummaryReport({
         }
     }
 
-    const orderPerPage = 10
-    const [orderPage, setOrderPage] = useState(0)
-
     return <AppLayout breadcrumbs={breadcrumbs}>
 
-        <Head title="Sales Report"></Head>
+        <Head title="Summary Report"></Head>
         <div className="w-full basis-1/10 ">
             <div className="p-4 flex flex-col gap-4 overflow-y-scroll">
-                <h1 className="text-2xl md:text-4xl font-bold mt-2">Sales Report <span className="text-muted text-2xl">
+                <h1 className="text-2xl md:text-4xl font-bold mt-2">Summary <span className="text-muted text-2xl">
                         { type == "daily" && date }
                         { type == "monthly" && new Date(date).toLocaleString('default', { month: 'long', year: "numeric" })}
                         { type == "yearly" && new Date(date).toLocaleString('default', { year: "numeric" })}
@@ -307,10 +317,11 @@ export default function SummaryReport({
                                                         currencyCode="BDT"
                                                         subtitle={revenue_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                         stat={revenue}
+                                                        decimalPlaces={2}
                                                     />
                                                 </div>
-                                                <div className="w-full">
-                                                    <ChartContainer className='w-full h-[50vh] md:h-[55vh] border rounded-xl' config={chartConfig}>    
+                                                <div className="w-full flex flex-col gap-4">
+                                                    <ChartContainer className='w-full h-[50vh] md:h-[55vh] print:h-1/3 border rounded-xl' config={chartConfig}>    
                                                         <LineChart
                                                             accessibilityLayer
                                                             data={chart_data}
@@ -334,109 +345,85 @@ export default function SummaryReport({
                                                             <ChartTooltip
                                                                 cursor={true}
                                                                 content={<ChartTooltipContent 
-                                                                labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
+                                                                    
+                                                                // labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
                                                                 className='pb-2 min-w-3xs' />}
                                                             />
                                                             <Line
                                                                 dataKey="sumSales"
-                                                                type="linear"
-                                                                stroke="var(--chart-2)"
-                                                                strokeWidth={2}
-                                                                dot={false}
-                                                            />
-                                                            <Line
-                                                                dataKey="sumRevenue"
                                                                 type="linear"
                                                                 stroke="var(--chart-3)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />
                                                             <Line
+                                                                dataKey="sumRevenue"
+                                                                type="linear"
+                                                                stroke="var(--chart-2)"
+                                                                strokeWidth={2}
+                                                                dot={false}
+                                                            />
+                                                            <Line
                                                                 dataKey="sumExpenses"
                                                                 type="linear"
-                                                                stroke="var(--chart-4)"
+                                                                stroke="var(--chart-5)"
                                                                 strokeWidth={2}
                                                                 dot={false}
                                                             />
                                                         </LineChart>
                                                     </ChartContainer>
+                                                    <ChartContainer className="w-full h-[50vh] md:h-[55vh] print:h-1/3 border rounded-xl" config={chartConfig}>
+                                                        <BarChart accessibilityLayer data={chart_data}>
+                                                            <CartesianGrid vertical={false} />
+                                                            <XAxis
+                                                            dataKey="hours"
+                                                            tickLine={false}
+                                                            tickMargin={10}
+                                                            axisLine={false}
+                                                            // tickFormatter={(value) => value.slice(0, 3)}
+                                                            />
+                                                            <ChartTooltip
+                                                            cursor={false}
+                                                            content={<ChartTooltipContent
+                                                                // formatter={(val,) => val} 
+                                                                // labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
+                                                                className='pb-2 min-w-3xs' />}
+                                                            />
+                                                            <Bar dataKey="periodSales" fill="var(--color-chart-3)" radius={3} />
+                                                            <Bar dataKey="periodRevenue" fill="var(--color-chart-2)" radius={3} />
+                                                            <Bar dataKey="periodExpense" fill="var(--color-chart-5)" radius={3} />
+                                                        </BarChart>
+                                                    </ChartContainer>
                                                 </div>
                                             </div>
                                             <div className="w-full lg:w-1/3 flex flex-col gap-4">
-                                                <DashboardCard 
-                                                    className="w-full shrink-0  break-after-page"
+                                                <DashboardCard
+                                                    decimalPlaces={2} 
+                                                    className="w-full shrink-0"
                                                     title="Total expenses"
                                                     currencyCode="BDT"
                                                     subtitle={expense_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                     stat={totalExpenses}
                                                 />
-                                                {/* <Card className="h-full overflow-x-scroll print:hidden print:mb-[100%]">
-                                                    <CardHeader>
-                                                        <CardTitle className="mt-2">Orders</CardTitle>
-                                                        <CardAction className="flex items-center gap-2">
-                                                                <Button disabled={orderPage == 0} onClick={() => setOrderPage(orderPage == 0 ?  (Math.ceil(orders.data.length/orderPerPage) - 1) : (orderPage - 1))} className="cursor-pointer" variant="ghost" size="icon"><ChevronLeft /></Button>
-                                                                <span className="text-xs">{orderPage + 1}/{Math.ceil(orders.data.length/orderPerPage)}</span>
-                                                                <Button disabled={orderPage == (Math.ceil(orders.data.length/orderPerPage) - 1)} onClick={() => setOrderPage((orderPage + 1) % Math.ceil(orders.data.length/orderPerPage))} className="cursor-pointer" variant="ghost" size="icon"><ChevronRight /></Button>
-                                                        </CardAction>
-                                                    </CardHeader>
-                                                    <CardContent className="print:overflow-y-visible">
-                                                        <Table className="print:overflow-y-visible">
-                                                            <TableHeader>
-                                                                <TableRow>
-                                                                    <TableHead>Order #</TableHead>
-                                                                    <TableHead className="text-center">Customer ID</TableHead>
-                                                                    <TableHead className="text-center"># of items</TableHead>
-                                                                    <TableHead className="text-right">Grand Total</TableHead>
-                                                                </TableRow>
-                                                            </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible">
-                                                            {
-                                                                orders.data.slice(orderPage * orderPerPage, (orderPage+1) * orderPerPage).map((order) => (
-                                                                    <TableRow>
-                                                                        <TableCell onClick={() => router.visit(route('orders.show', { order: order.order_num }))} className="hover:underline cursor-pointer">{order.order_num}</TableCell>
-                                                                        <TableCell className="text-center">{order.customer_id}</TableCell>
-                                                                        <TableCell className="text-center">{order.count}</TableCell>
-                                                                        <TableCell className="text-right">{ currencyFormat("BDT", order.grand_total) }</TableCell>
-                                                                    </TableRow>
-                                                                ))
-                                                            }
-                                                            </TableBody>
-                                                        </Table>
-                                                    </CardContent>
-                                                </Card>
-                                                <Card className="h-full overflow-x-scroll hidden print:flex print:mb-[100%]">
-                                                    <CardHeader>
-                                                        <CardTitle>Orders</CardTitle>
-                                                    </CardHeader>
-                                                    <CardContent className="print:overflow-y-visible">
-                                                        <Table className="print:overflow-y-visible">
-                                                            <TableHeader>
-                                                                <TableRow>
-                                                                    <TableHead>Order #</TableHead>
-                                                                    <TableHead className="text-center">Customer ID</TableHead>
-                                                                    <TableHead className="text-center"># of items</TableHead>
-                                                                    <TableHead className="text-right">Grand Total</TableHead>
-                                                                </TableRow>
-                                                            </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible">
-                                                            {
-                                                                orders.data.map((order) => (
-                                                                    <TableRow>
-                                                                        <TableCell>{order.order_num}</TableCell>
-                                                                        <TableCell className="text-center">{order.customer_id}</TableCell>
-                                                                        <TableCell className="text-center">{order.count}</TableCell>
-                                                                        <TableCell className="text-right">{ currencyFormat("BDT", order.grand_total) }</TableCell>
-                                                                    </TableRow>
-                                                                ))
-                                                            }
-                                                            </TableBody>
-                                                        </Table>
-                                                    </CardContent>
-                                                </Card> */}
-                                                
-                                                
+                                                <DashboardCard 
+                                                    className="w-full shrink-0"
+                                                    title="# of Orders"
+                                                    subtitle={ordersCountPercent.toFixed(2) + "% since last " + reportTypeMappings[type]}
+                                                    stat={ordersCount}
+                                                />
+                                                <DashboardCard 
+                                                    className="w-full shrink-0"
+                                                    title="# of payments"
+                                                    subtitle={paymentsCountPercent.toFixed(2) + "% since last " + reportTypeMappings[type]}
+                                                    stat={paymentsCount}
+                                                />
+                                                <DashboardCard 
+                                                    className="w-full shrink-0"
+                                                    title="# of expenses"
+                                                    subtitle={expensesCountPercent.toFixed(2) + "% since last " + reportTypeMappings[type]}
+                                                    stat={expensesCount}
+                                                />
                                             </div>
-                                            
                                         </div>
                                     </TabsContent>
                                 } 

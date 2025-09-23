@@ -33,7 +33,7 @@ class ReportService {
 
     protected static $counts = [
         "daily" => 24,
-        "monthly" => 30,
+        "monthly" => 31,
         "yearly" => 12,
     ];
 
@@ -576,6 +576,9 @@ class ReportService {
             $sum3 = $sum3 + $data['expenses'];
             return [
                 'hours' => self::intervalLabel($hour++, $type),
+                'periodSales' => $data['orders'],
+                'periodRevenue' => $data['payments'],
+                'periodExpense' => $data['expenses'],
                 'sumSales' => $sum,
                 'sumRevenue' => $sum2,
                 'sumExpenses' => $sum3

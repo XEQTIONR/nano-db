@@ -74,6 +74,17 @@ export default function SalesReport({
     },{
         title: "Sales Report", 
         href: route('reports.sales')
+    },{
+        title: type.charAt(0).toUpperCase() + type.slice(1) + " ", 
+        href: route('reports.sales', { type })
+    },{
+        title: type == "daily" 
+            ? new Date(date).toDateString()  
+            : type == "monthly"
+                ? new Intl.DateTimeFormat('en-IN', { month: "short", year: "numeric" }).format(new Date(date))
+                : new Date(date).getFullYear(),
+
+        href: route('reports.revenue', { date, type })
     }]
 
     const go = (unit: number) => {

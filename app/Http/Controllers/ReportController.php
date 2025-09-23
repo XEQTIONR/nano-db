@@ -68,8 +68,7 @@ class ReportController extends Controller
         $date = $request->date ? new Carbon($request->date) : Carbon::now();
         
         $data = ReportService::summary($type, $date->toDateString());
-        //return $data;
-        // return $data;
+
         return Inertia::render('reports/summary', [
             'routeName' => 'reports.summary',
             'type' => $type,
