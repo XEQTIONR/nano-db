@@ -20,7 +20,8 @@ import { router } from "@inertiajs/react"
 export const columns = [
   {
     accessorKey: "id",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id" label="ID" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id" label="ID" config={v} />,
+    cell: ({ row }) => <div className="font-medium text-black dark:text-white">{ row.getValue("id") }</div>
   },
   {
     accessorKey: "name",

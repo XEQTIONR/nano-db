@@ -20,7 +20,8 @@ import { Link } from "@inertiajs/react"
 export const columns = [
   {
     accessorKey: "transaction_id",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="transaction_id" label="Transaction ID" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="transaction_id" label="Transaction ID" config={v} />,
+    cell: ({ row }) => <span className="text-black dark:text-white font-medium">{row.getValue('transaction_id')}</span>
   },
   {
     accessorKey: "order_num",

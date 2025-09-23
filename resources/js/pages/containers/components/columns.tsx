@@ -18,7 +18,8 @@ import { Link } from "@inertiajs/react"
 export const columns = [
   {
     accessorKey: "container_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="container_num" label="Container #" config={v} />
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="container_num" label="Container #" config={v} />,
+    cell: ({ row }) => <span className="font-medium text-black dark:text-white">{row.getValue('container_num')}</span>
   },
   {
     accessorKey: "land_date",

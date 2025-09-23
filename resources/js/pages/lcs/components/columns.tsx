@@ -19,7 +19,7 @@ export const columns = [
   {
     accessorKey: "lc_num",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="start" colKey="lc_num" label="LC #" config={v} />,
-    cell: ({ row }) => <Link className="hover:underline" href={route('lcs.show', {lc: row.getValue("lc_num")})}>{row.getValue("lc_num")}</Link>
+    cell: ({ row }) => <Link className="font-medium hover:underline text-black dark:text-white" href={route('lcs.show', {lc: row.getValue("lc_num")})}>{row.getValue("lc_num")}</Link>
   },
   {
     accessorKey: "date_issued",

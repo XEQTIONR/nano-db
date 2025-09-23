@@ -19,7 +19,7 @@ export const columns = [
   {
     accessorKey: "id",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id"  justify="center" label="ID" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ row.getValue("id") }</div>
+    cell: ({ row }) => <div className="text-center font-medium text-black dark:text-white">{ row.getValue("id") }</div>
   },
   {
     accessorKey: "date",

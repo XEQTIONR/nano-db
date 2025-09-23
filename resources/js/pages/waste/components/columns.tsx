@@ -1,13 +1,3 @@
-import { 
-  DropdownMenu, 
-  DropdownMenuTrigger, 
-  DropdownMenuLabel, 
-  DropdownMenuItem, 
-  DropdownMenuContent,
-  DropdownMenuSeparator 
-} from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-header"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -18,7 +8,7 @@ export const columns = [
   {
     accessorKey: "id",
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="id" label="#" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ row.getValue('id') }</div>
+    cell: ({ row }) => <div className="font-medium text-center text-black dark:text-white">{ row.getValue('id') }</div>
   },
   {
     accessorKey: "bol",

@@ -175,7 +175,7 @@ export default function Show({ order } : {
                         <CardHeader>
                             <CardTitle>Details</CardTitle>
                         </CardHeader>
-                        <CardContent className="flex flex-col justify-between h-full font-mono">
+                        <CardContent className="flex flex-col justify-between h-full">
                             
                                 <div className="flex flex-col gap-6">
                                     
@@ -303,7 +303,7 @@ export default function Show({ order } : {
                             <CardTitle>Payments / Commisions</CardTitle>
                             <CardDescription>Payment made and commision payout for order # {data.order_num}</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex flex-col justify-between h-full font-mono">
+                        <CardContent className="flex flex-col justify-between h-full">
                             
                                     <div className="flex flex-col mt-4">
                                         <Table>
@@ -372,15 +372,15 @@ export default function Show({ order } : {
                     </Card>
                 </div>
                 {   
-                    data.returns && data.returns.length > 0 &&
+                    
                     (<div className="flex flex-wrap xl:flex-nowrap pb-8 px-4 gap-6 print:py-0">
                         
-                        <Card className="w-full overflow-x-scroll print:w-full print:border-0 print:shadow-none">
+                        {data.returns && data.returns.length > 0 && <Card className="w-full xl:w-1/2 overflow-x-scroll print:w-full print:border-0 print:shadow-none">
                             <CardHeader>
                                 <CardTitle>Returns</CardTitle>
                                 <CardDescription>Items previously from the order that have been returned</CardDescription>
                             </CardHeader>
-                            <CardContent className="flex flex-col justify-between h-full font-mono">
+                            <CardContent className="flex flex-col justify-between h-full">
                                 
                                     <div className="flex flex-col gap-6">
                                         <div className="flex flex-col mt-4">
@@ -404,8 +404,8 @@ export default function Show({ order } : {
                                                                     ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
                                                                 </TableCell>
                                                                 <TableCell className="text-center">{qty}</TableCell>
-                                                                <TableCell className="text-right">৳ {unit_price}</TableCell>
-                                                                <TableCell className="text-right">৳ {(qty * unit_price).toFixed(2)}</TableCell>
+                                                                <TableCell className="text-right">{currencyFormat("BDT", unit_price)}</TableCell>
+                                                                <TableCell className="text-right">{currencyFormat("BDT",qty * unit_price)}</TableCell>
                                                             </TableRow>
                                                         )
                                                     })
@@ -416,8 +416,8 @@ export default function Show({ order } : {
                                                             Total
                                                         </TableCell>
                                                         <TableCell className="text-center">{data.returns_consolidated?.reduce((prev, { qty }) => prev + qty, 0)}</TableCell>
-                                                        <TableCell className="text-right">৳ </TableCell>
-                                                        <TableCell className="text-right">৳ {data.returns_consolidated?.reduce((prev, { qty, unit_price }) => prev + (qty * unit_price), 0).toFixed(2)}</TableCell>
+                                                        <TableCell className="text-right"></TableCell>
+                                                        <TableCell className="text-right">{currencyFormat("BDT", data.returns_consolidated?.reduce((prev, { qty, unit_price }) => prev + (qty * unit_price), 0) ?? 0)}</TableCell>
 
                                                     </TableRow>
                                                 
@@ -426,15 +426,13 @@ export default function Show({ order } : {
                                         </div>
                                     </div>
                             </CardContent>
-                        </Card>
+                        </Card>}
                         {
                             (data.expenses && data.expenses.length > 0) 
-                                ? (<div className="flex flex-wrap w-full">
+                                && (<div className="flex flex-wrap w-full xl:w-1/2">
                                     <ExpenseCard className="w-full" expenses={data.expenses} />
                                 </div>)
-                                : <div className="w-full spacer" />
-                        }
-                        
+                        } 
                     </div>)
                 }
                 
