@@ -67,7 +67,7 @@ export default function Show({ consignment } : {
             <div className="w-full">
                 <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Consignment <span className="text-muted text-2xl">#{consignment.data.bol}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">
-                    <Card className="w-full lg:w-1/2 xl:w-1/3 dark:bg-neutral-900 dark:border-none rounded-3xl">
+                    <Card className="w-full lg:w-1/2 dark:bg-neutral-900 dark:border-none rounded-3xl">
                         <CardHeader>
                             <CardTitle>Information</CardTitle>
                         </CardHeader>
@@ -75,7 +75,7 @@ export default function Show({ consignment } : {
                             <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Bill of lading Number</Label>
-                                    {consignment.data.bol}
+                                    <span className="font-semibold">{consignment.data.bol}</span>
                                 </div>
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Letter of Credit Number</Label>
@@ -139,7 +139,7 @@ export default function Show({ consignment } : {
                             </div>
                         </CardContent>
                     </Card>
-                    <div className="flex flex-col gap-4 w-full lg:w-1/2 xl:w-2/3">
+                    <div className="flex flex-col gap-4 w-full lg:w-1/2">
                         <Card className="flex flex-col  bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
                             <CardHeader>
                                 <CardTitle>Containers</CardTitle>
@@ -148,7 +148,7 @@ export default function Show({ consignment } : {
                                 <div className="w-full flex flex-col gap-4">
                                 {
                                     consignment.data.containers?.map((container) => (
-                                        <div className="border px-1 overflow-x-scroll rounded-lg dark:bg-neutral-950">
+                                        <div className="border px-1 overflow-x-scroll rounded-lg dark:bg-neutral-900">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow className="hover:bg-transparent">
@@ -165,12 +165,12 @@ export default function Show({ consignment } : {
                                                     <TableHead className="text-right">Total weight</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            <TableBody className="font-mono text-xs">
+                                            <TableBody className="text-xs">
                                             { 
                                                 container.contents?.map(({id, brand, size, pattern, lisi, qty, unit_price, total, total_tax, total_weight}, index) => (
                                                     <TableRow className="hover:bg-transparent">
                                                         <TableCell className="font-bold">{index + 1}</TableCell>
-                                                        <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
+                                                        <TableCell><span className="font-semibold">({id})</span> {brand} {size} {pattern} {lisi}</TableCell>
                                                         <TableCell className="text-center">
                                                             {qty} 
                                                         </TableCell>
@@ -190,8 +190,8 @@ export default function Show({ consignment } : {
                                                 )) 
                                             }
                                             </TableBody>
-                                            <TableFooter className="dark:bg-neutral-950">
-                                                <TableRow className="font-mono" >
+                                            <TableFooter className="dark:bg-transparent font-bold">
+                                                <TableRow>
                                                     <TableCell className="rounded-bl-lg"></TableCell>
                                                     <TableCell>Total</TableCell>
                                                     <TableCell className="text-center">

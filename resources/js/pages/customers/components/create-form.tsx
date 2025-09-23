@@ -176,13 +176,15 @@ export default function CreateForm({ edit } : {edit?: {
                             </AlertDialogCancel>
                             <AlertDialogAction onClick={() => {
                                 const k = validate()
+                                const copy = { ... data }
+                                setData({...emptyFields})
                                 if (k === 0) {
                                     if (edit) {
                                         router.put(route('customers.update', {
                                             customer: edit.data.id
-                                        }), { ...data })
+                                        }), { ...copy })
                                     } else {
-                                        router.post(route('customers.store'), { ...data })
+                                        router.post(route('customers.store'), { ...copy })
                                     }
                                 }
                             }}>

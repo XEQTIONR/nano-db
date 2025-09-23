@@ -75,7 +75,7 @@ export default function Show({ letterOfCredit } : {
                             <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Letter of Credit Number</Label>
-                                    {letterOfCredit.data.lc_num}
+                                    <span className="font-semibold">{letterOfCredit.data.lc_num}</span>
                                 </div>
                                 <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Invoice Number</Label>
@@ -169,7 +169,7 @@ export default function Show({ letterOfCredit } : {
                                         <TableHead className="text-right">Sub total</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody className="font-mono text-xs">
+                                <TableBody className=" text-sm">
                                 { 
                                     letterOfCredit.data?.items?.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
                                         <TableRow className="hover:bg-transparent">
@@ -189,7 +189,7 @@ export default function Show({ letterOfCredit } : {
                                 }
                                 </TableBody>
                                 <TableFooter>
-                                    <TableRow className="font-mono" >
+                                    <TableRow>
                                         <TableCell></TableCell>
                                         <TableCell>Total</TableCell>
                                         <TableCell className="text-center">
@@ -225,13 +225,13 @@ export default function Show({ letterOfCredit } : {
                                         <TableHead className="text-right">Value (Taka)</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody className="font-mono text-xs">
+                                <TableBody className="text-sm">
                                 { 
                                     letterOfCredit.data?.consignments?.map(({bol, land_date, tax, value, value_local}, index) => (
                                         <TableRow className="hover:bg-transparent">
                                             <TableCell className="font-bold">{index + 1}</TableCell>
                                             <TableCell>
-                                                <Link className="italic hover:underline" href={route('consignments.show', { consignment: bol})}>
+                                                <Link className="font-semibold hover:underline" href={route('consignments.show', { consignment: bol})}>
                                                     {bol}
                                                 </Link>
                                             </TableCell>
