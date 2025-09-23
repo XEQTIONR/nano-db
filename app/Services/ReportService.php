@@ -68,7 +68,7 @@ class ReportService {
         //@TODO: optimize queries
         $yesterdaysOrders = Order::with('contents')->whereDate('created_at', $yesterDaysDate)->get();
         $yesterdaysPayments = Payment::whereDate('created_at', $yesterDaysDate)->get();
-        $yesterdaysExpenses = Expense::where('date', $yesterDaysDate)->get();
+        $yesterdaysExpenses = Expense::where('created_at', $yesterDaysDate)->get();
         
         //@TODO: optimize queries
         $yesterdaysCount = $yesterdaysOrders->count();
