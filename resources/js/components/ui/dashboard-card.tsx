@@ -45,7 +45,7 @@ export default function DashboardCard({title, stat, subtitle, className, decimal
     }
     return(
         <div className={cn(
-            "p-5 h-44 aspect-video overflow-hidden rounded-xl border dark:border-none shadow-md dark:shadow-none  dark:bg-[#121212]",
+            "p-5 h-44 aspect-video overflow-hidden rounded-xl border dark:border-none shadow dark:shadow-none  dark:bg-[#121212]",
             className
         )}>                            
             <div className="flex justify-between flex-col h-full">

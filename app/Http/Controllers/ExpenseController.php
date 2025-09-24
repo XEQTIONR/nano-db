@@ -41,7 +41,10 @@ class ExpenseController extends Controller
             'sortDir' => $sortDir,
             'title' => 'Expenses',
             'type' => 'expense',
-            'types' => Expense::EXPENSABLE_LABELS
+            'types' => Expense::EXPENSABLE_LABELS,
+            'breadcrumbsLinks' => [
+                ['title' => 'Expenses', 'href' => route('expenses.index')],
+            ],
         ]);
     }
 

@@ -370,7 +370,7 @@ export default function SalesReport({
                                                                     <TableHead className="text-right font-semibold">Grand Total</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible text-xs">
+                                                            <TableBody className="print:overflow-y-visible">
                                                             {
                                                                 orders.data.slice(orderPage * orderPerPage, (orderPage+1) * orderPerPage).map((order) => (
                                                                     <TableRow>

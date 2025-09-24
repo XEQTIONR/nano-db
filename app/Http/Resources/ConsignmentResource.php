@@ -29,7 +29,7 @@ class ConsignmentResource extends JsonResource
                 'currency_code' => $this->letterOfCredit->currency_code,
             ]),
             'created_at' => ($this->created_at instanceof Carbon)
-                ? $this->created_at->toDateTimeString()
+                ? $this->created_at->format('j M Y g:i a')
                 : (new Carbon($this->created_at))->format('j M Y g:i a'),
             'toString' => $this->BOL,
             $this->mergeWhen($this->relationLoaded('containers'), fn() => [
