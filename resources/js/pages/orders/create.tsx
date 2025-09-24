@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -647,6 +648,44 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <CardTitle>
                                 Confirm Order
                             </CardTitle>
+                            <CardAction>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            size="sm"
+                                            type="button" 
+                                        >
+                                            Create Order
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                        <AlertDialogTitle>Create new order?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Are you sure you want to create this new order for {customer?.name} (ID: {customerId})?
+                                        </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => {       
+                                                router.post(route('orders.store'), {
+                                                    customer_id: customerId,
+                                                    order_on: orderDate,
+                                                    tax_percentage: tax.percentage,
+                                                    tax_amount: tax.value,
+                                                    discount_percent: discount.percentage,
+                                                    discount_amount: discount.value,
+                                                    items: items
+                                                })
+                                            }}>
+                                                Confirm
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </CardAction>
                         </CardHeader>
                         <CardContent>
                             <div className="w-full flex flex-col gap-4 overflow-x-scroll">
@@ -756,43 +795,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                         </TableBody>
                                     </Table>
                                     <div className="w-full flex justify-end">
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button
-                                                    type="button" 
-                                                    size="sm" 
-                                                    variant="secondary"
-                                                >
-                                                    Create Order
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                <AlertDialogTitle>Create new order?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    Are you sure you want to create this new order for {customer?.name} (ID: {customerId})?
-                                                </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => {       
-                                                        router.post(route('orders.store'), {
-                                                            customer_id: customerId,
-                                                            order_on: orderDate,
-                                                            tax_percentage: tax.percentage,
-                                                            tax_amount: tax.value,
-                                                            discount_percent: discount.percentage,
-                                                            discount_amount: discount.value,
-                                                            items: items
-                                                        })
-                                                    }}>
-                                                        Confirm
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        
                                     </div>
                                 </div>
                             </div>

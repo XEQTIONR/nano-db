@@ -78,6 +78,7 @@ interface ContainerErrors {
 }
 
 import { router } from '@inertiajs/react';
+import Stepper from "@/components/stepper";
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -294,25 +295,13 @@ export default function Create({apiToken} : {apiToken: string}) {
                 <div className="w-full">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new consignment</h1>
                 </div>
-                <div className="w-full flex gap-10 items-center pt-4">
-                    {
-                        steps.map( (step, index) => (
-                            <div className="flex items-center gap-4">
-                                <Badge className={cn(
-                                    "h-7 min-w-7 px-1.5 py-1 rounded-full text-xs font-bold font-mono ",
-                                    index == current ? "bg-indigo-500 text-white" : "bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-400"
-                                )}>
-                                    {index + 1}
-                                </Badge>
-                                <span className={cn(
-                                    "text-base font-bold",
-                                    index == current ? "dark:text-white text-neutral-950" : "text-neutral-300 dark:text-neutral-700"
-                                )}>
-                                    {step}
-                                </span>
-                            </div> 
-                        ))
-                    }
+                <div className={cn(
+                    "w-full flex gap-10 items-center pt-4 lg:pr-1",
+                    current == 0 &&"lg:w-1/2",
+                    current == 1 &&"lg:w-2/3",
+                )}>
+                    <Stepper steps={steps} current={current} />
+                    
                     <div className="flex gap-3">
                         <Button disabled={current == 0} className="cursor-pointer" onClick={() => fn(true)} variant="secondary">
                         <ChevronLeft />
@@ -754,7 +743,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 <CardAction>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button>
+                                            <Button className="cursor-pointer" size="sm">
                                                 Create Consignment
                                             </Button>
                                         </AlertDialogTrigger>
@@ -852,7 +841,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                                         }, idx) =>
                                                                     (<TableRow>
                                                                         <TableCell className="text-center font-mono">{idx + 1}</TableCell>
-                                                                        <TableCell className="font-mono max-w-[30%]"> ({id}) {brand} <span className="hidden md:inline">{size} {pattern} {lisi}</span></TableCell>
+                                                                        <TableCell className="font-mono max-w-[30%]"> ({id}) <span className="hidden md:inline">{brand} {size} {pattern} {lisi}</span></TableCell>
                                                                         <TableCell className="text-center font-mono">{qty}</TableCell>
                                                                         <TableCell className="text-right font-mono">{unit_price.toFixed(2)}</TableCell>
                                                                         <TableCell className="text-right font-mono hidden lg:table-cell">{(qty *unit_price).toFixed(2)}</TableCell>
