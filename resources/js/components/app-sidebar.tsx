@@ -95,7 +95,7 @@ export function AppSidebar() {
     const page = usePage()
 
     const [navItems, setNavItems] = useState(() => mainNavItems().map(item => {
-        if (item.links.some(link => link.href === page.url)) {
+        if (item.links.some(link => page.url.startsWith(link.href))) {
             item.isActive = true
         }
         return item
@@ -103,7 +103,7 @@ export function AppSidebar() {
 
     useEffect(() => {
         setNavItems(() => mainNavItems().map(item => {
-            if (item.links.some(link => link.href === page.url)) {
+            if (item.links.some(link => page.url.startsWith(link.href))) {
                 item.isActive = true
             }
             return item
