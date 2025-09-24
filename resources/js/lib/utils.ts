@@ -16,7 +16,3 @@ export function currencyFormat(code: string, amount: number) {
         currencyDisplay: "narrowSymbol"
     }).format(amount)
 }
-
-export function relativeUrl(url: string) {
-    return url.slice((window.location.protocol + "//" + window.location.hostname + ((window.location.port.length > 0) ? (":" + window.location.port) : "")).length)
-}

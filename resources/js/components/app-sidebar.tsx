@@ -7,8 +7,8 @@ import { Link, usePage } from '@inertiajs/react';
 import { Anchor, BanknoteArrowDown, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
 import AppLogo from './app-logo';
 
-import { relativeUrl } from '@/lib/utils';
 
+const relativeUrl = (url: string) => url.slice((window.location.protocol + "//" + window.location.hostname + ((window.location.port.length > 0) ? (":" + window.location.port) : "")).length)
 
 const mainNavItems: NavCollapseGroup[] = [
     {
@@ -107,7 +107,12 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems.map(item => {
+                    if (item.links.some(link => link.href === page.url)) {
+                        item.isActive = true
+                    }
+                    return item
+                })} />
             </SidebarContent>
 
             <SidebarFooter>
