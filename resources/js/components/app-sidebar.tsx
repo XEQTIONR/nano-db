@@ -6,11 +6,12 @@ import { type NavItem, type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Anchor, BanknoteArrowDown, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
 import AppLogo from './app-logo';
+import { useEffect, useState } from 'react';
 
 
 const relativeUrl = (url: string) => url.slice((window.location.protocol + "//" + window.location.hostname + ((window.location.port.length > 0) ? (":" + window.location.port) : "")).length)
 
-const mainNavItems: NavCollapseGroup[] = [
+const mainNavItems = (): NavCollapseGroup[] => [
     {
         title: 'Bank',
         icon: Landmark,
@@ -92,6 +93,22 @@ const footerNavItems: NavItem[] = [
 export function AppSidebar() {
 
     const page = usePage()
+
+    const [navItems, setNavItems] = useState(() => mainNavItems().map(item => {
+        if (item.links.some(link => link.href === page.url)) {
+            item.isActive = true
+        }
+        return item
+    }))
+
+    useEffect(() => {
+        setNavItems(() => mainNavItems().map(item => {
+            if (item.links.some(link => link.href === page.url)) {
+                item.isActive = true
+            }
+            return item
+        }))
+    }, [page.url])
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -107,12 +124,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems.map(item => {
-                    if (item.links.some(link => link.href === page.url)) {
-                        item.isActive = true
-                    }
-                    return item
-                })} />
+                <NavMain items={navItems} />
             </SidebarContent>
 
             <SidebarFooter>
