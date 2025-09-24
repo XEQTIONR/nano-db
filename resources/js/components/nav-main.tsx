@@ -93,13 +93,13 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
         }, [isOpen])
         return (<MenubarMenu>
             <MenubarTrigger ref={elem} className={cn(
-                "py-[9px] hover:bg-accent ",
+                "py-[9px] hover:bg-accent cursor-pointer",
                 item.isActive && "bg-accent "
             )}>
                 {
                     !isOpen 
                         ? (<Tooltip>
-                            <TooltipTrigger>{item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />}</TooltipTrigger>
+                            <TooltipTrigger className="cursor-pointer">{item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />}</TooltipTrigger>
                             <TooltipContent side="right">{item.title}</TooltipContent>
                         </Tooltip>)
                         : (item.icon && <item.icon className={colorClasses} size={iconSize} strokeWidth={iconStroke} />)
@@ -133,20 +133,23 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                 { items.map((item, index) => <SidebarCollapsibleMenuItem item={item} index={index} />) }
             </SidebarMenu>
             
-            <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col items-start bg-transparent p-0 border-none shadow-none" : "")} asChild={false}>
+            <Menubar className={cn(
+                "hidden mt-6 ",
+                (!open && "md:flex flex-col items-start bg-transparent p-0 border-none shadow-none"))} asChild={false}
+            >
+                <Link href={route('dashboard')}>
                     <MenubarMenu>
-                        <MenubarTrigger className={cn("py-[9px] hover:bg-accent", route().current('dashboard') && 'bg-accent')}>
+                        <MenubarTrigger className={cn("py-[9px] hover:bg-accent cursor-pointer", route().current('dashboard') && 'bg-accent')}>
                             <Tooltip>
-                                <TooltipTrigger>
-                                    <Link href={route('dashboard')}>
+                                <TooltipTrigger className="cursor-pointer">
                                         <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
-                                    </Link>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">Dashboard</TooltipContent>
                             </Tooltip>
                         </MenubarTrigger>
                     </MenubarMenu>
-                    { items.map((item) => (<SidebarHoveringMenuItem item={item} />)) }
+                </Link>
+                { items.map((item) => (<SidebarHoveringMenuItem item={item} />)) }
             </Menubar>
             </SidebarGroupContent>
         </SidebarGroup>
