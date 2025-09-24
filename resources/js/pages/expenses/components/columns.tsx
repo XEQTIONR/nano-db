@@ -41,15 +41,28 @@ export const columns = [
   {
     accessorKey: "note",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="note" justify="center" label="Note" config={v} />,
-    cell: ({ row }) => <div className="overflow-ellipsis">{ row.getValue("note") }</div>
+    cell: ({ row }) => {
+      if (row.getValue("redacted")) {
+        return "********"
+      }
+      return <div className="overflow-ellipsis">{ row.getValue("note") }</div>
+    }
   },
   {
     accessorKey: "amount_local",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="amount_local" justify="end" label="Amount Local" config={v} />,
     cell: ({ row }) => {
+        if (row.getValue("redacted")) {
+          return <div className="text-end">********</div>
+        }
         const amount = parseFloat(row.getValue("amount_local"))
-        return <div className="text-right">{ currencyFormat('BDT', amount)}</div>
+        return <div className="text-right">{ currencyFormat('BDT', amount) }</div>
     }
+  },
+  {
+    accessorKey: "redacted",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="redacted" justify="center" label="Redacted" config={v} />,
+    cell: ({ row }) => <div className="text-center">{row.getValue("redacted") ? "True" : "False"}</div>
   },
   {
     accessorKey: "created_at",

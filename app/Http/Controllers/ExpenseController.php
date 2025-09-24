@@ -68,7 +68,8 @@ class ExpenseController extends Controller
             'expensable_id' => 'nullable',
             'date' => 'required|date',
             'amount' => 'required|numeric|gt:0',
-            'note' => 'required|min:3'
+            'note' => 'required|min:3',
+            'redacted' => 'required|boolean'
             
         ]);
 
@@ -78,6 +79,7 @@ class ExpenseController extends Controller
             'date' => $validated['date'],
             'amount' => $validated['amount'],
             'note' => $validated['note'],
+            'redacted' => $validated['redacted'],
             'rate' => 1
         ]);
 

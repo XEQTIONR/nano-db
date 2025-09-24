@@ -235,8 +235,9 @@ export interface Expense {
     expensable_id: string
     date: string
     currency_code: string
-    amount: number
-    amount_local: number
+    amount: number | null
+    amount_local: number | null
     created_at: string
-    note: string
+    note: string | null
+    redacted: boolean
 }

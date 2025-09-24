@@ -21,7 +21,7 @@ import {
 import { ChevronRight, LayoutGrid } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { cn, relativeUrl } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
     const page = usePage();

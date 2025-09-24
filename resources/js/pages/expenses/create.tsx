@@ -29,13 +29,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { InputCalendar } from '@/components/ui/input-calendar';
+import { Checkbox } from '@/components/ui/checkbox';
 
 type ExpenseForm = {
-    expensable_type: string,
-    expensable_id: string,
-    date: Date,
-    amount: number,
-    note: string,
+    expensable_type: string
+    expensable_id: string
+    date: Date
+    amount: number
+    note: string
+    redacted: boolean
 }
 export default function Create({apiToken, types} : {apiToken: string, types: object}) {
     
@@ -55,7 +57,8 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
         expensable_id: '',
         date: new Date(),
         amount: 0,
-        note: ''
+        note: '',
+        redacted: false
     })
 
     const [amount, setAmount] = useState('0.00')
@@ -64,6 +67,7 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
     const [value, setValue] = useState<string | undefined>(undefined)
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [note, setNote] = useState<string>("")
+    const [redacted, setRedacted] = useState<boolean>(false)
 
     const isRelation = (val?: string) => val && val.startsWith('App\\Models\\') 
 
@@ -263,6 +267,18 @@ export default function Create({apiToken, types} : {apiToken: string, types: obj
                                     setNote(target.value)
                                     setData('note', target.value)
                                 }} className="min-h-36" />
+                            </div>
+
+                            <div className="flex items-center gap-3">
+                                <Checkbox 
+                                    checked={redacted} 
+                                    onCheckedChange={(isChecked: boolean) => {
+                                        setRedacted(isChecked)
+                                        setData('redacted', isChecked)
+                                    }} 
+                                    id="terms" 
+                                />
+                                <Label htmlFor="terms">Make this expense private</Label>
                             </div>
 
                             <div className="w-full flex justify-end">

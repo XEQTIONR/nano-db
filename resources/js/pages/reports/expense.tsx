@@ -376,7 +376,10 @@ export default function ExpenseReport({
                                                                                 : (exp.expensable_type.charAt(0).toUpperCase() + exp.expensable_type.slice(1))
                                                                         }</TableCell>
                                                                         <TableCell>{exp.expensable_id}</TableCell>
-                                                                        <TableCell className="text-right">{ currencyFormat("BDT", exp.amount_local) }</TableCell>
+                                                                        <TableCell className="text-right">{
+                                                                            exp.redacted ? "********" :
+                                                                            currencyFormat("BDT", exp.amount_local) 
+                                                                        }</TableCell>
                                                                         
                                                                     </TableRow>
                                                                 ))
@@ -410,7 +413,10 @@ export default function ExpenseReport({
                                                                                 : (exp.expensable_type.charAt(0).toUpperCase() + exp.expensable_type.slice(1))
                                                                         }</TableCell>
                                                                         <TableCell>{exp.expensable_id}</TableCell>
-                                                                        <TableCell className="text-right">{ currencyFormat("BDT", exp.amount_local) }</TableCell> 
+                                                                        <TableCell className="text-right">{
+                                                                            exp.redacted ? "********" :
+                                                                            currencyFormat("BDT", exp.amount_local) 
+                                                                        }</TableCell>
                                                                     </TableRow>
                                                                 ))
                                                             }

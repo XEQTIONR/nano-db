@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('amount', 15, 2);
             $table->decimal('rate', 10, 2)->default(1);
             $table->text('note');
+            $table->boolean('redacted')->default(false);
             $table->timestamps();
         });
     }

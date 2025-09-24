@@ -37,7 +37,7 @@ export default function ExpenseCard ({expenses, className = ""} : { expenses : E
                     </TableHeader>
                     <TableBody className="text-sm">
                     { 
-                        expenses.map(({id, date, note, amount_local}) => (
+                        expenses.map(({id, date, note, amount_local, redacted}) => (
                             <TableRow className="hover:bg-transparent">
                                 <TableCell className="font-bold">{id}</TableCell>
                                 <TableCell className="text-center">
@@ -46,10 +46,18 @@ export default function ExpenseCard ({expenses, className = ""} : { expenses : E
                                     {/* </Link> */}
                                 </TableCell>
                                 <TableCell className="text-ellipsis">
-                                    {note} 
+                                {
+                                    redacted 
+                                        ? "********"
+                                        : note
+                                }
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    {currencyFormat('BDT', amount_local)}
+                                {
+                                    redacted 
+                                        ? "********"
+                                        : currencyFormat('BDT', amount_local ?? 0)
+                                }
                                 </TableCell>
                             </TableRow>
                         )) 
