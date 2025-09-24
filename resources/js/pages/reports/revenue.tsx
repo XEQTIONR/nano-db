@@ -359,12 +359,12 @@ export default function RevenueReport({
                                                         <Table className="print:overflow-y-visible">
                                                             <TableHeader>
                                                                 <TableRow>
-                                                                    <TableHead>Trans ID</TableHead>
-                                                                    <TableHead className="text-center">Order #</TableHead>
-                                                                    <TableHead className="text-right">Amount Paid</TableHead>
+                                                                    <TableHead className="font-semibold">Trans ID</TableHead>
+                                                                    <TableHead className="font-semibold text-center">Order #</TableHead>
+                                                                    <TableHead className="font-semibold text-right">Amount Paid</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible">
+                                                            <TableBody className="print:overflow-y-visible text-xs">
                                                             {
                                                                 payments.data.slice(paymentPage * paymentsPerPage, (paymentPage+1) * paymentsPerPage).map((payment) => (
                                                                     <TableRow>

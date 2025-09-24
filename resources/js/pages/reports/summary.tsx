@@ -108,6 +108,17 @@ export default function SummaryReport({
     },{
         title: "Summary Report", 
         href: route('reports.summary')
+    },{
+        title: type.charAt(0).toUpperCase() + type.slice(1) + " ", 
+        href: route('reports.summary', { type })
+    }, {
+        title: type == "daily" 
+            ? new Date(date).toDateString()  
+            : type == "monthly"
+                ? new Intl.DateTimeFormat('en-IN', { month: "short", year: "numeric" }).format(new Date(date))
+                : new Date(date).getFullYear(),
+
+        href: route('reports.summary', { date, type })
     }]
 
     const go = (unit: number) => {
@@ -258,8 +269,8 @@ export default function SummaryReport({
     return <AppLayout breadcrumbs={breadcrumbs}>
 
         <Head title="Summary Report"></Head>
-        <div className="w-full basis-1/10 ">
-            <div className="p-4 flex flex-col gap-4 overflow-y-scroll">
+        <div className="w-full h-[90vh]">
+            <div className="p-4 flex flex-col gap-4">
                 <h1 className="text-2xl md:text-4xl font-bold mt-2">Summary <span className="text-muted text-2xl">
                         { type == "daily" && date }
                         { type == "monthly" && new Date(date).toLocaleString('default', { month: 'long', year: "numeric" })}

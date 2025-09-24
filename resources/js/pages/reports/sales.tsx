@@ -365,12 +365,12 @@ export default function SalesReport({
                                                             <TableHeader>
                                                                 <TableRow>
                                                                     <TableHead>Order #</TableHead>
-                                                                    <TableHead className="text-center">Customer ID</TableHead>
-                                                                    <TableHead className="text-center"># of items</TableHead>
-                                                                    <TableHead className="text-right">Grand Total</TableHead>
+                                                                    <TableHead className="text-center font-semibold">Customer ID</TableHead>
+                                                                    <TableHead className="text-center font-semibold"># of items</TableHead>
+                                                                    <TableHead className="text-right font-semibold">Grand Total</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible">
+                                                            <TableBody className="print:overflow-y-visible text-xs">
                                                             {
                                                                 orders.data.slice(orderPage * orderPerPage, (orderPage+1) * orderPerPage).map((order) => (
                                                                     <TableRow>

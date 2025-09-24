@@ -21,6 +21,10 @@ class StockController extends ApiController
             'link' => route('stocks.index'),
             'title' => 'Inventory',
             'type' => 'stock',
+            'breadcrumbsLinks' => [
+                ['title' => 'Products', 'href' => route('tyres.index')],
+                ['title' => 'Inventory', 'href' => route('stocks.index')],
+            ],
         ]);
     }
 }

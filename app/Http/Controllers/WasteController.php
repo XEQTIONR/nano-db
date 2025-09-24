@@ -25,6 +25,10 @@ class WasteController extends ApiController
             'link' => route('waste.index'),
             'title' => 'Waste',
             'type' => 'waste',
+            'breadcrumbsLinks' => [
+                ['title' => 'Consignments', 'href' => route('consignments.index')],
+                ['title' => 'Waste', 'href' => route('waste.index')],
+            ],
         ]);
     }
 

@@ -22,6 +22,10 @@ class PaymentController extends ApiController
             'link' => route('payments.index'),
             'title' => 'Payments',
             'type' => 'payment',
+            'breadcrumbsLinks' => [
+                ['title' => 'Orders', 'href' => route('orders.index')],
+                ['title' => 'Payments', 'href' => route('payments.index')],
+            ],
         ]);
     }
 

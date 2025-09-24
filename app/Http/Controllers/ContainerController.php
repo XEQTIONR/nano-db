@@ -19,6 +19,10 @@ class ContainerController extends ApiController
 
         return Inertia::render('common/index', [
             ...$data,
+            'breadcrumbsLinks' => [
+                ['title' => 'Consignments', 'href' => route('consignments.index')],
+                ['title' => 'Containers', 'href' => route('containers.index')],
+            ],
             'link' => route('containers.index'),
             'title' => 'Containers',
             'type' => 'container',

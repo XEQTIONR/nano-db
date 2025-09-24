@@ -25,6 +25,9 @@ class CustomerController extends ApiController
             'link' => route('customers.index'),
             'title' => 'Customers',
             'type' => 'customer',
+            'breadcrumbsLinks' => [
+                ['title' => 'Customers', 'href' => route('customers.index')],
+            ],
         ]);
     }
 

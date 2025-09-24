@@ -20,8 +20,13 @@ class LetterOfCreditController extends ApiController
             ...$data,
             'link' => route('lcs.index'),
             'addLink' => route('lcs.create'),
-            'title' => 'Letters of credit',
+            'breadcrumbsLinks' => [
+                ['title' => 'Bank', 'href' => route('bank_accounts.index')],
+                ['title' => 'Letters of Credit', 'href' => route('lcs.index')],
+            ],
+            'title' => 'Letters of Credit',
             'type' => 'lc',
+            
         ]);
     }
 

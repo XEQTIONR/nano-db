@@ -33,6 +33,10 @@ export default function Show({ letterOfCredit } : {
 }) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
+            title: "Bank",
+            href: route('bank_accounts.index'),
+        },
+        {
             title: "Letters of credit",
             href: route('lcs.index'),
         },
@@ -64,7 +68,7 @@ export default function Show({ letterOfCredit } : {
                 </div>
             }
         >
-            <Head title={breadcrumbs[0].title} />
+            <Head title={"LC #"+ letterOfCredit.data.lc_num} />
             <div className="w-full">
                 <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Letter of credit <span className="text-muted text-2xl">#{letterOfCredit.data.lc_num}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">

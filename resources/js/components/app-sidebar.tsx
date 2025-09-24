@@ -16,19 +16,17 @@ const mainNavItems = (): NavCollapseGroup[] => [
         title: 'Bank',
         icon: Landmark,
         links: [
-            { title: "Create new letter of credit", href: relativeUrl(route('lcs.create'))},
-            { title: "View letters of credit", href: relativeUrl(route('lcs.index'))},
-            { title: "View bank accounts", href: relativeUrl(route('bank_accounts.index'))},
+            { title: "Letters of credit", href: relativeUrl(route('lcs.index'))},
+            { title: "Bank accounts", href: relativeUrl(route('bank_accounts.index'))},
         ],
     },
     {
         title: 'Consignments',
         icon: Anchor,
         links: [
-            { title: "Create new consignment", href: relativeUrl(route('consignments.create'))},
-            { title: "View consignments", href: relativeUrl(route('consignments.index'))},
-            { title: "View containers", href: relativeUrl(route('containers.index'))},
-            { title: "View waste", href: relativeUrl(route('waste.index'))},
+            { title: "Consignments", href: relativeUrl(route('consignments.index'))},
+            { title: "Containers", href: relativeUrl(route('containers.index'))},
+            { title: "Waste", href: relativeUrl(route('waste.index'))},
         ]
     },
     {
@@ -43,7 +41,7 @@ const mainNavItems = (): NavCollapseGroup[] => [
         icon: BanknoteArrowDown,
         links: [
             { title: "View expenses", href: relativeUrl(route('expenses.index'))},
-            { title: "Create an expense", href: relativeUrl(route('expenses.create'))},
+            { title: "Create new expense", href: relativeUrl(route('expenses.create'))},
         ]
     },
     {
@@ -59,8 +57,8 @@ const mainNavItems = (): NavCollapseGroup[] => [
         title: 'Products',
         icon: LoaderPinwheel,
         links: [
-            { title: "View all products", href: relativeUrl(route('tyres.index'))},
-            { title: "View current inventory", href: relativeUrl(route('stocks.index'))},
+            { title: "All products", href: relativeUrl(route('tyres.index'))},
+            { title: "Current inventory", href: relativeUrl(route('stocks.index'))},
         ]
     },
     

@@ -25,6 +25,9 @@ class OrderController extends ApiController
             'link' => route('orders.index'),
             'title' => 'Orders',
             'type' => 'order',
+            'breadcrumbsLinks' => [
+                ['title' => 'Orders', 'href' => route('orders.index')],
+            ],
         ]);
     }
 

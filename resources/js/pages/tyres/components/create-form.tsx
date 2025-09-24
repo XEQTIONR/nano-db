@@ -74,7 +74,7 @@ export default function CreateForm({ edit } : {edit?: {
                         {
                             edit 
                                 ? "Edit tyre ID: " + edit.data.id
-                                : "Add new tyre" 
+                                : "Add new product" 
                         }
                     </DrawerTitle>
                     <DrawerDescription className="text-center">

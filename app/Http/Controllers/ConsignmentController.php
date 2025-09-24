@@ -36,6 +36,9 @@ class ConsignmentController extends ApiController
             ...$data,
             'link' => route('consignments.index'),
             'title' => 'Consignments',
+            'breadcrumbsLinks' => [
+                ['title' => 'Consignments', 'href' => route('consignments.index')],
+            ],
             'type' => 'consignment',
             'addLink' => route('consignments.create'),
             'sortBy' => $sortBy,

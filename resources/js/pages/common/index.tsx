@@ -230,7 +230,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
             filterConfigs = tyreFilters
     }
 
-    const breadcrumbs = [...breadcrumbsLinks, {title: title, href: link}]
+    const breadcrumbs: BreadcrumbItem[] = breadcrumbsLinks
 
     const [drawerOpen, setDrawerOpen] = useState(false)
 
@@ -269,7 +269,7 @@ export default function Index<T>({ apiToken, items, link, addLink, sortBy, sortD
                     </div>
                 </div>
                 <div className="flex basis-9/10 flex-col  gap-4 px-4 pb-4 overflow-x-auto">
-                    <div className="overflow-y-scroll max-h-[77vh] rounded-md border">
+                    <div className="overflow-y-scroll max-h-[77vh] rounded-md border ">
                         <DataTable selectedValue={selectedVal} primaryKey={selectedKey} columns={cols} data={items.data} meta={items.meta} sortBy={sortBy} sortDir={sortDir} />
                     </div>
                     <div className="flex justify-between w-full">

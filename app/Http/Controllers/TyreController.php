@@ -22,8 +22,11 @@ class TyreController extends ApiController
             ...$data,
             'addLink' => 'drawer',
             'link' => route('tyres.index'),
-            'title' => 'Tyres',
+            'title' => 'Products',
             'type' => 'tyre',
+            'breadcrumbsLinks' => [
+                ['title' => 'Products', 'href' => route('tyres.index')],
+            ],
         ]);
     }
 
@@ -69,7 +72,7 @@ class TyreController extends ApiController
             ...$data,
             'addLink' => 'drawer',
             'link' => route('tyres.index'),
-            'title' => 'Tyres',
+            'title' => 'Products',
             'type' => 'tyre',
             'edit' => new TyreResource($tyre), 
         ]);

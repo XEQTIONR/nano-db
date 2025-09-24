@@ -359,13 +359,13 @@ export default function ExpenseReport({
                                                         <Table className="print:overflow-y-visible">
                                                             <TableHeader>
                                                                 <TableRow>
-                                                                    <TableHead>ID</TableHead>
-                                                                    <TableHead className="text-center">Type</TableHead>
-                                                                    <TableHead>Type ID</TableHead>
-                                                                    <TableHead className="text-right">Amount (Local)</TableHead>
+                                                                    <TableHead className="font-semibold">ID</TableHead>
+                                                                    <TableHead className="font-semibold text-center">Type</TableHead>
+                                                                    <TableHead className="font-semibold">Type ID</TableHead>
+                                                                    <TableHead className="font-semibold text-right">Amount (Local)</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible">
+                                                            <TableBody className="print:overflow-y-visible text-xs">
                                                             {
                                                                 expenses.data.slice(expensesPage * expensesPerPage, (expensesPage+1) * expensesPerPage).map((exp) => (
                                                                     <TableRow>
