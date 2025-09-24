@@ -57,13 +57,13 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                     <SidebarMenuSub> 
                         {
                             item.links.map((link) => (
-                                        <Link href={link.href}>
-                                            <SidebarMenuSubItem>
-                                                <SidebarMenuSubLabel isActive={page.url === link.href || (page.url.startsWith(link.href) && !page.url.endsWith('create'))}>
-                                                        <span className="overflow-x-visible text-nowrap">{link.title}</span>
-                                                </SidebarMenuSubLabel>
-                                            </SidebarMenuSubItem>
-                                        </Link>
+                                <Link href={link.href}>
+                                    <SidebarMenuSubItem>
+                                        <SidebarMenuSubLabel isActive={page.url === link.href || (page.url.startsWith(link.href) && !page.url.endsWith('create'))}>
+                                                <span className="overflow-x-visible text-nowrap">{link.title}</span>
+                                        </SidebarMenuSubLabel>
+                                    </SidebarMenuSubItem>
+                                </Link>
                             ))
                         }
                     </SidebarMenuSub>
@@ -92,7 +92,10 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             }
         }, [isOpen])
         return (<MenubarMenu>
-            <MenubarTrigger ref={elem} className="py-[9px] hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <MenubarTrigger ref={elem} className={cn(
+                "py-[9px] hover:bg-accent ",
+                item.isActive && "bg-accent "
+            )}>
                 {
                     !isOpen 
                         ? (<Tooltip>
@@ -132,7 +135,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             
             <Menubar className={"hidden mt-6 " + (!open ? "md:flex flex-col items-start bg-transparent p-0 border-none shadow-none" : "")} asChild={false}>
                     <MenubarMenu>
-                        <MenubarTrigger className="py-[9px]   hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                        <MenubarTrigger className={cn("py-[9px] hover:bg-accent", route().current('dashboard') && 'bg-accent')}>
                             <Tooltip>
                                 <TooltipTrigger>
                                     <Link href={route('dashboard')}>
