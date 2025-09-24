@@ -89,7 +89,10 @@ export default function Dashboard({
                                     stat={sales}
                                     decimalPlaces={2}
                                     currencyCode="BDT"
-                                    subtitle={sales_percent.toFixed(1) + "% than yesterday"}
+                                    subtitle={
+                                        (sales_percent > 0 ? "+" : "")
+                                        + sales_percent.toFixed(1) + "% than yesterday"
+                                    }
                             />
                             <div className='flex flex-col md:flex-row gap-4 xl:w-2/3'>
                                 <DashboardCard 
@@ -98,7 +101,10 @@ export default function Dashboard({
                                     stat={revenue}
                                     decimalPlaces={2}
                                     currencyCode="BDT"
-                                    subtitle={revenue_percent.toFixed(1) + "% than yesterday"}
+                                    subtitle={
+                                        (revenue_percent > 0 ? "+" : "")
+                                        + revenue_percent.toFixed(1) + "% than yesterday"
+                                    }
                                 />
                                 <DashboardCard 
                                     className="w-full"
@@ -107,7 +113,10 @@ export default function Dashboard({
                                     currencyCode="BDT"
                                     currencySymbolColorClass='text-rose-500 dark:text-rose-700'
                                     decimalPlaces={2}
-                                    subtitle={expenditure_percent.toFixed(1) + "% than yesterday"}
+                                    subtitle={
+                                        (expenditure_percent > 0 ? "+" : "")
+                                        + expenditure_percent.toFixed(1) + "% than yesterday"
+                                    }
                                 />
                             </div>
                         </div>

@@ -584,8 +584,16 @@ class ReportService {
                 'sumExpenses' => $sum3
             ];
         });
+
+        $orders = OrderResource::collection($orders);
+        $payments = PaymentResource::collection($payments);
+        $expenses = ExpenseResource::collection($expenses);
+
             
         return compact(
+            'orders',
+            'payments',
+            'expenses',
             'ordersCount',
             'expensesCount',
             'paymentsCount',

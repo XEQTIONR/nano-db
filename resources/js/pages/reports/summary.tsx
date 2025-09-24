@@ -12,7 +12,7 @@ import {
 import { BanknoteArrowDown, BanknoteArrowUp, ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
-import { Order } from "@/types";
+import { Expense, Order, Payment } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react";
@@ -64,7 +64,12 @@ export default function SummaryReport({
     routeName, 
     type, 
     chart_data,
-    date, 
+    date,
+    
+    orders,
+    expenses,
+    payments,
+
     ordersCount,
     expensesCount,
     paymentsCount,
@@ -84,7 +89,12 @@ export default function SummaryReport({
     routeName: string, 
     type: ReportType, 
     chart_data: [], 
-    date: string, 
+    date: string,
+    
+    orders: { data: Order[] },
+    expenses: { data: Expense[] },
+    payments: { data: Payment[] },
+
     ordersCount: number,
     expensesCount: number,
     paymentsCount: number,
@@ -312,27 +322,44 @@ export default function SummaryReport({
                                 if (reportType == type) {
                                     return <TabsContent value={reportType}>
                                         <div className="w-full flex flex-col lg:flex-row gap-4">
-                                            <div className="w-full lg:w-2/3 flex flex-col gap-4">
-                                                <div className="w-full flex gap-4">
+                                            <div className="w-full flex flex-col gap-4">
+                                                <div className="w-full flex flex-col lg:flex-row gap-4">
                                                     <DashboardCard 
-                                                        className="w-1/2"
+                                                        className="w-full lg:w-1/3"
                                                         title="Sales"
-                                                        subtitle={sales_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
+                                                        subtitle={
+                                                            (sales_percent > 0 ? "+" : "")
+                                                            + sales_percent.toFixed(1) + "% since last " + reportTypeMappings[type]
+                                                        }
                                                         stat={totalSales}
                                                         currencyCode="BDT"
                                                         decimalPlaces={2}
                                                     />
                                                     <DashboardCard 
-                                                        className="w-1/2"
+                                                        className="w-full lg:w-1/3"
                                                         title="Revenue"
                                                         currencyCode="BDT"
-                                                        subtitle={revenue_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
+                                                        subtitle={
+                                                            (revenue_percent > 0 ? "+" : "")
+                                                            + revenue_percent.toFixed(1) + "% since last " + reportTypeMappings[type]
+                                                        }
                                                         stat={revenue}
                                                         decimalPlaces={2}
                                                     />
+                                                    <DashboardCard
+                                                        decimalPlaces={2} 
+                                                        className="w-full lg:w-1/3"
+                                                        title="Total expenses"
+                                                        currencyCode="BDT"
+                                                        subtitle={
+                                                            (expense_percent > 0 ? "+" : "")
+                                                            + expense_percent.toFixed(1) + "% since last " + reportTypeMappings[type]
+                                                        }
+                                                        stat={totalExpenses}
+                                                    />
                                                 </div>
-                                                <div className="w-full flex flex-col gap-4">
-                                                    <ChartContainer className='w-full h-[50vh] md:h-[55vh] print:h-1/3 border rounded-xl' config={chartConfig}>    
+                                                <div className="w-full flex flex-col lg:flex-row gap-4">
+                                                    <ChartContainer className='w-full lg:w-1/2 print:h-1/3 border rounded-xl' config={chartConfig}>    
                                                         <LineChart
                                                             accessibilityLayer
                                                             data={chart_data}
@@ -383,7 +410,7 @@ export default function SummaryReport({
                                                             />
                                                         </LineChart>
                                                     </ChartContainer>
-                                                    <ChartContainer className="w-full h-[50vh] md:h-[55vh] print:h-1/3 border rounded-xl" config={chartConfig}>
+                                                    <ChartContainer className="w-full lg:w-1/2 print:h-1/3 border rounded-xl" config={chartConfig}>
                                                         <BarChart accessibilityLayer data={chart_data}>
                                                             <CartesianGrid vertical={false} />
                                                             <XAxis
@@ -406,35 +433,119 @@ export default function SummaryReport({
                                                         </BarChart>
                                                     </ChartContainer>
                                                 </div>
+                                                <div className="w-full flex flex-col lg:flex-row gap-4 print:mt-16  break-after-page">
+                                                
+                                                    <DashboardCard 
+                                                        className="w-full lg:w-1/3"
+                                                        title="# of Orders"
+                                                        subtitle={
+                                                            (ordersCountPercent > 0 ? "+" : "")
+                                                            + ordersCountPercent.toFixed(1) + "% since last " + reportTypeMappings[type]
+                                                        }
+                                                        stat={ordersCount}
+                                                    />
+                                                    <DashboardCard 
+                                                        className="w-full lg:w-1/3"
+                                                        title="# of payments"
+                                                        subtitle={
+                                                            (paymentsCountPercent > 0 ? "+" : "")
+                                                            + paymentsCountPercent.toFixed(1) + "% since last " + reportTypeMappings[type]
+                                                        }
+                                                        stat={paymentsCount}
+                                                    />
+                                                    <DashboardCard 
+                                                        className="w-full lg:w-1/3"
+                                                        title="# of expenses"
+                                                        subtitle={
+                                                            (expensesCountPercent > 0 ? "+" : "")
+                                                            + expensesCountPercent.toFixed(1) + "% since last " + reportTypeMappings[type]
+                                                        }
+                                                        stat={expensesCount}
+                                                    />
+                                                </div>
+                                                <div className="w-full flex flex-col lg:flex-row gap-4">
+                                                    <Card className="w-full lg:w-1/3">
+                                                        <CardHeader>
+                                                            <CardTitle>Orders</CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="not-print:h-96 not-print:overflow-y-scroll">
+                                                            <Table>
+                                                                <TableHeader className="sticky top-0 bg-card">
+                                                                    <TableHead className="font-semibold">Order #</TableHead>
+                                                                    <TableHead className="font-semibold">Date</TableHead>
+                                                                    <TableHead className="font-semibold text-right">Total</TableHead>
+                                                                </TableHeader>
+                                                                <TableBody className="">
+                                                                {
+                                                                    orders.data.map(({ order_num, order_on, grand_total }) => (
+                                                                        <TableRow>
+                                                                            <TableCell>{order_num}</TableCell>
+                                                                            <TableCell>{order_on}</TableCell>
+                                                                            <TableCell className="text-right">{ currencyFormat("BDT", grand_total)}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </CardContent>
+                                                    </Card>
+                                                    <Card className="w-full lg:w-1/3">
+                                                        <CardHeader>
+                                                            <CardTitle>Payments</CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="not-print:h-96 not-print:overflow-y-scroll">
+                                                            <Table>
+                                                                <TableHeader className="sticky top-0 bg-card">
+                                                                    <TableHead className="font-semibold">Trans ID</TableHead>
+                                                                    <TableHead className="font-semibold">Order #</TableHead>
+                                                                    <TableHead className="font-semibold">Type</TableHead>
+                                                                    <TableHead className="font-semibold text-right">Amount</TableHead>
+                                                                </TableHeader>
+                                                                <TableBody>
+                                                                {
+                                                                    payments.data.map(({ transaction_id, order_num, type, amount  }) => (
+                                                                        <TableRow>
+                                                                            <TableCell>{transaction_id}</TableCell>
+                                                                            <TableCell>{order_num}</TableCell>
+                                                                            <TableCell>{type}</TableCell>
+                                                                            <TableCell className="text-right">{ currencyFormat("BDT", amount)}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </CardContent>
+                                                    </Card>
+                                                    <Card className="w-full lg:w-1/3">
+                                                        <CardHeader>
+                                                            <CardTitle>Expenses</CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="not-print:h-96 not-print:overflow-y-scroll">
+                                                            <Table>
+                                                                <TableHeader>
+                                                                    <TableHead>ID</TableHead>
+                                                                    <TableHead>Date</TableHead>
+                                                                    <TableHead>Type</TableHead>
+                                                                    <TableHead>Amount</TableHead>
+                                                                </TableHeader>
+                                                                <TableBody>
+                                                                {
+                                                                    expenses.data.map(({ id, amount, expensable_type, date }) => (
+                                                                        <TableRow>
+                                                                            <TableCell>{id}</TableCell>
+                                                                            <TableCell>{date}</TableCell>
+                                                                            <TableCell>{expensable_type}</TableCell>
+                                                                            <TableCell className="text-right">{ currencyFormat("BDT", amount)}</TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </CardContent>
+                                                    </Card>
+                                                </div>
                                             </div>
-                                            <div className="w-full lg:w-1/3 flex flex-col gap-4">
-                                                <DashboardCard
-                                                    decimalPlaces={2} 
-                                                    className="w-full shrink-0"
-                                                    title="Total expenses"
-                                                    currencyCode="BDT"
-                                                    subtitle={expense_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
-                                                    stat={totalExpenses}
-                                                />
-                                                <DashboardCard 
-                                                    className="w-full shrink-0"
-                                                    title="# of Orders"
-                                                    subtitle={ordersCountPercent.toFixed(2) + "% since last " + reportTypeMappings[type]}
-                                                    stat={ordersCount}
-                                                />
-                                                <DashboardCard 
-                                                    className="w-full shrink-0"
-                                                    title="# of payments"
-                                                    subtitle={paymentsCountPercent.toFixed(2) + "% since last " + reportTypeMappings[type]}
-                                                    stat={paymentsCount}
-                                                />
-                                                <DashboardCard 
-                                                    className="w-full shrink-0"
-                                                    title="# of expenses"
-                                                    subtitle={expensesCountPercent.toFixed(2) + "% since last " + reportTypeMappings[type]}
-                                                    stat={expensesCount}
-                                                />
-                                            </div>
+                                            
                                         </div>
                                     </TabsContent>
                                 } 

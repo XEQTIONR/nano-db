@@ -50,14 +50,14 @@ export default function DashboardCard({title, stat, subtitle, className, decimal
         )}>                            
             <div className="flex justify-between flex-col h-full">
                 <div>
-                    <h3 className="font-bold text-2xl xl:text-lg">{title}</h3>
+                    <h3 className="font-bold text-md lg:text-lg">{title}</h3>
                 </div>
-                <div className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl font-bold whitespace-nowrap">
+                <div className="text-3xl lg:text-4xl font-bold whitespace-nowrap">
                     <span className={cn(
                         currencySymbolColorClass ?? "text-emerald-500"
                     )}>{currencyCode && getCurrencySymbol(currencyCode)}</span> <span ref={countupRef}>{stat}</span>
                 </div>
-                <span className="text-lg xl:text-sm">{subtitle}</span>
+                <span className="text-sm">{subtitle}</span>
             </div>
         </div>
     )

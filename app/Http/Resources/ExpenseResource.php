@@ -19,7 +19,7 @@ class ExpenseResource extends JsonResource
         $isAdmin = Auth::user()->admin;
         return [
             'id' => $this->id,
-            'expensable_type' => $this->expensable_type,
+            'expensable_type' => Str::ucfirst(Str::of($this->expensable_type)->split('/\\\/')->last()),
             'expensable_id' => $this->expensable_id,
             'date' => $this->date->toDateString(),
             'currency_code' => ($this->redacted && !$isAdmin) ? null : $this->currency_code,
