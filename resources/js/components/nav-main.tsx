@@ -52,7 +52,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                 <CollapsibleTrigger asChild>
                     <SidebarMenuButton className="cursor-pointer" tooltip={item.title}>
                         {item.icon && <span><item.icon className={colorClasses} size={iconSize}  strokeWidth={iconStroke} /></span>}
-                        {<span className={cn("overflow-x-visible text-nowrap font-normal", colorClasses)}>{item.title}</span>}
+                        {<span className={cn("overflow-x-visible text-nowrap font-normal mx-2", colorClasses)}>{item.title}</span>}
                         <ChevronRight className={cn(
                             "ml-auto transition-all duration-200 group-data-[state=open]/collapsible:rotate-90",
                             colorClasses
@@ -129,7 +129,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                     <Link href={route('dashboard')}>
                         <SidebarMenuButton className="cursor-pointer" isActive={route().current('dashboard')} tooltip="Dashboard">
                             <LayoutGrid className={colorClasses} size={iconSize}  strokeWidth={iconStroke} />
-                            <span className={"overflow-x-visible text-nowrap font-normal " + colorClasses}>Dashboard</span>
+                            <span className={"overflow-x-visible text-nowrap font-normal mx-2 " + colorClasses}>Dashboard</span>
                         </SidebarMenuButton>
                     </Link>
                 </SidebarMenuItem>

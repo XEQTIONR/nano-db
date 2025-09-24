@@ -22,7 +22,7 @@ class PaymentResource extends JsonResource
             'amount' => $this->amount,
             'type' => $this->type,
             'account' => $this->account,
-            $this->mergeWhen($this->relationLoaded('bankAccount') && $this->account > 0, [
+            $this->mergeWhen($this->relationLoaded('bankAccount') && $this->account > 0, fn() => [
                 'accountDesc' => $this->bankAccount?->bank_name . " - " . $this->bankAccount?->account_number
             ]),
             'order' => OrderResource::make($this->whenLoaded('order')),

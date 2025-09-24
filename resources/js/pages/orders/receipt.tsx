@@ -208,10 +208,7 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
                                             </TableHeader>
                                             <TableBody className="">
                                             {
-                                                data.items?.map(({tyre_id, qty, unit_price, item_total}, i) => {
-                                                    
-                                                    const tyre = data.contents?.find((item) => item.tyre_id == tyre_id)
-
+                                                data.items?.map(({tyre_id, qty, unit_price, item_total, tyre}, i) => {
                                                     return (
                                                         <TableRow>
                                                             <TableCell className="text-center">{ i+1 }</TableCell>

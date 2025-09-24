@@ -60,7 +60,7 @@ class CustomerController extends ApiController
     public function show(Customer $customer)
     {
         $customer->load(['orders.contents.tyre', 'orders.payments', 'orders.returns']);
-        //return new CustomerResource($customer);
+
         return Inertia::render('customers/show', [
             'customer' => new CustomerResource($customer)
         ]);

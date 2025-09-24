@@ -39,6 +39,11 @@ export const columns = [
     cell: ({ row }) => <div className="text-center">{ row.getValue("expensable_id") }</div>
   },
   {
+    accessorKey: "note",
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="note" justify="center" label="Note" config={v} />,
+    cell: ({ row }) => <div className="overflow-ellipsis">{ row.getValue("note") }</div>
+  },
+  {
     accessorKey: "amount_local",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="amount_local" justify="end" label="Amount Local" config={v} />,
     cell: ({ row }) => {

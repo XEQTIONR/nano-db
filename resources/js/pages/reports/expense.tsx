@@ -180,7 +180,7 @@ export default function ExpenseReport({
 
             case "yearly":
                 if (d.getFullYear() === (new Date().getFullYear())) {
-                    return "Previous Year"
+                    return "Last Year"
                 } else if (d.getFullYear() === (new Date().getFullYear() + 1)) {
                     return "Current year"
                 }
@@ -191,7 +191,7 @@ export default function ExpenseReport({
             case "monthly":
                 if (d.getFullYear() === (new Date().getFullYear())
                     && d.getMonth() === (new Date().getMonth())) {
-                    return "Previous Month"
+                    return "Last Month"
                 } else if (
                     (
                         d.getFullYear() === (new Date().getFullYear())

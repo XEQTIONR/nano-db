@@ -22,6 +22,12 @@ class OrderResource extends JsonResource
         $taxFraction = $this->tax_percentage/100.0;
         $delta = $taxFraction - $discountFraction;
 
+        $contents = collect();
+
+        if ($this->relationLoaded('contents')) {
+            $contents = collect($this->contents);
+        }
+
         return [
             'order_num' => $this->Order_num,
             'order_on' => $this->order_on->toDateString(),
@@ -30,7 +36,7 @@ class OrderResource extends JsonResource
             'discount_amount' => $this->discount_amount,
             'tax_percentage' => $this->tax_percentage,
             'tax_amount' => $this->tax_amount,
-            'contents' => OrderContentResource::collection($this->whenLoaded('contents')),
+            
             'customer' => (new CustomerSqlResource($this->whenLoaded('customer'))),
             $this->mergeWhen($this->relationLoaded('customer'), fn() => [
                 'customer_name' => $this->customer->name,
@@ -82,13 +88,12 @@ class OrderResource extends JsonResource
             'toString' => $this->Order_num,
 
             $this->mergeWhen($this->relationLoaded('contents'), fn () => [
+                
                 'sub_total' => $this->contents->reduce($subTotalFn, 0),
                 'grand_total' => ($this->contents->reduce($subTotalFn, 0) * (1 + $delta))
                     + $this->tax_amount - $this->discount_amount,
                 'count' => $this->contents->reduce($countFn, 0),
-                
-                //'items' => [],
-                'items' => collect($this->contents()->get())
+                'items' => collect($contents)
                     ->groupBy(['tyre_id', fn($item) => $item['unit_price']], preserveKeys: true)
                     ->map(function($item, $tyreId) {
                         return $item->map(function($items, $price) {
@@ -121,6 +126,7 @@ class OrderResource extends JsonResource
                     ->collapse()
                     ->filter(fn($value) => $value['qty'] > 0)
                     ->values(),
+                    
             ]),
 
         ];

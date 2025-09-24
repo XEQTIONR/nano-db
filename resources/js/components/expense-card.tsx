@@ -28,7 +28,7 @@ export default function ExpenseCard ({expenses, className = ""} : { expenses : E
                 <CardContent>
                 <Table>
                     <TableHeader>
-                        <TableRow className="hover:bg-transparent">
+                        <TableRow className="hover:bg-transparent font-semibold">
                             <TableHead className="">ID</TableHead>
                             <TableHead className="text-center">Date</TableHead>
                             <TableHead>Note</TableHead>
@@ -58,7 +58,7 @@ export default function ExpenseCard ({expenses, className = ""} : { expenses : E
                         
                     </TableBody>
                     <TableFooter className="bg-transparent">
-                        <TableRow className="font-bold">
+                        <TableRow className="font-bold hover:bg-transparent">
                             <TableCell colSpan={3}>
                                 Total
                             </TableCell>

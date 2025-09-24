@@ -121,21 +121,27 @@ export default function Show({ letterOfCredit } : {
                                     {letterOfCredit.data.currency_code}
                                 </div>
                                 <div className="grid gap-2 w-full md:w-1/2">
-                                    <Label className="text-xs" htmlFor="lc_num">Rate</Label>
-                                    <span className="tracking-wide">
-                                        {letterOfCredit.data.exchange_rate.toFixed(2)}
-                                    </span>
-                                </div>
-                                
-                            </div>
-                            <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
-                                <div className="grid gap-2 w-full md:w-1/2"></div>
-                                <div className="grid gap-2 w-full md:w-1/2">
                                     <Label className="text-xs" htmlFor="lc_num">Value</Label>
                                     <span className="tracking-wide">
                                         {currencyFormat(letterOfCredit.data.currency_code,letterOfCredit.data.foreign_amount)}
                                     </span>
                                 </div>
+                                
+                            </div>
+                            <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
+                                <div className="grid gap-2 w-full md:w-1/2">
+                                    <Label className="text-xs" htmlFor="lc_num">Rate</Label>
+                                    <span className="tracking-wide">
+                                        {letterOfCredit.data.exchange_rate.toFixed(2)}
+                                    </span>
+                                </div>
+                                <div className="grid gap-2 w-full md:w-1/2">
+                                    <Label className="text-xs" htmlFor="lc_num">Local Value</Label>
+                                    <span className="tracking-wide">
+                                        {currencyFormat("BDT", letterOfCredit.data.exchange_rate*letterOfCredit.data.foreign_amount)}
+                                    </span>
+                                </div>
+                                
                             </div>
                             <div className="flex gap-6 mb-6 flex-wrap md:flex-nowrap">
                                 <div className="grid gap-2 w-full md:w-1/2">
@@ -170,7 +176,7 @@ export default function Show({ letterOfCredit } : {
                                         <TableHead className="text-right">Sub total</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody className=" text-sm">
+                                <TableBody className="text-xs">
                                 { 
                                     letterOfCredit.data?.items?.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
                                         <TableRow className="hover:bg-transparent">
@@ -190,7 +196,7 @@ export default function Show({ letterOfCredit } : {
                                 }
                                 </TableBody>
                                 <TableFooter className="bg-transparent">
-                                    <TableRow>
+                                    <TableRow className="hover:bg-transparent font-bold">
                                         <TableCell></TableCell>
                                         <TableCell>Total</TableCell>
                                         <TableCell className="text-center">
@@ -226,11 +232,11 @@ export default function Show({ letterOfCredit } : {
                                         <TableHead className="text-right">Value (Taka)</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody className="text-sm">
+                                <TableBody className="text-xs">
                                 { 
                                     letterOfCredit.data?.consignments?.map(({bol, land_date, tax, value, value_local}, index) => (
                                         <TableRow className="hover:bg-transparent">
-                                            <TableCell className="font-bold">{index + 1}</TableCell>
+                                            <TableCell className="font-semibold">{index + 1}</TableCell>
                                             <TableCell>
                                                 <Link className="font-semibold hover:underline" href={route('consignments.show', { consignment: bol})}>
                                                     {bol}

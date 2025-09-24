@@ -628,7 +628,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <CardHeader>
                                 <CardTitle>Product Catalog</CardTitle>
                                 <CardDescription>
-                                    All products
+                                    All products currently in the system
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -689,7 +689,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 </div>
                                 <div className="flex flex-col gap-4">
                                     <Table>
-                                        <TableHeader>
+                                        <TableHeader className="font-xs">
                                             <TableRow>
                                                 <TableHead className="text-center">#</TableHead>
                                                 <TableHead>Item</TableHead>

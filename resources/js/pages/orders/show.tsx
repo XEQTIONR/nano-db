@@ -1,6 +1,6 @@
 import AppLayout from "@/layouts/app-layout";
 import { Button } from '@/components/ui/button'
-import { Head, usePage, router } from "@inertiajs/react";
+import { Head, usePage, router, Link } from "@inertiajs/react";
 import { 
     Card,
     CardContent, 
@@ -182,11 +182,13 @@ export default function Show({ order } : {
                                     <div className="flex flex-col gap-4 lg:flex-row lg:justify-between">
                                         <div className="w-full lg:w-1/3 flex">
                                             <div className="flex flex-col gap-2">
-                                                <Label className="font-semibold">Customer</Label>
+                                                <Label className="font-semibold">
+                                                    Customer 
+                                                </Label>
+                                                <span className="text-xs font-medium">
+                                                    ID: <Link className="font-semibold hover:underline" href={route('customers.show', { customer: data.customer_id})}>{ data.customer_id }</Link>
+                                                </span>
                                                 <div className="flex flex-col gap-0.5">
-                                                    <span className=" text-xs">
-                                                        Customer ID: { data.customer_id }
-                                                    </span>
                                                     <span className=" text-sm">
                                                         { data.customer_name }
                                                     </span>
@@ -210,25 +212,22 @@ export default function Show({ order } : {
                                     <div className="flex flex-col mt-4">
                                         <Table>
                                             <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="text-center">#</TableHead>
-                                                    <TableHead>Item</TableHead>
-                                                    <TableHead className="text-center">Qty</TableHead>
-                                                    <TableHead className="text-right">Price</TableHead>
-                                                    <TableHead className="text-right">Total</TableHead>
+                                                <TableRow className="hover:bg-transparent">
+                                                    <TableHead className="font-semibold text-center">#</TableHead>
+                                                    <TableHead className="font-semibold">Item</TableHead>
+                                                    <TableHead className="font-semibold text-center">Qty</TableHead>
+                                                    <TableHead className="font-semibold text-right">Price</TableHead>
+                                                    <TableHead className="font-semibold text-right">Total</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                             {
-                                                data.items?.map(({tyre_id, qty, unit_price, item_total}, i) => {
-                                                    
-                                                    const tyre = data.contents?.find((item) => item.tyre_id == tyre_id)
-
+                                                data.items?.map(({tyre_id, qty, unit_price, item_total, tyre}, i) => {
                                                     return (
-                                                        <TableRow key={i}>
+                                                        <TableRow className="hover:bg-transparent" key={i}>
                                                             <TableCell className="text-center font-bold">{ i+1 }</TableCell>
                                                             <TableCell>
-                                                                ({tyre_id}) {tyre?.brand} {tyre?.size} {tyre?.pattern} {tyre?.lisi}
+                                                                <span className="font-medium">({tyre_id})</span> <span>{tyre.brand} {tyre.size} {tyre.pattern} {tyre.lisi}</span>
                                                             </TableCell>
                                                             <TableCell className="text-center">{qty}</TableCell>
                                                             <TableCell className="text-right">{currencyFormat('BDT', unit_price)}</TableCell>
@@ -237,7 +236,7 @@ export default function Show({ order } : {
                                                     )
                                                 })
                                             }
-                                            <TableRow className='font-bold'>
+                                            <TableRow className='hover:bg-transparent font-semibold'>
                                                 <TableCell className="text-center"></TableCell>
                                                 <TableCell>Sub total</TableCell>
                                                 <TableCell className="text-center">{data.count}</TableCell>
@@ -246,7 +245,7 @@ export default function Show({ order } : {
                                             </TableRow>
                                             {
                                                 data.discount_percent > 0 &&
-                                                <TableRow>
+                                                <TableRow className="hover:bg-transparent">
                                                     <TableCell className="text-center"></TableCell>
                                                     <TableCell>Discount</TableCell>
                                                     <TableCell className="text-center">-</TableCell>
@@ -256,7 +255,7 @@ export default function Show({ order } : {
                                             }
                                             {
                                                 data.discount_amount > 0 &&
-                                                <TableRow>
+                                                <TableRow className="hover:bg-transparent">
                                                     <TableCell className="text-center"></TableCell>
                                                     <TableCell>Discount</TableCell>
                                                     <TableCell className="text-center">-</TableCell>
@@ -267,7 +266,7 @@ export default function Show({ order } : {
                                             
                                             {
                                                 data.tax_percentage > 0 &&
-                                                <TableRow>
+                                                <TableRow className="hover:bg-transparent">
                                                     <TableCell className="text-center"></TableCell>
                                                     <TableCell>Tax</TableCell>
                                                     <TableCell className="text-center">+</TableCell>
@@ -277,7 +276,7 @@ export default function Show({ order } : {
                                             }
                                             {
                                                 data.tax_amount > 0 &&
-                                                <TableRow>
+                                                <TableRow className="hover:bg-transparent">
                                                     <TableCell className="text-center"></TableCell>
                                                     <TableCell>Tax</TableCell>
                                                     <TableCell className="text-center">+</TableCell>
@@ -285,7 +284,7 @@ export default function Show({ order } : {
                                                     <TableCell className="text-right">{currencyFormat('BDT', data.tax_amount)}</TableCell>
                                                 </TableRow>
                                             }
-                                            <TableRow className="font-bold">
+                                            <TableRow className="font-semibold text-base hover:bg-transparent">
                                                 <TableCell className="text-center"></TableCell>
                                                 <TableCell>Grand Total</TableCell>
                                                 <TableCell className="text-center"></TableCell>
@@ -300,7 +299,7 @@ export default function Show({ order } : {
                     </Card>
                     <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none bg-neutral-50 dark:bg-neutral-900 border-none dark:border-none">
                         <CardHeader>
-                            <CardTitle>Payments / Commisions</CardTitle>
+                            <CardTitle>Payments & Commisions</CardTitle>
                             <CardDescription>Payment made and commision payout for order # {data.order_num}</CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col justify-between h-full">
@@ -308,19 +307,19 @@ export default function Show({ order } : {
                                     <div className="flex flex-col mt-4">
                                         <Table>
                                             <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="text-center">Trans ID</TableHead>
-                                                    <TableHead>Date</TableHead>
-                                                    <TableHead className="text-right">Owing</TableHead>
-                                                    <TableHead className="text-right">Amount</TableHead>
-                                                    <TableHead className="text-right">Balance</TableHead>
+                                                <TableRow className="hover:bg-transparent ">
+                                                    <TableHead className="text-center font-semibold">Trans ID</TableHead>
+                                                    <TableHead className="font-semibold">Date</TableHead>
+                                                    <TableHead className="text-right font-semibold">Owing</TableHead>
+                                                    <TableHead className="text-right font-semibold">Payment</TableHead>
+                                                    <TableHead className="text-right font-semibold">Balance</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            <TableBody className="text-xs">
+                                            <TableBody>
                                             {
                                                 data.payments?.map(({transaction_id, created_at, amount}, i) => {
                                                     return (
-                                                        <TableRow key={transaction_id}>
+                                                        <TableRow className="hover:bg-transparent" key={transaction_id}>
                                                             <TableCell className="text-center">{ transaction_id }</TableCell>
                                                             <TableCell>
                                                                 {created_at &&(new Date(created_at)).toDateString()}

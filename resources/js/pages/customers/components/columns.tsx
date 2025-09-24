@@ -15,13 +15,13 @@ import { type Option } from "@/types"
 
 import { FilterConfig } from "@/types"
 import { DrawerTrigger } from "@/components/ui/drawer"
-import { router } from "@inertiajs/react"
+import { Link, router } from "@inertiajs/react"
 
 export const columns = [
   {
     accessorKey: "id",
     header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="id" label="ID" config={v} />,
-    cell: ({ row }) => <div className="font-medium text-black dark:text-white">{ row.getValue("id") }</div>
+    cell: ({ row }) => <Link href={route('customers.show', { customer: row.getValue("id") })} className="hover:underline font-medium text-black dark:text-white">{ row.getValue("id") }</Link>
   },
   {
     accessorKey: "name",

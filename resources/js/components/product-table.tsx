@@ -86,7 +86,7 @@ export default function ProductsTable({ apiToken, addItem = undefined, showStock
         <>
         <Table>
             {/* <TableCaption>{ apiToken }</TableCaption> */}
-            <TableHeader>
+            <TableHeader className="font-sm">
                 <TableRow className="hover:bg-transparent">
                     <TableHead className="px-0 pb-6" colSpan={5 + (showStock ? 1 : 0)}>
                         <div className="flex items-center gap-3 border-2 p-2 rounded-lg">
