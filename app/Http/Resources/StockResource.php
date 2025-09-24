@@ -23,7 +23,7 @@ class StockResource extends JsonResource
             'ordered_qty' => intval($this->ordered_qty),
             'supplied_qty' => intval($this->supplied_qty),
             'in_stock' => intval($this->in_stock),
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
         ];
     }
 }

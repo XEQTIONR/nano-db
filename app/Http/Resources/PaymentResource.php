@@ -26,7 +26,7 @@ class PaymentResource extends JsonResource
                 'accountDesc' => $this->bankAccount?->bank_name . " - " . $this->bankAccount?->account_number
             ]),
             'order' => OrderResource::make($this->whenLoaded('order')),
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
         ];
     }
 }

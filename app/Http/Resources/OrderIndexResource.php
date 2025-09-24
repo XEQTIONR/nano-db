@@ -33,8 +33,8 @@ class OrderIndexResource extends JsonResource
             'count' => $this->count,
             'count_payments' => $this->count_payments,
             'created_at' => ($this->created_at instanceof Carbon)
-                ? $this->created_at->toDateTimeString()
-                : (new Carbon($this->created_at))->toDateTimeString(),
+                ? $this->created_at->format('j M Y g:i a')
+                : (new Carbon($this->created_at))->format('j M Y g:i a'),
             'toString' => $this->Order_num,
         ];
     }

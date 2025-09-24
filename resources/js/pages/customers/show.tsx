@@ -1,12 +1,11 @@
 import AppLayout from "@/layouts/app-layout"
-import { LetterOfCredit, BreadcrumbItem, Customer } from "@/types"
+import { BreadcrumbItem, Customer } from "@/types"
 import { Head, Link, router } from '@inertiajs/react';
 import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -26,7 +25,6 @@ import {
 } from "@/components/ui/tooltip"
 import { ArrowLeft } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
-import ExpenseCard from "@/components/expense-card";
 import { Separator } from "@/components/ui/separator";
 
 export default function Show({ customer } : { 
@@ -156,14 +154,14 @@ export default function Show({ customer } : {
                             <Table>
                                 <TableHeader className="sticky top-0 bg-white dark:bg-neutral-900">
                                     <TableRow className="hover:bg-transparent">
-                                        <TableHead className="font-semibold ">Order #</TableHead>
-                                        <TableHead className="font-semibold text-right">Grand Total</TableHead>
-                                        <TableHead className="font-semibold text-right">Amount Paid</TableHead>
-                                        <TableHead className="font-semibold text-right">Commission</TableHead>
-                                        <TableHead className="font-semibold text-right">Balance</TableHead>
+                                        <TableHead className="font-medium ">Order #</TableHead>
+                                        <TableHead className="font-medium text-right">Grand Total</TableHead>
+                                        <TableHead className="font-medium text-right">Amount Paid</TableHead>
+                                        <TableHead className="font-medium text-right">Commission</TableHead>
+                                        <TableHead className="font-medium text-right">Balance</TableHead>
                                     </TableRow>
                                 </TableHeader>
-                                <TableBody className=" text-sm">
+                                <TableBody className="text-xs">
                                 { 
                                     customer.data.orders?.map(({order_num, grand_total, payments_total, commission, balance}, index) => (
                                         <TableRow className="hover:bg-transparent">

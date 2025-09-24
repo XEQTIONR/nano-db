@@ -3,6 +3,15 @@ import { DataTableCustomColumnHeader } from "@/components/ui/data-table/column-h
 // You can use a Zod schema here if you want.
 import { type FilterConfig, type Option } from "@/types"
 import { Link } from "@inertiajs/react"
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuLabel, 
+  DropdownMenuItem, 
+  DropdownMenuContent,
+  DropdownMenuSeparator 
+} from "@/components/ui/dropdown-menu"
+import { MoreHorizontal } from "lucide-react"
 
 export const columns = [
   {
@@ -52,9 +61,31 @@ export const columns = [
   },
   {
     accessorKey: "created_at",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" justify="center" label="Created On" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" justify="end" label="Created On" config={v} />,
+    cell: ({ row }) => <div className="text-end">{ row.getValue('created_at') }</div>
   },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+              <div className="flex justify-end pr-3">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal size={16} className="ml-3 dark:hover:stroke-white" />
+              </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem disabled>Unavailable</DropdownMenuItem>
+            {/* <DropdownMenuItem>Add Proforma Invoice</DropdownMenuItem> */}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    },
+  }
 ]
 
 export const filterConfigs: FilterConfig[] = [

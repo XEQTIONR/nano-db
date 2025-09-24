@@ -26,7 +26,7 @@ class ExpenseResource extends JsonResource
             'note' => ($this->redacted && !$isAdmin) ? null : $this->note,
             'amount' => ($this->redacted && !$isAdmin) ? null : $this->amount,
             'amount_local' => ($this->redacted && !$isAdmin) ? null : $this->amount_local,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
             'toString' => '' . $this->id,
             'redacted' => $isAdmin ? false : $this->redacted,
         ];

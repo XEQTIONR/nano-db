@@ -84,7 +84,7 @@ class OrderResource extends JsonResource
             'commission' => $this->commission,
             'expenses' => ExpenseResource::collection($this->whenLoaded('expenses')),
             'random' => $this->random,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
             'toString' => $this->Order_num,
 
             $this->mergeWhen($this->relationLoaded('contents'), fn () => [

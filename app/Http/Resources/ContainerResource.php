@@ -20,7 +20,7 @@ class ContainerResource extends JsonResource
             'bol' => $this->BOL ?? $this->bol,
             'land_date' => (new Carbon($this->land_date))->toDateString(),
             'lc_num' => $this->lc,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
             'toString' => $this->container_num,
 
             $this->mergeWhen($this->relationLoaded('contents'), [

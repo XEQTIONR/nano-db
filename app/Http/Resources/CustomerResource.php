@@ -20,7 +20,7 @@ class CustomerResource extends JsonResource
             'address' => $this->address,
             'phone' => $this->phone,
             'notes' => $this->notes,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
             'route' => $request->route()->getName(),
             'orders' => OrderResource::collection($this->whenLoaded('orders')),
         ];

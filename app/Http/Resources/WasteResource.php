@@ -27,7 +27,7 @@ class WasteResource extends JsonResource
                 'pattern' => $this->tyre->pattern,
                 'lisi' => $this->tyre->lisi,
             ]),
-            'created_at' => $this->created_at->toDateTimeString()
+            'created_at' => $this->created_at->format('j M Y g:i a')
         ];
     }
 }

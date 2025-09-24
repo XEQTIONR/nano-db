@@ -300,7 +300,7 @@ export default function Show({ order } : {
                     <Card className="w-full overflow-x-scroll xl:w-1/2 print:w-full print:border-0 print:shadow-none bg-neutral-50 dark:bg-neutral-900 border-none dark:border-none">
                         <CardHeader>
                             <CardTitle>Payments & Commisions</CardTitle>
-                            <CardDescription>Payment made and commision payout for order # {data.order_num}</CardDescription>
+                            <CardDescription>Payment made and commision payout for order <span className="font-semibold">#{data.order_num}</span></CardDescription>
                         </CardHeader>
                         <CardContent className="flex flex-col justify-between h-full">
                             
@@ -308,14 +308,14 @@ export default function Show({ order } : {
                                         <Table>
                                             <TableHeader>
                                                 <TableRow className="hover:bg-transparent ">
-                                                    <TableHead className="text-center font-semibold">Trans ID</TableHead>
-                                                    <TableHead className="font-semibold">Date</TableHead>
-                                                    <TableHead className="text-right font-semibold">Owing</TableHead>
-                                                    <TableHead className="text-right font-semibold">Payment</TableHead>
-                                                    <TableHead className="text-right font-semibold">Balance</TableHead>
+                                                    <TableHead className="text-center font-medium">Trans ID</TableHead>
+                                                    <TableHead className="font-medium">Date</TableHead>
+                                                    <TableHead className="text-right font-medium">Owing</TableHead>
+                                                    <TableHead className="text-right font-medium">Payment</TableHead>
+                                                    <TableHead className="text-right font-medium">Balance</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            <TableBody>
+                                            <TableBody className="text-xs">
                                             {
                                                 data.payments?.map(({transaction_id, created_at, amount}, i) => {
                                                     return (

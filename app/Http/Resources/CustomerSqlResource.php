@@ -23,8 +23,8 @@ class CustomerSqlResource extends JsonResource
             'phone' => $this->phone,
             'notes' => $this->notes,
             'created_at' => ($this->created_at instanceof Carbon)
-                ? $this->created_at->toDateTimeString()
-                : (new Carbon($this->created_at))->toDateTimeString(),
+                ? $this->created_at->format('j M Y g:i a')
+                : (new Carbon($this->created_at))->format('j M Y g:i a'),
             'route' => $request->route()->getName(),
             $this->mergeWhen((
                 in_array($request->route()->getName(), ['customers.index', 'customers.edit'])

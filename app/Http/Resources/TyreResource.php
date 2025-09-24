@@ -20,7 +20,7 @@ class TyreResource extends JsonResource
             'size' => $this->size,
             'pattern' => $this->pattern,
             'lisi' => $this->lisi,
-            'created_at' => $this->created_at->toDateTimeString(),
+            'created_at' => $this->created_at->format('j M Y g:i a'),
             'in_stock' => $this->in_stock === null ? null : intval($this->in_stock),
         ];
     }

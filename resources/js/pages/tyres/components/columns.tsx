@@ -43,8 +43,8 @@ export const columns = [
   },
   {
     accessorKey: "created_at",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" justify="center" label="Created On" config={v} />,
-    cell: ({ row }) => <div className="text-center">{ row.getValue('created_at') }</div>
+    header: (v: {table: object}) => <DataTableCustomColumnHeader colKey="created_at" justify="end" label="Created On" config={v} />,
+    cell: ({ row }) => <div className="text-end">{ row.getValue('created_at') }</div>
   },
   {
     id: "actions",

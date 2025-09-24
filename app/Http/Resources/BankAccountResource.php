@@ -21,7 +21,7 @@ class BankAccountResource extends JsonResource
             'account_number' => $this->account_number,
             'bank_address' => $this->bank_address,
             'created_at' => $this->created_at
-                ? $this->created_at->toDateTimeString()
+                ? $this->created_at->format('j M Y g:i a')
                 : null,
             'toString' => $this->bank_name . " Acct #" . $this->account_number
         ];
