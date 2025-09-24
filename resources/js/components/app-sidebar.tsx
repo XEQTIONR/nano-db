@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type NavCollapseGroup } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Anchor, BanknoteArrowDown, BookOpen, ChartColumnIncreasing, Folder, HandCoins, LayoutGrid, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
+import { Anchor, BanknoteArrowDown, ChartColumnIncreasing, Layers, LoaderPinwheel, Smile, Landmark } from 'lucide-react';
 import AppLogo from './app-logo';
 import { useEffect, useState } from 'react';
 

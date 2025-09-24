@@ -38,74 +38,93 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
         domestic_expense: 0,
         notes: "",
     })
+    
+    const emptyErrors: LetterOfCreditFormErrors = {}
 
     const [errors, setErrors] = useState<LetterOfCreditFormErrors>({})
 
-    const sendData = () => {
-        console.log('sendData:', formData)
-        let errs = {...errors}
+    const validate = () => {
+        let errs = {...emptyErrors}
+        let count = 0
         if (typeof formData.lc_num != 'string' || formData.lc_num.length === 0) {
             errs = {...errs, lc_num: "LC number is required"}
-
+            count++
         } 
 
         if (formData.date_issued === undefined) {
             errs = {...errs, date_issued: "The issue date is required"}
+            count++
         }
 
         if (formData.date_expiry === undefined) {
             errs = {...errs, date_expiry: "The expiry date is required"}
+            count++
         }
 
         if (typeof formData.applicant != 'string' || formData.applicant.length === 0) {
             errs = {...errs, applicant: "Applicant information is required"}
+            count++
         }
 
         if (typeof formData.beneficiary != 'string' || formData.beneficiary.length === 0) {
             errs = {...errs, beneficiary: "Beneficiary information is required"}
+            count++
         }
 
         if (typeof formData.port_depart != 'string' || formData.port_depart.length === 0) {
             errs = {...errs, port_depart: "Departing port is required"}
+            count++
         }
 
         if (typeof formData.port_arrive != 'string' || formData.port_arrive.length === 0) {
             errs = {...errs, port_arrive: "Port of arrival is required"}
+            count++
         }
 
         if (typeof formData.currency_code != 'string' || formData.currency_code.length === 0) {
             errs = {...errs, currency_code: "The currency code is required"}
+            count++
         } else if (formData.currency_code.length !== 3) {
             errs = {...errs, currency_code: "The currency code must be 3 letters long"}
+            count++
         }
 
         if (typeof formData.exchange_rate != 'number' || formData.exchange_rate <= 0) {
             errs = {...errs, exchange_rate: "The exchange rate must be a number greater than 0"}
+            count++
         }
 
         if (typeof formData.foreign_amount != 'number' || formData.foreign_amount <= 0) {
             errs = {...errs, foreign_amount: "The LC value must be a number greater than 0"}
+            count++
         }
 
         if (typeof formData.foreign_expense != 'number') {
             errs = {...errs, foreign_expense: "The foreign expense must be a number"}
+            count++
         } else if (formData.foreign_expense < 0) {
             errs = {...errs, foreign_expense: "The foreign expense cannot be less than 0"}
+            count++
         }
 
         if (typeof formData.domestic_expense != 'number') {
             errs = {...errs, domestic_expense: "The domestic expense must be a number"}
+            count++
         } else if (formData.domestic_expense < 0) {
             errs = {...errs, domestic_expense: "The foreign expense cannot be less than 0"}
+            count++
         }
 
         if (typeof formData.notes != 'string') {
             errs = {...errs, notes: "Note must be a string"}
+            count++
         }
-
         setErrors(errs)
+        return count
+    }
 
-        if (Object.keys(errs).length === 0) {
+    const sendData = () => {
+        if ( validate() === 0) {
             onSubmit(formData)
         }
     }
@@ -118,8 +137,10 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
             </CardDescription>
             <CardAction>
                 <Button
+                    className="cursor-pointer"
+                    size="sm"
                     onClick={sendData} 
-                    variant="secondary"
+                    variant="outline"
                 >
                     Next Step
                     <ChevronRight />

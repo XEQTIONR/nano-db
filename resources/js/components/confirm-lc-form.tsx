@@ -28,7 +28,7 @@ import {
   TableCaption
 } from "@/components/ui/table"
 
-import { ChevronRight, NotebookPen, StickyNote } from "lucide-react";
+import { StickyNote } from "lucide-react";
 
 import { LetterOfCredit, type InvoiceItem } from "@/types";
 import { Button } from "./ui/button";
@@ -50,13 +50,7 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
             <CardAction>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="secondary"
-                        >
-                            Finish
-                            <ChevronRight />
-                        </Button>
+                        <Button size="sm" className="cursor-pointer px-5" type="button">Finish</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>
@@ -154,37 +148,39 @@ export default function ConfirmLcForm({lcData, items, onSubmit = undefined} : {
                             {lcData.invoice_no}
                         </div>
                     </div>
-                    <Table>
-                        <TableCaption>Confirm the proforma invoice details</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="">#</TableHead>
-                                <TableHead>Item</TableHead>
-                                <TableHead>Qty</TableHead>
-                                <TableHead>Price</TableHead>
-                                <TableHead>Sub total</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                        { 
-                            items.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
+                    <div className="w-full overflow-x-scroll">
+                        <Table className="w-full">
+                            <TableCaption>Confirm the proforma invoice details</TableCaption>
+                            <TableHeader>
                                 <TableRow>
-                                    <TableCell className="font-bold">{index + 1}</TableCell>
-                                    <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
-                                    <TableCell className="text-center">
-                                        {qty} 
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        {currencyFormat(lcData.currency_code, unit_price)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        {currencyFormat(lcData.currency_code, qty * unit_price)}
-                                    </TableCell>
+                                    <TableHead className="">#</TableHead>
+                                    <TableHead>Item</TableHead>
+                                    <TableHead>Qty</TableHead>
+                                    <TableHead>Price</TableHead>
+                                    <TableHead>Sub total</TableHead>
                                 </TableRow>
-                            )) 
-                        }
-                        </TableBody>
-                    </Table>
+                            </TableHeader>
+                            <TableBody>
+                            { 
+                                items.map(({id, brand, size, pattern, lisi, qty, unit_price}, index) => (
+                                    <TableRow>
+                                        <TableCell className="font-bold">{index + 1}</TableCell>
+                                        <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
+                                        <TableCell className="text-center">
+                                            {qty} 
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            {currencyFormat(lcData.currency_code, unit_price)}
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            {currencyFormat(lcData.currency_code, qty * unit_price)}
+                                        </TableCell>
+                                    </TableRow>
+                                )) 
+                            }
+                            </TableBody>
+                        </Table>
+                    </div>
                     { (lcData.notes && lcData.notes.length > 0) && <Card className="flex gap-6">
                         <CardHeader className="grid gap-2">
                             <CardTitle className="flex items-center gap-2"><StickyNote size={18} /> Note</CardTitle>

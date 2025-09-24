@@ -137,7 +137,7 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
             >
                 <Head />
                 <div className="flex h-full justify-center py-8 print:py-0">
-                    <Card className="w-1/2 print:w-full print:border-0 print:shadow-none">
+                    <Card className="w-full overflow-x-scroll m-4 md:w-1/2 max-w-3xl print:w-full print:border-0 print:shadow-none">
                         <CardContent className="flex flex-col justify-between h-full font-mono">
                             
                                 <div className="flex flex-col gap-6">

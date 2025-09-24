@@ -49,6 +49,7 @@ import ProductsTable from '@/components/product-table';
 import axios from 'axios'
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectGroup, SelectItem, SelectLabel } from '@/components/ui/select';
 import { type BreadcrumbItem } from '@/types';
+import Stepper from '@/components/stepper';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -227,25 +228,9 @@ export default function Create({apiToken} : {apiToken: string}) {
                 <div className="w-full">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new order</h1>
                 </div>
+                <div className="w-full flex gap-4">
                 <div className="w-full flex print:hidden gap-10 items-center">
-                    {
-                        steps.map( (step, index) => (
-                            <div className="flex items-center gap-4">
-                                <Badge className={cn(
-                                    "h-7 min-w-7 px-1.5 py-1 rounded-full text-xs font-bold font-mono ",
-                                    index == current ? "bg-indigo-500 text-white" : "bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-400"
-                                )}>
-                                    {index + 1}
-                                </Badge>
-                                <span className={cn(
-                                    "text-base font-bold",
-                                    index == current ? "dark:text-white text-neutral-950" : "text-neutral-300 dark:text-neutral-700"
-                                )}>
-                                    {step}
-                                </span>
-                            </div> 
-                        ))
-                    }
+                    <Stepper steps={steps} current={current} />
                     <div className="flex gap-3">
                         <Button disabled={current == 0} className="cursor-pointer" variant="secondary"
                             onClick={() => fn(true)}
@@ -260,9 +245,11 @@ export default function Create({apiToken} : {apiToken: string}) {
                         
                     </div>
                 </div>
-                { current == 0 && <div className="w-full pt-5 pb-4 flex gap-4 items-start">
+                <div className="w-full hidden lg:flex"></div>
+                </div>
+                { current == 0 && <div className="w-full pt-5 pb-4 flex flex-col lg:flex-row gap-4 items-start">
                     <div className={cn(
-                        "w-full transition-all relative flex flex-col gap-4 md:w-1/2",
+                        "w-full transition-all relative flex flex-col gap-4 lg:w-1/2",
                         show ? "opacity-100" : "opacity-0",
                         !dir && (show ? "-right-0" : "-right-16"), 
                         dir && (show ? "-left-0" : "-left-16")
@@ -326,7 +313,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <CardHeader>
                                 <CardTitle>Add order items</CardTitle>
                             </CardHeader>
-                            <CardContent className="flex flex-col gap-8">
+                            <CardContent className="flex flex-col gap-8 overflow-x-scroll">
                                 <Table>
                                     {displayItems.length === 0 && <TableCaption>Add some items from the catalog</TableCaption> }
                                     <TableHeader>
@@ -619,7 +606,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                         </Card>
                     </div>
                     <div className={cn(
-                        "w-full transition-all relative md:w-1/2",
+                        "w-full transition-all relative lg:w-1/2",
                         show ? "opacity-100" : "opacity-0",
                         !dir && (show ? "-right-0" : "-right-16"), 
                         dir && (show ? "-left-0" : "-left-16")
@@ -631,7 +618,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     All products currently in the system
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="overflow-x-scroll">
                                 <ProductsTable
                                     showStock={true} 
                                     apiToken={apiToken}
@@ -651,7 +638,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                 </div>}
                 { current == 1 && <div className="w-full pt-5 pb-4 flex gap-4 items-start justify-center">
                     <Card className={cn(
-                        "w-1/2 print:w-full transition-all relative print:border-0 print:shadow-none",
+                        "w-full lg:w-1/2 print:w-full transition-all relative print:border-0 print:shadow-none",
                         show ? "opacity-100" : "opacity-0",
                         !dir && (show ? "-right-0" : "-right-16"), 
                         dir && (show ? "-left-0" : "-left-16"),
@@ -662,25 +649,27 @@ export default function Create({apiToken} : {apiToken: string}) {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="w-full flex flex-col gap-4">
+                            <div className="w-full flex flex-col gap-4 overflow-x-scroll">
                                 <div className="w-full flex justify-between">
-                                    <div className="flex flex-col gap-2 w-1/3">
+                                    <div className="flex flex-col gap-2 w-1/2">
                                         <Label className="font-semibold">Order #</Label>
                                         <span className="font-mono text-sm">-</span>
                                     </div>
-                                    <div className="flex flex-col gap-2 w-1/3">
-                                        <Label className="font-semibold">Customer ID</Label>
-                                        <span className="font-mono">
-                                            {someCustomers.find(({id}) => id == customerId)?.id}
-                                        </span>
-                                    </div>
-                                    <div className="flex flex-col gap-2 w-1/3">
+                                    
+                                    <div className="flex flex-col gap-2 w-1/2">
                                         <Label className="font-semibold">Order Date</Label>
                                         <span className="font-mono text-sm">{orderDate?.toDateString()}</span>
                                     </div>
                                 </div>
                                 <div className="w-full flex justify-between">
-                                    <div className="flex flex-col gap-2 w-2/3">
+                                    
+                                    <div className="flex flex-col gap-2 w-1/2">
+                                        <Label className="font-semibold">Customer ID</Label>
+                                        <span className="font-mono">
+                                            {someCustomers.find(({id}) => id == customerId)?.id}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col gap-2 w-1/2">
                                         <Label className="font-semibold">Customer</Label>
                                         <span className="font-mono text-sm">
                                             {someCustomers.find(({id}) => id == customerId)?.name}
@@ -703,7 +692,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                             items.map(({id, brand, size, pattern, lisi, qty, unit_price}, i) => (
                                                 <TableRow>
                                                     <TableCell className="text-center">{ i+1 }</TableCell>
-                                                    <TableCell>({id}) {brand} {size} {pattern} {lisi}</TableCell>
+                                                    <TableCell>({id}) <span className="hidden md:inline">{brand} {size} {pattern} {lisi}</span></TableCell>
                                                     <TableCell className="text-center">{qty}</TableCell>
                                                     <TableCell className="text-right">৳ {unit_price.toFixed(2)}</TableCell>
                                                     <TableCell className="text-right">৳ {(qty*unit_price).toFixed(2)}</TableCell>

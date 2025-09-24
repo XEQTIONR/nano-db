@@ -102,6 +102,7 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
             </CardDescription>
             <CardAction>
                 <Button
+                    className="cursor-pointer"
                     onClick={() => {
 
                         const itms = displayItems.map(item => {
@@ -120,7 +121,8 @@ export default function ProformaInvoiceForm({invoiceNumber, items, updateItems =
                             setShowErrors(true)
                         }
                     }} 
-                    variant="secondary"
+                    variant="outline"
+                    size="sm"
                 >
                     Next Step
                     <ChevronRight />

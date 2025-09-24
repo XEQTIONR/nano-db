@@ -67,7 +67,7 @@ export default function Show({ customer } : {
             <div className="w-full">
                 <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Customer <span className="text-muted text-2xl">ID:{customer.data.id}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">
-                    <Card className="w-full lg:w-1/2 dark:bg-neutral-900 dark:border-none rounded-3xl">
+                    <Card className="w-full lg:w-1/2 rounded-3xl bg-[#FCFCFC] dark:bg-[#121212]">
                         <CardHeader>
                             <CardTitle>Information</CardTitle>
                         </CardHeader>
@@ -145,15 +145,15 @@ export default function Show({ customer } : {
                         </CardContent>
                     </Card>
                     <div className="flex flex-col gap-4 w-full lg:w-1/2">
-                        <Card className="flex flex-col bg-neutral-50 dark:bg-neutral-900 border-none rounded-3xl">
+                        <Card className="flex flex-col rounded-3xl">
                             <CardHeader>
                                 <CardTitle>Orders</CardTitle>
                                 <CardDescription>All orders placed by customer ID # {customer.data.id}</CardDescription>
                             </CardHeader>
                             <CardContent className="max-h-[70vh] overflow-scroll">
                             <Table>
-                                <TableHeader className="sticky top-0 bg-white dark:bg-neutral-900">
-                                    <TableRow className="hover:bg-transparent">
+                                <TableHeader className="sticky top-0">
+                                    <TableRow className="hover:bg-transparent bg-card">
                                         <TableHead className="font-medium ">Order #</TableHead>
                                         <TableHead className="font-medium text-right">Grand Total</TableHead>
                                         <TableHead className="font-medium text-right">Amount Paid</TableHead>

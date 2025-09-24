@@ -25,6 +25,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import Stepper from '@/components/stepper';
 
 export default function Create({apiToken} : {apiToken: string}) {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -125,25 +126,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                 <div className="w-full">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new letter of credit</h1>
                 </div>
-                <div className="w-full flex gap-10 items-center mt-4">
-                    {
-                        steps.map( (step, index) => (
-                            <div className="flex items-center gap-4">
-                                <Badge className={cn(
-                                    "h-7 min-w-7 px-1.5 py-1 rounded-full text-xs font-bold font-mono ",
-                                    index == current ? "bg-indigo-500 text-white" : "bg-neutral-300 dark:bg-neutral-800 dark:text-neutral-400"
-                                )}>
-                                    {index + 1}
-                                </Badge>
-                                <span className={cn(
-                                    "text-base font-bold",
-                                    index == current ? "dark:text-white text-neutral-950" : "text-neutral-400 dark:text-neutral-700"
-                                )}>
-                                    {step}
-                                </span>
-                            </div> 
-                        ))
-                    }
+                <div className="w-full xl:w-1/2 flex gap-10 items-start lg:items-center mt-4">
+                    <Stepper steps={steps} current={current} />
                     <div className="flex gap-3">
                         <Button disabled={current == 0} className="cursor-pointer" onClick={() => fn(true)} variant="secondary">
                         <ChevronLeft />
@@ -158,14 +142,13 @@ export default function Create({apiToken} : {apiToken: string}) {
                             <ChevronRight />
                         </Button>
                     </div>
-                    
                 </div>
                 <div className="w-full pt-5 flex gap-4 items-start">
                 {
                     current == 0 && (
                         <Card 
                             className={cn(
-                                "w-full lg:w-1/2 transition-all relative mb-4",
+                                "w-full xl:w-1/2 transition-all relative mb-4",
                                 show ? "opacity-100" : "opacity-0",
                                 !dir && (show ? "-right-0" : "-right-16"), 
                                 dir && (show ? "-left-0" : "-left-16"), )}
