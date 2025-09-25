@@ -12,7 +12,7 @@ import {
 import { ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
-import { Expense, Payment } from "@/types";
+import { Expense } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react";
@@ -346,16 +346,11 @@ export default function ExpenseReport({
                                                     subtitle={count_items_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                     stat={count_items}
                                                 /> */}
-                                                <Card className="h-full overflow-x-scroll print:hidden">
+                                                <Card className="overflow-x-scroll print:hidden max-h-[75vh]">
                                                     <CardHeader>
                                                         <CardTitle className="mt-2">Expenses</CardTitle>
-                                                        <CardAction className="flex items-center gap-2">
-                                                                <Button onClick={() => setExpensesPage(expensesPage == 0 ?  (Math.ceil(expenses.data.length/expensesPerPage) - 1) : (expensesPage - 1))} className="cursor-pointer" variant="ghost" size="icon"><ChevronLeft /></Button>
-                                                                <span className="text-xs">{expensesPage + 1}/{Math.ceil(expenses.data.length/expensesPerPage)}</span>
-                                                                <Button disabled={expensesPage == (Math.ceil(expenses.data.length/expensesPerPage) - 1)} onClick={() => setExpensesPage((expensesPage + 1) % Math.ceil(expenses.data.length/expensesPerPage))} className="cursor-pointer" variant="ghost" size="icon"><ChevronRight /></Button>
-                                                        </CardAction>
                                                     </CardHeader>
-                                                    <CardContent className="print:overflow-y-visible">
+                                                    <CardContent className="h-full grow-0 overflow-y-scroll">
                                                         <Table className="print:overflow-y-visible">
                                                             <TableHeader>
                                                                 <TableRow>
@@ -365,9 +360,9 @@ export default function ExpenseReport({
                                                                     <TableHead className="font-semibold text-right">Amount (Local)</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible text-xs">
+                                                            <TableBody className="text-xs overflow-y-scroll">
                                                             {
-                                                                expenses.data.slice(expensesPage * expensesPerPage, (expensesPage+1) * expensesPerPage).map((exp) => (
+                                                                expenses.data.map((exp) => (
                                                                     <TableRow>
                                                                         <TableCell>{exp.id}</TableCell>
                                                                         <TableCell className="text-center">{

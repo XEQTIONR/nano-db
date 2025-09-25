@@ -526,7 +526,7 @@ export default function SummaryReport({
                                                                     <TableHead>ID</TableHead>
                                                                     <TableHead>Date</TableHead>
                                                                     <TableHead>Type</TableHead>
-                                                                    <TableHead>Amount</TableHead>
+                                                                    <TableHead className="text-right">Amount</TableHead>
                                                                 </TableHeader>
                                                                 <TableBody>
                                                                 {

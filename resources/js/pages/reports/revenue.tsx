@@ -346,16 +346,16 @@ export default function RevenueReport({
                                                     subtitle={count_items_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                     stat={count_items}
                                                 /> */}
-                                                <Card className="h-full overflow-x-scroll print:hidden">
+                                                <Card className="overflow-x-scroll print:hidden max-h-[75vh]">
                                                     <CardHeader>
                                                         <CardTitle className="mt-2">Payments</CardTitle>
-                                                        <CardAction className="flex items-center gap-2">
+                                                        {/* <CardAction className="flex items-center gap-2">
                                                                 <Button onClick={() => setPaymentPage(paymentPage == 0 ?  (Math.ceil(payments.data.length/paymentsPerPage) - 1) : (paymentPage - 1))} className="cursor-pointer" variant="ghost" size="icon"><ChevronLeft /></Button>
                                                                 <span className="text-xs">{paymentPage + 1}/{Math.ceil(payments.data.length/paymentsPerPage)}</span>
                                                                 <Button disabled={paymentPage == (Math.ceil(payments.data.length/paymentsPerPage) - 1)} onClick={() => setPaymentPage((paymentPage + 1) % Math.ceil(payments.data.length/paymentsPerPage))} className="cursor-pointer" variant="ghost" size="icon"><ChevronRight /></Button>
-                                                        </CardAction>
+                                                        </CardAction> */}
                                                     </CardHeader>
-                                                    <CardContent className="print:overflow-y-visible">
+                                                    <CardContent className="h-full grow-0 overflow-y-scroll">
                                                         <Table className="print:overflow-y-visible">
                                                             <TableHeader>
                                                                 <TableRow>
@@ -364,9 +364,9 @@ export default function RevenueReport({
                                                                     <TableHead className="font-semibold text-right">Amount Paid</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible text-xs">
+                                                            <TableBody className="text-xs overflow-y-scroll">
                                                             {
-                                                                payments.data.slice(paymentPage * paymentsPerPage, (paymentPage+1) * paymentsPerPage).map((payment) => (
+                                                                payments.data.map((payment) => (
                                                                     <TableRow>
                                                                         <TableCell>{payment.transaction_id}</TableCell>
                                                                         <TableCell className="text-center hover:underline cursor-pointer" onClick={() => router.visit(route('orders.show', { order: payment.order_num }))}>{payment.order_num}</TableCell>

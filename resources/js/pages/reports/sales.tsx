@@ -351,28 +351,23 @@ export default function SalesReport({
                                                     subtitle={count_items_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                     stat={count_items}
                                                 />
-                                                <Card className="h-full overflow-x-scroll print:hidden print:mb-[100%]">
+                                                <Card className="overflow-x-scroll print:hidden print:mb-[100%] max-h-[54.8vh]">
                                                     <CardHeader>
                                                         <CardTitle className="mt-2">Orders</CardTitle>
-                                                        <CardAction className="flex items-center gap-2">
-                                                                <Button disabled={orderPage == 0} onClick={() => setOrderPage(orderPage == 0 ?  (Math.ceil(orders.data.length/orderPerPage) - 1) : (orderPage - 1))} className="cursor-pointer" variant="ghost" size="icon"><ChevronLeft /></Button>
-                                                                <span className="text-xs">{orderPage + 1}/{Math.ceil(orders.data.length/orderPerPage)}</span>
-                                                                <Button disabled={orderPage == (Math.ceil(orders.data.length/orderPerPage) - 1)} onClick={() => setOrderPage((orderPage + 1) % Math.ceil(orders.data.length/orderPerPage))} className="cursor-pointer" variant="ghost" size="icon"><ChevronRight /></Button>
-                                                        </CardAction>
                                                     </CardHeader>
-                                                    <CardContent className="print:overflow-y-visible">
+                                                    <CardContent className="h-full grow-0 overflow-y-scroll">
                                                         <Table className="print:overflow-y-visible">
                                                             <TableHeader>
                                                                 <TableRow>
-                                                                    <TableHead>Order #</TableHead>
+                                                                    <TableHead className="font-semibold">Order #</TableHead>
                                                                     <TableHead className="text-center font-semibold">Customer ID</TableHead>
                                                                     <TableHead className="text-center font-semibold"># of items</TableHead>
                                                                     <TableHead className="text-right font-semibold">Grand Total</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
-                                                            <TableBody className="print:overflow-y-visible">
+                                                            <TableBody className="text-xs overflow-y-scroll">
                                                             {
-                                                                orders.data.slice(orderPage * orderPerPage, (orderPage+1) * orderPerPage).map((order) => (
+                                                                orders.data.map((order) => (
                                                                     <TableRow>
                                                                         <TableCell onClick={() => router.visit(route('orders.show', { order: order.order_num }))} className="hover:underline cursor-pointer">{order.order_num}</TableCell>
                                                                         <TableCell className="text-center">{order.customer_id}</TableCell>
