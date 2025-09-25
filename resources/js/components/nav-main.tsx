@@ -106,7 +106,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
                 }
             </MenubarTrigger>
             <MenubarContent side="right">
-                <MenubarItem disabled><span className="text-xs uppercase font-thin tracking-widest">{item.title}</span></MenubarItem>
+                <MenubarItem disabled><span className="text-xs font-semibold">{item.title}</span></MenubarItem>
                 {
                     item.links.map((link) => (<MenubarItem disabled={page.url === link.href}>
                         <Link href={link.href}>

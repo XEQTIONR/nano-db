@@ -65,7 +65,7 @@ export default function Show({ customer } : {
         >
             <Head title={breadcrumbs[0].title} />
             <div className="w-full">
-                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Customer <span className="text-muted text-2xl">ID:{customer.data.id}</span></h1>
+                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Customer <span className="text-neutral-300 dark:text-neutral-700 text-2xl">ID:{customer.data.id}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">
                     <Card className="w-full lg:w-1/2 rounded-3xl bg-[#FCFCFC] dark:bg-[#121212]">
                         <CardHeader>

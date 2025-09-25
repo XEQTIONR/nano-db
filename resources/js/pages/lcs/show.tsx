@@ -70,7 +70,7 @@ export default function Show({ letterOfCredit } : {
         >
             <Head title={"LC #"+ letterOfCredit.data.lc_num} />
             <div className="w-full">
-                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Letter of credit <span className="text-muted text-2xl">#{letterOfCredit.data.lc_num}</span></h1>
+                <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-2">Letter of credit <span className="text-neutral-300 dark:text-neutral-700 text-2xl">#{letterOfCredit.data.lc_num}</span></h1>
                 <div className="w-full gap-5 flex flex-wrap lg:flex-nowrap items-start p-4">
                     <Card className="w-full lg:w-1/2 dark:bg-neutral-900 dark:border-none rounded-3xl">
                         <CardHeader>

@@ -232,7 +232,7 @@ export default function ExpenseReport({
         <Head title="Revenue Report"></Head>
         <div className="w-full basis-1/10 ">
             <div className="p-4 flex flex-col gap-4 overflow-y-scroll">
-                <h1 className="text-2xl md:text-4xl font-bold mt-2">Expense Report <span className="text-muted text-2xl">
+                <h1 className="text-2xl md:text-4xl font-bold mt-2">Expense Report <span className="text-neutral-300 dark:text-neutral-700 text-2xl">
                         {type == "daily" && date}
                         { type == "monthly" && new Date(date).toLocaleString('default', { month: 'long', year: "numeric" })}
                         { type == "yearly" && new Date(date).toLocaleString('default', { year: "numeric" })}

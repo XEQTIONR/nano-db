@@ -1,7 +1,7 @@
 import AppLayout from "@/layouts/app-layout";
 import { Button } from "@/components/ui/button";
 import DashboardCard from "@/components/ui/dashboard-card";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CartesianGrid, Line, LineChart, Bar, BarChart, XAxis, YAxis } from "recharts"
 import {
   ChartConfig,
@@ -9,14 +9,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { BanknoteArrowDown, BanknoteArrowUp, ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
+import { BanknoteArrowDown, BanknoteArrowUp, ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
 import { Expense, Order, Payment } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState } from "react";
-import { Pagination, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 const chartConfig = {
   sumSales: {
@@ -281,7 +279,7 @@ export default function SummaryReport({
         <Head title="Summary Report"></Head>
         <div className="w-full h-[90vh]">
             <div className="p-4 flex flex-col gap-4">
-                <h1 className="text-2xl md:text-4xl font-bold mt-2">Summary <span className="text-muted text-2xl">
+                <h1 className="text-2xl md:text-4xl font-bold mt-2">Summary <span className="text-neutral-300 dark:text-neutral-700 text-2xl">
                         { type == "daily" && date }
                         { type == "monthly" && new Date(date).toLocaleString('default', { month: 'long', year: "numeric" })}
                         { type == "yearly" && new Date(date).toLocaleString('default', { year: "numeric" })}
