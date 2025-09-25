@@ -57,6 +57,7 @@ export default function Dashboard({
     expenditure_percent,
     sales,
     sales_percent,
+    version,
 } : {
     count: number, 
     count_items: number,
@@ -69,6 +70,7 @@ export default function Dashboard({
     expenditure_percent: number,
     sales: number,
     sales_percent: number,
+    version: string
 }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -76,6 +78,7 @@ export default function Dashboard({
             <div className="flex flex-col gap-4 max-h-[92vh] w-full overflow-y-scroll items-start rounded-xl p-4">
                 <div className="w-full flex justify-between">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Dashboard</h1>
+                    <span className="self-end text-xs">v{version}</span>
                 </div>
                 <div className='w-full flex gap-4 items-start flex-wrap xl:flex-nowrap'>
                     <div className="flex flex-wrap gap-4 w-full xl:w-3/4">

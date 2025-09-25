@@ -18,6 +18,9 @@ class DashboardController extends ApiController
      */
     public function __invoke()
     {
-        return Inertia::render('dashboard', parent::__invoke());
+        return Inertia::render('dashboard', [
+            ...parent::__invoke(),
+            'version' => config('app.version')
+        ]);
     }
 }

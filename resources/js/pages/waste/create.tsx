@@ -101,6 +101,7 @@ export default function Create({ groupedConsignments, tyres } : { tyres: { data:
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Create Waste" />
+            <h1 className="text-2xl md:text-4xl font-bold pl-4 mt-6">Add waste</h1>
             <div className="w-full flex justify-center">
                 <div className="w-full lg:w-3/4 xl:w-2/3 flex flex-col gap-4 p-4">
                     {

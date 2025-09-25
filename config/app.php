@@ -15,6 +15,9 @@ return [
 
     'name' => env('APP_NAME', 'Cross Country'),
 
+
+    'version' => env('APP_VERSION', '3.0'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
