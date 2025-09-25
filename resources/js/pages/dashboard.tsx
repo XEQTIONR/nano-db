@@ -12,9 +12,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-import { Activity, BanknoteArrowDown, BanknoteArrowUp, ChartBar, Send, Tag, TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
-import AppLogoIcon from '@/components/app-logo-icon';
+import { BanknoteArrowDown, BanknoteArrowUp, Tag } from "lucide-react"
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -77,7 +76,6 @@ export default function Dashboard({
             <div className="flex flex-col gap-4 max-h-[92vh] w-full overflow-y-scroll items-start rounded-xl p-4">
                 <div className="w-full flex justify-between">
                     <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Dashboard</h1>
-                    <AppLogoIcon className='bg-amber-50' size='80' />
                 </div>
                 <div className='w-full flex gap-4 items-start flex-wrap xl:flex-nowrap'>
                     <div className="flex flex-wrap gap-4 w-full xl:w-3/4">

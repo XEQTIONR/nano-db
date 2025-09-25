@@ -83,28 +83,28 @@ export const columns = [
     header: (v: {table: object}) => <DataTableCustomColumnHeader justify="end" colKey="created_at" label="Created On" config={v} />,
     cell: ({ row }) => <div className="text-end">{ row.getValue('created_at') }</div>
   },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-              <div className="flex justify-end pr-3">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal size={16} className="ml-3 dark:hover:stroke-white" />
-              </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View</DropdownMenuItem>
-            <DropdownMenuItem>Add Proforma Invoice</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  }
+  // {
+  //   id: "actions",
+  //   enableHiding: false,
+  //   cell: ({ row }) => {
+  //     return (
+  //       <DropdownMenu>
+  //         <DropdownMenuTrigger asChild>
+  //             <div className="flex justify-end pr-3">
+  //               <span className="sr-only">Open menu</span>
+  //               <MoreHorizontal size={16} className="ml-3 dark:hover:stroke-white" />
+  //             </div>
+  //         </DropdownMenuTrigger>
+  //         <DropdownMenuContent align="end">
+  //           <DropdownMenuLabel>Actions</DropdownMenuLabel>
+  //           <DropdownMenuSeparator />
+  //           <DropdownMenuItem>View</DropdownMenuItem>
+  //           <DropdownMenuItem>Add Proforma Invoice</DropdownMenuItem>
+  //         </DropdownMenuContent>
+  //       </DropdownMenu>
+  //     )
+  //   },
+  // }
 ]
 
 export const filterConfigs: FilterConfig[] = [

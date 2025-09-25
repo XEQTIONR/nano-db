@@ -134,7 +134,7 @@ export function NavMain({ items = [] }: { items: NavCollapseGroup[] }) {
             </SidebarMenu>
             
             <Menubar className={cn(
-                "hidden mt-6 ",
+                "hidden mt-4 ",
                 (!open && "md:flex flex-col items-start bg-transparent p-0 border-none shadow-none"))} asChild={false}
             >
                 <Link href={route('dashboard')}>
