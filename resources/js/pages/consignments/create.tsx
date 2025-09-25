@@ -20,8 +20,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import { Head } from '@inertiajs/react';
-
-import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, ChevronLeft, ChevronsUpDown, ChevronRight, Plus, X, Check, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from "@/components/ui/button"
@@ -61,6 +59,8 @@ import {
 } from "@/components/ui/collapsible"
 import { Separator } from '@/components/ui/separator';
 
+import { useDebouncedCallback } from 'use-debounce'
+
 
 interface ContainerItemErrors {
     qty?: string;
@@ -92,6 +92,12 @@ export default function Create({apiToken} : {apiToken: string}) {
         },
     ];
 
+    const timeout = 500
+
+    const [duplicateConsignment, setDuplicateConsignment] = useState(false)
+    const [searchingConsignments, setSearchingConsignments] = useState(false)
+    const [duplicateContainer, setDuplicateContainer] = useState(false)
+    const [searchingContainers, setSearchingContainers] = useState(false)
     const [show, setShow] = useState(true);
     const [dir, setDir] = useState(true);
     const [current, setCurrent] = useState(0)
@@ -103,9 +109,7 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const [isOpen, setIsOpen] = useState(false)
     const [noContainersError, setNoContainersError] = useState<string | undefined>(undefined)
-    
     const fn = (prev = false) => {
-        console.log('fn')
         setDir(prev)
         setShow(false)
         //setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
@@ -159,6 +163,62 @@ export default function Create({apiToken} : {apiToken: string}) {
 
     const [containerErrors, setContainerErrors] = useState<ContainerErrors[]>([])
 
+    const debounced = useDebouncedCallback(
+        async (str: string) => {
+            const link = route('api.consignments.index', {
+                filters: 'bol.eq.' + str
+            })
+
+            if (str.length > 0) {
+                setSearchingConsignments(true)
+                axios.get(link, { headers: { 
+                    Authorization: 'Bearer ' + apiToken, 
+                }}).then((res) => {
+                    setSearchingConsignments(false)
+                    if (res.data.items.length > 0) {
+                        setDuplicateConsignment(true)
+                        const v = {...consignmentErrors}
+                        v.bol = 'This bill of lading number already exists'
+                        
+                        setConsignmentErrors({ ...v })
+                    } else {
+                        setDuplicateConsignment(false)
+                    } 
+                })
+                .catch((e) => {
+                    const v = {...consignmentErrors}
+                    v.bol = 'Could not retrieve existing consignments'
+                    setConsignmentErrors({ ...v })
+                })
+            }
+        },
+        timeout
+    )
+
+    const debounced2 = useDebouncedCallback(
+        async (str: string) => {
+            console.log('debounced2')
+            const link = route('api.containers.index', {
+                filters: 'container_num.eq.' + str
+            })
+
+            if (str.length > 0) {
+                axios.get(link, { headers: { 
+                    Authorization: 'Bearer ' + apiToken, 
+                }}).then((res) => {
+                    setSearchingContainers(false)
+                    if (res.data.items.length > 0) {
+                        setDuplicateContainer(true)
+                    } else {
+                        setDuplicateContainer(false)
+                    } 
+                }).catch((e) => {
+                    setSearchingContainers(false)
+                })
+            }
+        },
+        timeout
+    )
     const validateConsignment = (): number => {
         let count = 0
         
@@ -169,7 +229,10 @@ export default function Create({apiToken} : {apiToken: string}) {
         }
 
         if (!(consignment.bol.length > 0)) {
-            errors ={...errors, bol: "The bill of lading number is required"}
+            errors = {...errors, bol: "The bill of lading number is required"}
+            count++
+        } else if (duplicateConsignment) {
+            errors = {...errors, bol: "This bill of lading number already exists"}
             count++
         }
 
@@ -330,7 +393,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     Enter details about your new consignment
                                 </CardDescription>
                                 <CardAction>
-                                    <Button onClick={() => fn()} variant="secondary">
+                                    <Button disabled={searchingConsignments || duplicateConsignment} onClick={() => fn()} variant="secondary">
                                         Next Step
                                         <ChevronRight />
                                     </Button>
@@ -356,7 +419,7 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                         filters: "lc_num.like." + search
                                                     })
                                                     const response = await axios.get(endpoint, { headers: { Authorization: 'Bearer ' + apiToken } })
-                                                    console.log('response:', response)
+                                                    
                                                     return response.data.items.map(({lc_num} : {lc_num: string}) => {
                                                         return {value: lc_num, label: lc_num}
                                                     })
@@ -385,6 +448,9 @@ export default function Create({apiToken} : {apiToken: string}) {
                                                     const e = {...consignmentErrors}
                                                     delete e.bol
                                                     setConsignmentErrors(e)
+                                                    if (target.value.length > 0) {
+                                                        debounced(target.value)
+                                                    }
                                                     setConsignment({ ...consignment, bol: target.value})
                                                 }}
                                                 value={consignment.bol}
@@ -510,19 +576,48 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     <Label>Container number</Label>
                                     <form onSubmit={(e) => {
                                         e.preventDefault()
-                                        if (containerNum.length) {
-                                            setContainers([containerNum, ...containers])
-                                            setContainerNum("")
-                                            setNoContainersError(undefined)
+                                        if (containerNum.length) { //
+                                            if (containers.includes(containerNum)) {
+                                                setDuplicateContainer(true)
+                                            } else {
+                                                axios.get(route('api.containers.index', {
+                                                    filter: 'container_num.eq.' + containerNum
+                                                }), {
+                                                    headers: { Authorization: 'Bearer ' + apiToken, }
+                                                }).then(({data}) => {
+                                                    if (data.length > 0) {
+                                                        setDuplicateContainer(true)
+                                                    } else {
+                                                        setDuplicateContainer(false)
+                                                        setContainers([containerNum, ...containers])
+                                                        setContainerNum("")
+                                                        setNoContainersError(undefined)
+                                                    }
+                                                })
+                                                
+                                            }                                            
+                                        } else {
+                                            setDuplicateContainer(false)
                                         }
                                     }} className="w-full flex gap-4">
-                                        <Input
-                                            className={cn(noContainersError && "border-red-400")} 
-                                            value={containerNum} 
-                                            onChange={({target}) => setContainerNum(target.value)} 
-                                            placeholder="Type Container # and click + button to add a container" 
-                                        />
-                                        <Button type="submit" size="icon" variant="outline"><Plus /></Button>
+                                        <div className="w-full flex flex-col gap-2">
+                                            <Input
+                                                className={cn((noContainersError || duplicateContainer) && "border-red-400")} 
+                                                value={containerNum} 
+                                                onChange={({target}) => {
+                                                    setSearchingContainers(true)
+                                                    if (duplicateContainer) {
+                                                        setDuplicateContainer(false)
+                                                    }
+                                                    setContainerNum(target.value)
+                                                    debounced2(target.value)
+                                                }} 
+                                                placeholder="Type Container # and click + button to add a container" 
+                                            />
+                                            { duplicateContainer && <InputError message="This container number already exists" />}
+                                        </div>
+                                        
+                                        <Button disabled={duplicateContainer || searchingContainers} type="submit" size="icon" variant="outline"><Plus /></Button>
                                     </form>
                                     <Separator className="mt-4" />
                                     <Collapsible
@@ -771,36 +866,36 @@ export default function Create({apiToken} : {apiToken: string}) {
                                     <div className="flex w-full">
                                         <div className="flex flex-col gap-2 w-1/2 pr-6">
                                             <Label>Letter of credit #</Label>
-                                            <span className="font-mono font-light text-sm">{consignment.lc}</span>
+                                            <span className="text-sm">{consignment.lc}</span>
                                         </div>
                                         <div className="flex flex-col gap-2 w-1/2">
                                             <Label>Bill of lading #</Label>
-                                            <span className="font-mono font-light text-sm">{consignment.bol}</span>
+                                            <span className="text-sm">{consignment.bol}</span>
                                         </div>
                                     </div>
                                     <div className="flex">
                                         <div className="flex flex-col gap-2 w-1/2 pr-6">
                                             <Label>Exchange rate</Label>
-                                            <span className="font-mono font-light text-sm">{consignment.exchange_rate.toFixed(2)}</span>
+                                            <span className="text-sm">{consignment.exchange_rate.toFixed(2)}</span>
                                         </div>
                                         <div className="flex flex-col gap-2 w-1/2 pr-6">
                                             <Label>Total value</Label>
-                                            <span className="font-mono font-light text-sm">{consignment.value.toFixed(2)}</span>
+                                            <span className="text-sm">{consignment.value.toFixed(2)}</span>
                                         </div>
                                     </div>
                                     <div className="flex">
                                         <div className="flex flex-col w-1/2 gap-2">
                                             <Label>Total tax paid</Label>
-                                            <span className="font-mono font-light text-sm">{consignment.tax}</span>
+                                            <span className="text-sm">{consignment.tax}</span>
                                         </div>
                                         <div className="flex flex-col gap-2 w-1/2 pr-6">
                                             <Label>Total Value (taka)</Label>
-                                            <span className="font-mono font-light text-sm">{(consignment.exchange_rate * consignment.value).toFixed(2)}</span>
+                                            <span className="text-sm">{(consignment.exchange_rate * consignment.value).toFixed(2)}</span>
                                         </div>
                                     </div>
                                     <div className="flex flex-col gap-2">
                                         <Label>Landed on</Label>
-                                        <span className="font-mono font-light text-sm">{consignment.land_date?.toDateString()}</span>
+                                        <span className="text-sm">{consignment.land_date?.toDateString()}</span>
                                     </div>
                                 </div>
                             </CardContent>   
