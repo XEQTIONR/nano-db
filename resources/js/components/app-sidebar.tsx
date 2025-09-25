@@ -111,12 +111,12 @@ export function AppSidebar() {
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/dashboard" prefetch>
+                    <SidebarMenuItem className=''>
+                        {/* <SidebarMenuButton className="p-0" size="xl" asChild> */}
+                            {/* <Link href="/dashboard" prefetch> */}
                                 <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
+                            {/* </Link> */}
+                        {/* </SidebarMenuButton> */}
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
