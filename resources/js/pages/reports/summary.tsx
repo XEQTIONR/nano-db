@@ -351,6 +351,7 @@ export default function SummaryReport({
                                                         className="w-full lg:w-1/3"
                                                         title="Total expenses"
                                                         currencyCode="BDT"
+                                                        currencySymbolColorClass="text-rose-500"
                                                         subtitle={
                                                             (expense_percent > 0 ? "+" : "")
                                                             + expense_percent.toFixed(1) + "% since last " + reportTypeMappings[type]

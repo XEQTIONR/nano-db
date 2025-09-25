@@ -7,38 +7,21 @@ use App\Models\Expense;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Validation\Rule;
+use App\Http\Controllers\Api\ExpenseController as ApiController;
 
-class ExpenseController extends Controller
+class ExpenseController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $perPage = intval($request->input('perPage') ?? 50);
-
-        $sortBy = $request->input('sortBy') ?? 'created_at';
-
-        $sortDir = $request->input('sortDir') ?? 'desc';
-
-        $filterStr = $request->input('filters') ?? "";
-
-
-        if ($sortBy == 'amount_local') {
-            $expenses = Expense::orderByRaw('(rate * amount) ' . $sortDir);
-        } else {
-            $expenses = Expense::orderBy($sortBy, $sortDir);
-        }
-
-        $data = ExpenseResource::collection($expenses->paginate($perPage)->withQueryString());
+        $data = parent::index($request);
 
         return Inertia::render('common/index', [
-            'filters' => [],
-            'items' => $data,
+            ...$data,
             'addLink' => route('expenses.create'),
             'link' => route('expenses.index'),
-            'sortBy' => $sortBy,
-            'sortDir' => $sortDir,
             'title' => 'Expenses',
             'type' => 'expense',
             'types' => Expense::EXPENSABLE_LABELS,
@@ -63,30 +46,7 @@ class ExpenseController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'expensable_type' => [
-                'required',
-                Rule::in(Expense::EXPENSE_TYPES)
-            ],
-            'expensable_id' => 'nullable',
-            'date' => 'required|date',
-            'amount' => 'required|numeric|gt:0',
-            'note' => 'required|min:3',
-            'redacted' => 'required|boolean'
-            
-        ]);
-
-        $expense = new Expense([
-            'expensable_type' => $validated['expensable_type'],
-            'expensable_id' => $validated['expensable_id'],
-            'date' => $validated['date'],
-            'amount' => $validated['amount'],
-            'note' => $validated['note'],
-            'redacted' => $validated['redacted'],
-            'rate' => 1
-        ]);
-
-        $expense->save();
+        $expense = parent::store($request);
 
         return redirect(route('expenses.index'))->with('notification', [
             'message' => 'New expense ID:: '. $expense->id . ' of ৳'. $expense->amount_local .' created.',

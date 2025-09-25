@@ -227,9 +227,6 @@ export default function ExpenseReport({
         }
     }
 
-    const expensesPerPage = 15
-    const [expensesPage, setExpensesPage] = useState(0)
-
     return <AppLayout breadcrumbs={breadcrumbs}>
 
         <Head title="Revenue Report"></Head>
@@ -283,6 +280,7 @@ export default function ExpenseReport({
                                                         title="Expenses total"
                                                         subtitle={expense_percent.toFixed(2) + "% since last " + reportTypeMappings[type]}
                                                         stat={expense}
+                                                        currencySymbolColorClass="text-rose-500"
                                                         currencyCode="BDT"
                                                         decimalPlaces={2}
                                                     />
