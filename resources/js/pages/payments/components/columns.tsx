@@ -7,7 +7,6 @@ import {
   DropdownMenuSeparator 
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 import { currencyFormat } from "@/lib/utils"
@@ -34,7 +33,7 @@ export const columns = [
   },
   {
     accessorKey: "accountDesc",
-    header: (v) => <DataTableCustomColumnHeader colKey="account" justify="center" label="Account"  config={v}/>,
+    header: (v) => <DataTableCustomColumnHeader colKey="accountDesc" justify="center" label="Account"  config={v}/>,
     cell: ({ row }) => <div className="text-center">{ row.getValue('accountDesc') ?? 'Unknown' }</div>
   },
   {

@@ -28,6 +28,9 @@ class PaymentController extends Controller
         if ($sortBy == 'amount') {
             $query = Payment::with(['order.contents', 'order.customer', 'order.payments', 'bankAccount'])
                 ->orderByRaw('payment_amount - refund_amount ' . $sortDir);
+        } else if ($sortBy == 'accountDesc') {
+            $query = Payment::with(['order.contents', 'order.customer', 'order.payments', 'bankAccount'])
+                ->orderBy('account', $sortDir);
         } else {
             $query = Payment::with(['order.contents', 'order.customer', 'order.payments', 'bankAccount'])
                 ->orderBy($sortBy, $sortDir);
@@ -56,7 +59,6 @@ class PaymentController extends Controller
             $query->paginate($perPage)
                 ->withQueryString()
         );
-
         return [
             'filters' => $filters,
             'items' => $data,

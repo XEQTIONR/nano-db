@@ -57,7 +57,7 @@ class LetterOfCreditController extends Controller
         }
 
         $data = LetterOfCreditResource::collection(
-            $query->orderBy($sortBy, $sortDir)->paginate($perPage)->withQueryString()
+            $query->paginate($perPage)->withQueryString()
         );
 
         return [

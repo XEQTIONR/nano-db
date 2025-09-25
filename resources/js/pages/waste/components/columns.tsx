@@ -21,7 +21,7 @@ export const columns = [
   },
   {
     accessorKey: "bol",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="id" label="BOL #" config={v} />,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="bol" label="BOL #" config={v} />,
     cell: ({ row }) => <div className="text-center">
       <Link className="italic hover:underline" href={route('consignments.show', { consignment: row.getValue('bol')})}>
       { row.getValue('bol') }
@@ -30,7 +30,7 @@ export const columns = [
   },
   {
     accessorKey: "container_num",
-    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="id" label="Container #" config={v} />,
+    header: (v: {table: object}) => <DataTableCustomColumnHeader justify="center" colKey="container_num" label="Container #" config={v} />,
     cell: ({ row }) => <div className="text-center">{ row.getValue('container_num') }</div>
   },
   {

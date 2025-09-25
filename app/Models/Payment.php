@@ -22,6 +22,7 @@ class Payment extends Model
         'payment_amount',
         'refund_amount',
         'type',
+        'account',
     ];
 
     protected $appends = [
