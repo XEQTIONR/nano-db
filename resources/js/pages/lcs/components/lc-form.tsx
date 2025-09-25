@@ -1,11 +1,11 @@
-import { InputCalendar } from '@/components/ui/input-calendar';
+import { InputCalendar } from '@/components/ui/input-calendar'
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Separator } from '@/components/ui/separator';
-import { useState } from 'react';
-import { LetterOfCredit, LetterOfCreditFormErrors } from '@/types';
-import InputError from '@/components/input-error';
+import { Separator } from '@/components/ui/separator'
+import { useState } from 'react'
+import { LetterOfCredit, LetterOfCreditFormErrors } from '@/types'
+import InputError from '@/components/input-error'
 import {
   CardAction,
   CardContent,
@@ -14,14 +14,52 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useDebouncedCallback } from 'use-debounce'
+import axios from 'axios'
 
-export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } : { 
+export default function LetterOfCreditForm ({ apiToken, initialValue, onSubmit, onDirty } : { 
+    apiToken: string,
     initialValue?: LetterOfCredit,
     onSubmit: (data: LetterOfCredit) => void,
     onDirty: () => void, 
 }) {
+
+    const timeout = 500
+
+    const [duplicateLC, setDuplicateLC] = useState(false)
+    const [searching, setSearching] = useState(false)
+
+    const debounced = useDebouncedCallback(
+        async (str: string) => {
+            const link = route('api.lcs.index', {
+                filters: 'lc_num.eq.' + str
+            })
+
+            console.log('link:', link)
+
+            axios.get(link, { headers: { 
+                Authorization: 'Bearer ' + apiToken, 
+            }}).then((res) => {
+                if (res.data.items.length > 0) {
+                    setDuplicateLC(true)
+                    const v = {...errors}
+                    v.lc_num = 'This LC number already exists'
+                    setErrors({ ...v })
+                } else {
+                    setDuplicateLC(false)
+                } 
+            })
+            .catch((e) => {
+                console.log('api error:', e)
+                const v = {...errors}
+                v.lc_num = 'Could not retrieve existing letters of credit'
+                setErrors({ ...v })
+            })
+        },
+        timeout
+    )
 
     const [formData, setFormData] = useState<LetterOfCredit>(() => initialValue ?? {
         lc_num: "",
@@ -48,6 +86,9 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
         let count = 0
         if (typeof formData.lc_num != 'string' || formData.lc_num.length === 0) {
             errs = {...errs, lc_num: "LC number is required"}
+            count++
+        } else if (duplicateLC) {
+            errs = {...errs, lc_num: "This LC number already exists"}
             count++
         } 
 
@@ -141,6 +182,7 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                     size="sm"
                     onClick={sendData} 
                     variant="outline"
+                    disabled={searching}
                 >
                     Next Step
                     <ChevronRight />
@@ -159,9 +201,11 @@ export default function LetterOfCreditForm ({ initialValue, onSubmit, onDirty } 
                                     onDirty()
                                 }
                                 const v = {...errors}
+                                
                                 delete v.lc_num
                                 setErrors({ ...v })
                                 setFormData({...formData, lc_num: event.target.value})
+                                debounced(event.target.value)
                             }}
                             value={formData.lc_num}
                             id="lc_num"

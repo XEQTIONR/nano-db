@@ -153,7 +153,8 @@ export default function Create({apiToken} : {apiToken: string}) {
                                 !dir && (show ? "-right-0" : "-right-16"), 
                                 dir && (show ? "-left-0" : "-left-16"), )}
                         >
-                            <LetterOfCreditForm 
+                            <LetterOfCreditForm
+                                apiToken={apiToken} 
                                 initialValue={lcData} 
                                 onSubmit={(data) => {
                                     setLcDirty(false)
