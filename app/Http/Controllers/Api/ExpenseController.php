@@ -7,6 +7,7 @@ use App\Models\Expense;
 use App\Http\Resources\ExpenseResource;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Carbon;
 
 class ExpenseController extends Controller
 {
@@ -60,6 +61,10 @@ class ExpenseController extends Controller
             'redacted' => 'required|boolean'
             
         ]);
+
+        if ($validated['expensable_type'] === Expense::EXPENSABLE_DAILY) {
+            $validated['expensable_id'] = (new Carbon($validated['date']))->toDateString();
+        } 
 
         $expense = new Expense([
             'expensable_type' => $validated['expensable_type'],
