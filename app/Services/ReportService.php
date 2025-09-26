@@ -154,7 +154,7 @@ class ReportService {
             case "yearly":
                 $expenses = Expense::whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastExpenses = Expense::whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
                 break;
@@ -163,7 +163,7 @@ class ReportService {
                     ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
 
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastExpenses = Expense::whereMonth('created_at', '' . $lastPeriod->month)
                     ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
@@ -171,7 +171,7 @@ class ReportService {
             case "daily":
             default:
                 $expenses = Expense::whereDate('created_at', $thisPeriod)->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastExpenses = Expense::whereDate('created_at', $lastPeriod)->get();
         }
 
@@ -250,7 +250,7 @@ class ReportService {
             case "yearly":
                 $payments = Payment::whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastPayments = Payment::whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
                 break;
@@ -259,7 +259,7 @@ class ReportService {
                     ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
 
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastPayments = Payment::whereMonth('created_at', '' . $lastPeriod->month)
                     ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
@@ -267,7 +267,7 @@ class ReportService {
             case "daily":
             default:
                 $payments = Payment::whereDate('created_at', $thisPeriod)->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastPayments = Payment::whereDate('created_at', $lastPeriod)->get();
         }
 
@@ -354,7 +354,7 @@ class ReportService {
                 $orders = Order::with('contents')
                     ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastOrders = Order::with('contents')
                     ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
@@ -365,7 +365,7 @@ class ReportService {
                     ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
 
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastOrders = Order::with('contents')
                     ->whereMonth('created_at', '' . $lastPeriod->month)
                     ->whereYear('created_at', '' . $lastPeriod->year)
@@ -374,7 +374,7 @@ class ReportService {
             case "daily":
             default:
                 $orders = Order::with('contents')->whereDate('created_at', $thisPeriod)->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastOrders = Order::with('contents')->whereDate('created_at', $lastPeriod)->get();
         }
 
@@ -471,7 +471,7 @@ class ReportService {
                     ->get();
                 $payments = Payment::whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastOrders = Order::with('contents')
                     ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
@@ -491,7 +491,7 @@ class ReportService {
                     ->whereYear('created_at', '' . $thisPeriod->year)
                     ->get();
 
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastOrders = Order::with('contents')->whereMonth('created_at', '' . $lastPeriod->month)
                     ->whereYear('created_at', '' . $lastPeriod->year)
                     ->get();
@@ -508,7 +508,7 @@ class ReportService {
                 $expenses = Expense::whereDate('created_at', $thisPeriod)->get();
                 $payments = Payment::whereDate('created_at', $thisPeriod)->get();
                 
-                $lastPeriod = new Carbon($date)->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
+                $lastPeriod = (new Carbon($date))->sub(self::$typeItemNames[$type], 1)->startOf(self::$typeItemNames[$type]);
                 $lastOrders = Order::with('contents')->whereDate('created_at', $lastPeriod)->get();
                 $lastExpenses = Expense::whereDate('created_at', $lastPeriod)->get();
                 $lastPayments = Payment::whereDate('created_at', $lastPeriod)->get();
