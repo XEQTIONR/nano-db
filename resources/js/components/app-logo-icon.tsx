@@ -27,8 +27,8 @@ import { SVGAttributes } from 'react';
  */
 const AppLogoIcon = ({ 
   size = '1rem', 
-  colorClass = 'fill-neutral-800 dark:fill-neutral-200', // Darker blue, derived from original #path2, #path12, etc.
-  secondaryColorClass = 'fill-[#20afe6]', // Lighter blue, derived from original #path1, #path10
+  colorClass = 'fill-neutral-800 dark:fill-white', // Darker blue, derived from original #path2, #path12, etc.
+  secondaryColorClass = 'fill-[#20afe6] dark:fill-sky-600', // Lighter blue, derived from original #path1, #path10
   className, 
   style, 
   ...rest 
