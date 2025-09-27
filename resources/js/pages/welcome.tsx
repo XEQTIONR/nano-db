@@ -55,9 +55,9 @@ export default function Welcome() {
                                         </span>
                                     </span>
                                     <span>
-                                        For production version
+                                        For training version
                                         <a
-                                            href="https://laravel.com/docs"
+                                            href="https://training.intertracnano.com"
                                             target="_blank"
                                             className="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
                                         >
@@ -86,9 +86,9 @@ export default function Welcome() {
                                         </span>
                                     </span>
                                     <span>
-                                       For training version
+                                       For production version
                                         <a
-                                            href="https://laracasts.com"
+                                            href="https://app.intertracnano.com"
                                             target="_blank"
                                             className="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
                                         >
