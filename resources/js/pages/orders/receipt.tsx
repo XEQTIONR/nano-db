@@ -25,13 +25,14 @@ import {
 } from "@/components/ui/table"
 
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Banknote, Plus, Printer, Undo2 } from "lucide-react"
-import { Order, type BreadcrumbItem } from '@/types'
+import { ArrowLeft, Banknote, Plus, Printer } from "lucide-react"
+import { BankAccount, Order, type BreadcrumbItem } from '@/types'
 import { useEffect } from "react";
 import { toast } from 'sonner';
 import CreateForm from "../payments/components/create-form";
 
-export default function OrderReceipt({ order } : { order: { data: Order } }) {
+export default function OrderReceipt({ order, accounts } 
+    : { order: { data: Order }, accounts: { data: BankAccount[] } }) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -169,17 +170,19 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
                                         <div className="flex flex-col gap-2 w-1/3 ml-2">
                                             
                                             <Label className="font-semibold">Bill to</Label>
-                                            <div className="flex flex-col gap-0.5">
-                                            
-                                            <span className=" text-sm">
-                                                { data.customer_name }
-                                            </span>
-                                            <span className=" text-xs">
-                                                { data.customer?.address }
-                                            </span>
-                                            <span className=" text-xs mt-2">
-                                                ID: { data.customer_id }
-                                            </span>
+                                            <div className="flex flex-col gap-1.5">
+                                                <span className=" text-sm">
+                                                    { data.customer_name }
+                                                </span>
+                                                <span className=" text-xs">
+                                                    { data.customer?.address }
+                                                </span>
+                                                <span className="text-xs">
+                                                    Phone # { data.customer?.phone }
+                                                </span>
+                                                {/* <span className=" text-xs mt-2">
+                                                    ID: { data.customer_id }
+                                                </span> */}
                                             </div>
                                         </div>
                                         <div className="flex flex-col gap-2 w-1/3">
@@ -281,14 +284,20 @@ export default function OrderReceipt({ order } : { order: { data: Order } }) {
                                         </Table>
                                     </div>
                                 </div>
-                                <div className="w-1/2 flex flex-col items-center gap-4">
-                                    <div className="w-full h-2 border-b-2"></div>
-                                    Authrorized Signature
+                                <div className="w-full flex gap-10 mt-10">
+                                    <div className="w-1/2 flex flex-col items-center gap-4">
+                                        <div className="w-full h-2 border-b-2"></div>
+                                        Customer Signature
+                                    </div>
+                                    <div className="w-1/2 flex flex-col items-center gap-4">
+                                        <div className="w-full h-2 border-b-2"></div>
+                                        Authrorized Signature
+                                    </div>
                                 </div>
                         </CardContent>
                     </Card>
                 </div>
-                <CreateForm order={order} />
+                <CreateForm order={order} accounts={accounts} />
             </AppLayout>
         </Drawer>
     )

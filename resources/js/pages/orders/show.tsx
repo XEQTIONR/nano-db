@@ -28,17 +28,21 @@ import {
 
 import { Label } from "@/components/ui/label"
 import { ArrowLeft, Banknote, Plus, ReceiptText, Undo2 } from "lucide-react"
-import { Order, type BreadcrumbItem } from '@/types'
+import { BankAccount, Order, type BreadcrumbItem } from '@/types'
 import { useEffect, useState } from "react";
 import { toast } from 'sonner';
 import CreateForm from "@/pages/payments/components/create-form";
 import { currencyFormat } from "@/lib/utils";
 import ExpenseCard from "@/components/expense-card";
 
-export default function Show({ order } : { 
+export default function Show({ order, accounts } : { 
     order: { 
         data: Order
-} }) {
+    },
+    accounts: {
+        data: BankAccount[]
+    }
+}) {
 
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -194,6 +198,9 @@ export default function Show({ order } : {
                                                     </span>
                                                     <span className=" text-xs">
                                                         { data.customer?.address }
+                                                    </span>
+                                                    <span className=" text-xs">
+                                                        Phone # { data.customer?.phone }
                                                     </span>
                                                 </div>
                                             </div>
@@ -435,7 +442,7 @@ export default function Show({ order } : {
                     </div>)
                 }
                 
-                <CreateForm order={order} />
+                <CreateForm accounts={accounts} order={order} />
             </AppLayout>
         </Drawer>
     )

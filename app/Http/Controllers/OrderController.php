@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Api\OrderController as ApiController;
+use App\Http\Resources\BankAccountResource;
 use App\Http\Resources\OrderResource;
+use App\Models\BankAccount;
 use App\Models\Order;
 use App\Models\OrderItemReturn;
 use Illuminate\Http\Request;
@@ -57,7 +59,10 @@ class OrderController extends ApiController
      */
     public function show(Order $order)
     {
-        return Inertia::render('orders/show', ['order' => parent::show($order)]);
+        return Inertia::render('orders/show', [
+            'order' => parent::show($order),
+            'accounts' => BankAccountResource::collection(BankAccount::all())
+        ]);
     }
 
     /**

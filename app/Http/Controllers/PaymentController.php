@@ -45,7 +45,8 @@ class PaymentController extends ApiController
         $order_num = $request->order_num;
         $payment_amount = $request->payment_amount;
         $type = $request->payment_type;
-
+        $account = $request->account;
+    
         $order = Order::find($order_num);
 
         if ($type == 'commission') {
@@ -87,7 +88,8 @@ class PaymentController extends ApiController
                 substr(uniqid(), 7) . substr(uniqid(), 7)
                     . substr(uniqid(), 7) . substr(uniqid(), 7),
                 2
-            )
+            ),
+            'account' => $account
         ]);
 
         $order->payments()->save($payment);

@@ -32,19 +32,26 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { Order } from '@/types'
+import { BankAccount, Order } from '@/types'
 
 import { useState } from 'react';
 
-export default function CreateForm({ order } : { 
+type PaymentType = 'unknown'|'cash'|'deposit'|'check'
+
+export default function CreateForm({ accounts, order } : { 
+    accounts: { 
+        data: BankAccount[]
+    },
     order: { 
         data: Order
-} }) {
+    }, 
+}) {
 
     const [prevValue, setPreviousValue] = useState<number>(0)
     const [newPaymentAmount, setNewPaymentAmount] = useState <string|number>(0)
     const [editPaymentAmount, setEditPaymentAmount] = useState(false)
-    const [paymentType, setPaymentType] = useState<string|undefined>('cash')
+    const [paymentType, setPaymentType] = useState<PaymentType|undefined>('cash')
+    const [paymentAccount, setPaymentAccount] = useState<string|null>(null)
 
     const data = order.data
 
@@ -140,9 +147,8 @@ export default function CreateForm({ order } : {
                                                 max={data.balance}
                                                 type="number"
                                                 onChange={({target}) => {
-
                                                     if (isNaN(parseFloat(target.value))) {
-                                                        setNewPaymentAmount(target.value)
+                                                        setNewPaymentAmount(0)
                                                     }
                                                     setNewPaymentAmount(
                                                         data.balance 
@@ -228,20 +234,49 @@ export default function CreateForm({ order } : {
                                 </SelectContent>
                             </Select>
                         </div>
+                        {paymentType == 'deposit' && (<div className="mb-4">
+                            <Select onValueChange={(value) => {
+                                setPaymentAccount(value)
+                            }}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a bank account" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                    <SelectLabel>Payment types</SelectLabel>
+                                    {
+                                        accounts.data.map((account: BankAccount) => (
+                                            <SelectItem value={account.id.toString()}>{account.bank_name} {account.account_number}</SelectItem>
+                                        ))
+                                    }
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>)}
                     </div>
                 </div>
                 <DrawerFooter>
                     <AlertDialog>
-                        <AlertDialogTrigger>
+                        <AlertDialogTrigger disabled={
+                                    editPaymentAmount 
+                                    || (typeof newPaymentAmount == 'number'
+                                        && (newPaymentAmount <= 0 
+                                            ||  ( !!order.data.balance && newPaymentAmount > order.data.balance)
+                                        ))
+                                    || isNaN(newPaymentAmount)
+                                    || (paymentType == 'deposit' && paymentAccount == null)
+                                }>
                             <Button
                                 className="w-full"
                                 type="button"
                                 disabled={
                                     editPaymentAmount 
-                                    || typeof newPaymentAmount == 'number'
+                                    || (typeof newPaymentAmount == 'number'
                                         && (newPaymentAmount <= 0 
                                             ||  ( !!order.data.balance && newPaymentAmount > order.data.balance)
-                                        )
+                                        ))
+                                    || isNaN(newPaymentAmount)
+                                    || (paymentType == 'deposit' && paymentAccount == null)
                                 } 
                                 
                             >
@@ -268,11 +303,28 @@ export default function CreateForm({ order } : {
                                     Cancel
                                 </AlertDialogCancel>
                                 <AlertDialogAction onClick={() => {
-                                    router.post(route('payments.store'), {
+
+                                    const data: {
+                                        order_num: number
+                                        payment_amount: number
+                                        payment_type: PaymentType
+                                        account: number | null
+                                    } = {
                                         order_num: order.data.order_num,
-                                        payment_amount: newPaymentAmount,
-                                        payment_type: paymentType
-                                    })
+                                        payment_amount: typeof newPaymentAmount === 'string' ? parseFloat(newPaymentAmount) : newPaymentAmount,
+                                        payment_type: paymentType ?? 'unknown',
+                                        account: null
+                                    }
+                                    
+                                    if (paymentType == 'deposit') {
+                                        data.account = paymentAccount ? parseInt(paymentAccount) : null
+                                    }
+
+                                    setNewPaymentAmount(0)
+                                    setPaymentType(undefined)
+                                    setPaymentAccount(null)
+                                    
+                                    router.post(route('payments.store'), data)
                                 }}>
                                     Confirm
                                 </AlertDialogAction>

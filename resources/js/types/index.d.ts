@@ -78,6 +78,16 @@ export interface FilterConfig {
     getOptions?: (apiToken: string) => ((search: string) => Promise<Option[]>)
     ops?: FilterOperator[]
 }
+
+export interface BankAccount {
+    id: number
+    account_name: string
+    account_number: string
+    bank_address: string
+    bank_name: string
+    created_at: string
+}
+
 export interface User {
     id: number
     name: string
