@@ -10,25 +10,12 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
-import { currencyFormat } from "@/lib/utils";
+import { currencyFormat, formatChartTooltipLabel } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
 import { Payment } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react";
-
-const chartConfig = {
-  sumPayments: {
-    label: "Total revenue (current)",
-    
-    icon: Tag,
-  },
-  sumLastPayments: {
-    label: "Total revenue (last period)",
-    
-    icon: Tag,
-  },
-} satisfies ChartConfig
 
 const reportTypes = [ 'daily', 'monthly', 'yearly' ]
 
@@ -81,6 +68,35 @@ export default function RevenueReport({
 
         href: route('reports.revenue', { date, type })
     }]
+
+    const lastPeriod = (date: string): Date => {
+        const d = new Date(date)
+            
+        switch(type) {
+            case "daily":
+                d.setDate(d.getDate() - 1)
+                return d
+            case "monthly":
+                d.setMonth(d.getMonth() - 1)
+                return d
+            case "yearly":
+                d.setFullYear(d.getFullYear() - 1)
+                return d
+        }
+    }
+
+    const chartConfig = {
+        sumPayments: {
+            label: formatChartTooltipLabel(type, new Date(date)),
+            
+            icon: Tag,
+        },
+        sumLastPayments: {
+            label: formatChartTooltipLabel(type, lastPeriod(date)),
+            
+            icon: Tag,
+        },
+    } satisfies ChartConfig
 
     const go = (unit: number) => {
         const localDate = new Date(date)
@@ -318,7 +334,6 @@ export default function RevenueReport({
                                                             <ChartTooltip
                                                                 cursor={true}
                                                                 content={<ChartTooltipContent 
-                                                                labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
                                                                 className='pb-2 min-w-3xs' />}
                                                             />
                                                             <Line

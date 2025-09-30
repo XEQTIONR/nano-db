@@ -383,7 +383,16 @@ export default function SummaryReport({
                                                                 cursor={true}
                                                                 content={<ChartTooltipContent 
                                                                     
-                                                                // labelFormatter={(label: string) => <span className="">{new Date().toDateString() + " " +label.toUpperCase()}</span>} 
+                                                                labelFormatter={(label: string) => {
+                                                                    switch(type) {
+                                                                        case "daily":
+                                                                            return new Date(date).toDateString() + ' @ ' + label
+                                                                        case "monthly":
+                                                                            return label + " " + new Date(date).toLocaleDateString('default', {month: "short", year: "numeric"})
+                                                                        case "yearly":
+                                                                            return label + " " + new Date(date).toLocaleDateString('default', {year: "numeric"})
+                                                                    }
+                                                                }} 
                                                                 className='pb-2 min-w-3xs' />}
                                                             />
                                                             <Line
