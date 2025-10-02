@@ -174,7 +174,7 @@ export default function OrderReceipt({ order, accounts }
                                                 <span className=" text-sm">
                                                     { data.customer_name }
                                                 </span>
-                                                <span className=" text-xs">
+                                                <span className="text-xs">
                                                     { data.customer?.address }
                                                 </span>
                                                 <span className="text-xs">
@@ -187,14 +187,17 @@ export default function OrderReceipt({ order, accounts }
                                         </div>
                                         <div className="flex flex-col gap-2 w-1/3">
                                             <Label className="font-semibold">Beneficiary</Label>
-                                            <div className="flex flex-col gap-0.5">
-                                            <span className="text-sm">
-                                                Cross Country
-                                            </span>
-                                            <span className="text-xs">
-                                                7/5 Ring road, Shyamoli, <br />
-                                                Dhaka-1207
-                                            </span>
+                                            <div className="flex flex-col gap-1.5">
+                                                <span className="text-sm">
+                                                    Cross Country
+                                                </span>
+                                                <span className="text-xs">
+                                                    7/5 Ring road, Shyamoli, <br />
+                                                    Dhaka-1207
+                                                </span>
+                                                <span className="text-xs">
+                                                    Phone: 01958113113
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

@@ -1,7 +1,7 @@
 import AppLayout from "@/layouts/app-layout";
 import { Button } from "@/components/ui/button";
 import DashboardCard from "@/components/ui/dashboard-card";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
   ChartConfig,
@@ -9,13 +9,14 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChevronLeft, ChevronLeftIcon, ChevronRight, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Printer, Tag } from "lucide-react";
 import { currencyFormat, formatChartTooltipLabel } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
 import { Payment } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const reportTypes = [ 'daily', 'monthly', 'yearly' ]
 
@@ -246,7 +247,28 @@ export default function RevenueReport({
     const paymentsPerPage = 15
     const [paymentPage, setPaymentPage] = useState(0)
 
-    return <AppLayout breadcrumbs={breadcrumbs}>
+    return <AppLayout
+        breadcrumbs={breadcrumbs}
+        controls={
+            <div className="flex items-end gap-2 justify-end">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => window.print()} 
+                            className="hover:cursor-pointer text-xs" 
+                            size="icon" 
+                            variant="ghost"
+                        >
+                            <Printer />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Print</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        }
+    >
 
         <Head title="Revenue Report"></Head>
         <div className="w-full basis-1/10 ">

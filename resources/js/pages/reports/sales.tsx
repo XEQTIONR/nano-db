@@ -9,12 +9,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Printer, Tag } from "lucide-react";
 import { currencyFormat, formatChartTooltipLabel } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
 import { Order } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const reportTypes = [ 'daily', 'monthly', 'yearly' ]
 
@@ -244,8 +245,28 @@ export default function SalesReport({
         }
     }
 
-    return <AppLayout breadcrumbs={breadcrumbs}>
-
+    return <AppLayout
+        breadcrumbs={breadcrumbs}
+        controls={
+            <div className="flex items-end gap-2 justify-end">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => window.print()} 
+                            className="hover:cursor-pointer text-xs" 
+                            size="icon" 
+                            variant="ghost"
+                        >
+                            <Printer />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Print</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        }
+    >
         <Head title="Sales Report"></Head>
         <div className="w-full basis-1/10 ">
             <div className="p-4 flex flex-col gap-4 overflow-y-scroll">

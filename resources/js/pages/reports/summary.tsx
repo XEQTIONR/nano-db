@@ -9,12 +9,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { BanknoteArrowDown, BanknoteArrowUp, ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Tag } from "lucide-react";
+import { BanknoteArrowDown, BanknoteArrowUp, ChevronLeftIcon, ChevronRightIcon, LoaderCircleIcon, Printer, Tag } from "lucide-react";
 import { currencyFormat } from "@/lib/utils";
 import { Head, router } from "@inertiajs/react";
 import { Expense, Order, Payment } from "@/types";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const chartConfig = {
   sumSales: {
@@ -274,7 +275,28 @@ export default function SummaryReport({
         }
     }
 
-    return <AppLayout breadcrumbs={breadcrumbs}>
+    return <AppLayout 
+        breadcrumbs={breadcrumbs}
+        controls={
+            <div className="flex items-end gap-2 justify-end">
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button
+                            onClick={() => window.print()} 
+                            className="hover:cursor-pointer text-xs" 
+                            size="icon" 
+                            variant="ghost"
+                        >
+                            <Printer />
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Print</p>
+                    </TooltipContent>
+                </Tooltip>
+            </div>
+        }
+    >
 
         <Head title="Summary Report"></Head>
         <div className="w-full h-[90vh]">
