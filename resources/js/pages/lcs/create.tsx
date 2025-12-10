@@ -1,0 +1,261 @@
+import AppLayout from '@/layouts/app-layout';
+import { InvoiceItem, Tyre, type BreadcrumbItem } from '@/types';
+import { Head, router } from '@inertiajs/react';
+
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+import { useState } from 'react';
+import LetterOfCreditForm from './components/lc-form';
+import { LetterOfCredit } from '@/types';
+import ProductsTable from '@/components/product-table';
+import ProformaInvoiceForm from '@/components/proforma-invoice-form';
+import ConfirmLcForm from '@/components/confirm-lc-form';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import Stepper from '@/components/stepper';
+
+export default function Create({apiToken} : {apiToken: string}) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Letters of Credit',
+            href: route('lcs.index'),
+        },
+        {
+            title: 'Create New',
+            href: route('lcs.create'),
+        },
+    ];
+
+    const [show, setShow] = useState(true)
+    const [dir, setDir] = useState(true)
+    const [current, setCurrent] = useState(0)
+    const [items, setItems] = useState<Tyre[]>([])
+    const steps = [
+        'Record Information',
+        'Add Proforma Invoice',
+        'Confirm'
+    ]
+
+    const fn = (prev = false) => {
+        setDir(prev)
+        setShow(false)
+        setCurrent((prev ? (current - 1) : (current + 1)) % steps.length)
+        
+        if (prev) {
+            if ((current - 1) < 0)
+                setCurrent(steps.length - 1)
+            else
+                setCurrent((current - 1))
+        } else {
+            setCurrent((current+1) % steps.length)
+        }
+        
+        setTimeout(() => setShow(true), 1)
+    }
+
+    const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[] | null>(null)
+    const [lcData, setLcData] = useState<LetterOfCredit>({
+        lc_num: "",
+        date_issued: undefined,
+        date_expiry: undefined,
+        applicant: "",
+        beneficiary: "",
+        port_depart: "",
+        port_arrive: "",
+        currency_code: "",
+        exchange_rate: 0,
+        foreign_amount: 0,
+        foreign_expense: 0,
+        domestic_expense: 0,
+        notes: "",
+        invoice_no: ""
+    })
+
+    const [lcDirty, setLcDirty] = useState(false)
+    const [invoiceDirty, setInvoiceDirty] = useState(false)
+
+    const submit = (lcData: LetterOfCredit, items: InvoiceItem[]) => {
+        router.post(route('lcs.store'), {
+            lc: {
+                ...lcData,
+                date_issued: lcData.date_issued?.toISOString().split("T")[0],
+                date_expiry: lcData.date_expiry?.toISOString().split("T")[0],
+            },
+            items,
+        })
+    }
+
+    return (
+        <AppLayout 
+            breadcrumbs={breadcrumbs}
+            controls={
+                <div className="flex items-end gap-2 justify-end">
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    onClick={() => router.visit(route('lcs.index'))} 
+                                    className="hover:cursor-pointer text-xs" 
+                                    size="icon" 
+                                    variant="ghost"
+                                >
+                                    <ArrowLeft />
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Back to letters of credit</p>
+                            </TooltipContent>
+                        </Tooltip>
+                </div>
+            }
+        >
+            <Head title="Create LC" />
+            <div className="flex flex-col max-h-[92vh] overflow-y-scroll items-start rounded-xl p-4">
+                <div className="w-full">
+                    <h1 className="text-2xl md:text-4xl font-bold mb-4 mt-2">Create new letter of credit</h1>
+                </div>
+                <div className="w-full xl:w-1/2 flex gap-10 items-start lg:items-center mt-4">
+                    <Stepper steps={steps} current={current} />
+                    <div className="flex gap-3">
+                        <Button disabled={current == 0} className="cursor-pointer" onClick={() => fn(true)} variant="secondary">
+                        <ChevronLeft />
+                        </Button>
+                        <Button disabled={
+                            current == (steps.length - 1)
+                            || (current == 0 && (lcData.lc_num.length == 0 || lcDirty))
+                            || (current == 1 && (lcData.invoice_no?.length == 0 || invoiceDirty))
+                        } className="cursor-pointer" onClick={() => {
+                            fn(false)
+                        }} variant="secondary">
+                            <ChevronRight />
+                        </Button>
+                    </div>
+                </div>
+                <div className="w-full pt-5 flex gap-4 items-start">
+                {
+                    current == 0 && (
+                        <Card 
+                            className={cn(
+                                "w-full xl:w-1/2 transition-all relative mb-4",
+                                show ? "opacity-100" : "opacity-0",
+                                !dir && (show ? "-right-0" : "-right-16"), 
+                                dir && (show ? "-left-0" : "-left-16"), )}
+                        >
+                            <LetterOfCreditForm
+                                apiToken={apiToken} 
+                                initialValue={lcData} 
+                                onSubmit={(data) => {
+                                    setLcDirty(false)
+                                    setLcData(data)
+                                    fn()
+                                }}
+                                onDirty={() => setLcDirty(true)} 
+                                />
+                        </Card>
+                    )
+                }
+                {
+                    current == 1 
+                    && (<Card 
+                            className={cn(
+                                "w-1/2 max-w-3xl transition-all relative",
+                                show ? "opacity-100" : "opacity-0",
+                                !dir && (show ? "-right-0" : "-right-16"), 
+                                dir && (show ? "-left-0" : "-left-16"), 
+                            )}
+                    >
+                        <ProformaInvoiceForm
+                            invoiceNumber={lcData.invoice_no} 
+                            items={invoiceItems ?? items.map(item => {
+                                return {
+                                    ...item,
+                                    qty: 0,
+                                    unit_price: 0,
+                                }
+                            })}
+                            updateItems={(itms) => setItems(itms)} 
+                            onSubmit={(invoiceNum: string, items: InvoiceItem[]) => {
+                                setInvoiceDirty(false)
+                                setInvoiceItems(items)
+                                setLcData({
+                                    ...lcData,
+                                    invoice_no: invoiceNum
+                                })
+                                fn()
+                            }}
+
+                            onDirty={() => setInvoiceDirty(true)}
+                        />
+                    </Card>)
+                }
+                {
+                    current == 2 
+                    && (<Card className={cn(
+                                "w-full transition-all relative",
+                                show ? "opacity-100" : "opacity-0",
+                                !dir && (show ? "-right-0" : "-right-16"), 
+                                dir && (show ? "-left-0" : "-left-16"), 
+                            )}
+                
+                    >
+                        <ConfirmLcForm 
+                            lcData={lcData} 
+                            items={invoiceItems ?? []} 
+                            onSubmit={submit}
+                        />
+                    </Card>)
+                }
+                {
+                    current == 1 && (
+                        <Card className="w-1/2">
+                            <CardHeader>
+                                <CardTitle>Product Catalog</CardTitle>
+                                <CardDescription>
+                                    All products
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <ProductsTable
+                                    all={true} 
+                                    apiToken={apiToken}
+                                    addItem={(item) => {
+                                        setItems([
+                                            ...items,
+                                            item
+                                        ])
+
+                                        if (invoiceItems) {
+                                            setInvoiceItems([
+                                                ...invoiceItems,
+                                                {
+                                                    ...item,
+                                                    qty: 0,
+                                                    unit_price: 0
+                                                }
+                                            ])
+                                        }
+                                        
+                                    }} 
+                                />
+                            </CardContent>
+                        </Card>
+                    )
+                }     
+                </div>
+                
+            </div>
+        </AppLayout>
+    );
+}

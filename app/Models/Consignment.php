@@ -2,32 +2,67 @@
 
 namespace App\Models;
 
+use App\Traits\Expensable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Consignment extends Model
 {
-    //
-    public $primaryKey = 'BOL';
+    use Expensable;
+    
     public $incrementing = false;
-    //protected $casts = ['BOL' => 'string']; // laravel 5.0
+    
+    protected $primaryKey = 'BOL';
 
-    public function letterOfCredit()
-    {
-      return $this->belongsTo(Lc::class, 'lc');
+    protected $fillable = [
+        'BOL',
+        'value',
+        'exchange_rate',
+        'tax',
+        'land_date',
+        'lc',
+    ];
+
+    public static $searchable = [
+        'BOL',
+        'value',
+        'exchange_rate',
+        'tax',
+        'land_date',
+        'lc',
+    ];
+    
+    protected function casts() : array  
+    { 
+        return [
+            'land_date' => 'date',
+        ];
     }
 
-    public function containers()
+    public function letterOfCredit(): BelongsTo
     {
-      return $this->hasMany(Consignment_container::class,'BOL');
+        return $this->belongsTo(LetterOfCredit::class, 'lc');
     }
 
-    public function expenses()
+    public function containers(): HasMany
     {
-      return $this->hasMany(Consignment_expense::class,'BOL');
+        return $this->hasMany(Container::class, 'BOL');
     }
 
-    public function waste()
+    public function valueLocal(): Attribute
     {
-      return $this->hasMany(Waste::class, 'BOL');
+        return Attribute::make(
+            get: function(mixed $val, array $attr) {
+               return $attr['exchange_rate'] * $attr['value'];
+            }
+        );
     }
+
+
+
+
+
+
 }

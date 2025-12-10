@@ -2,135 +2,100 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\StockResource;
+use App\Http\Resources\TyreResource;
 use App\Models\Tyre;
 use Illuminate\Http\Request;
-use Validator;
-use Illuminate\Support\Str;
-class TyreController extends Controller
-{
+use Inertia\Inertia;
+use App\Http\Controllers\Api\TyreController as ApiController;
 
+class TyreController extends ApiController
+{
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tyres = Tyre::all();
+        $data = parent::index($request);
 
-        return view('tyres',compact('tyres'));
+        return Inertia::render('common/index', [
+            ...$data,
+            'addLink' => 'drawer',
+            'link' => route('tyres.index'),
+            'title' => 'Products',
+            'type' => 'tyre',
+            'breadcrumbsLinks' => [
+                ['title' => 'Products', 'href' => route('tyres.index')],
+            ],
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
-        //
-        return view('new_tyre');
+        //return Inertia::render('lcs/create');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //VALIDATE
-        $existing =Tyre::where([
-          ['brand', '=', Str::upper($request->brand)],
-          ['size', '=', Str::upper($request->size)],
-          ['lisi', '=', Str::upper($request->lisi)],
-          ['pattern', '=', Str::upper($request->pattern)]
-        ])->get();
+        $tyre = parent::store($request);
 
-       // return $existing;
-
-        if($existing->count() > 0)
-        {
-          $response = array();
-          $response['status'] = 'failed';
-          $response['message'] = 'Duplicate Tyre : This tyre already exists.';
-
-          return $response;
-        }
-//      else
-          //ALLOCATE
-          $tyre = new Tyre;
-
-          //INITIALIZE
-          $tyre->brand = Str::upper($request->brand);
-          $tyre->size = Str::upper($request->size);
-          $tyre->lisi = Str::upper($request->lisi);
-          $tyre->pattern = Str::upper($request->pattern);
-
-          //STORE
-          $tyre->save();
-
-          //RESPOND
-          $response = array();
-          $response['status'] = 'success';
-          $response['tyre_id'] = $tyre->tyre_id;
-
-
-          return $response;
-//        }
-
+        return redirect(route('tyres.index'))
+            ->with('notification', [
+                'message' => 'Tyre ID: '. $tyre->tyre_id . ' created.',
+                'selected_value' => $tyre->tyre_id,
+                'selected_key' => 'id'
+            ]);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Tyre  $tyre
-     * @return \Illuminate\Http\Response
      */
-    public function show(Tyre $tyre)
+    public function show(string $id)
     {
         //
-        return view('profiles.tyre', compact('tyre'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Tyre  $tyre
-     * @return \Illuminate\Http\Response
      */
-    public function edit(Tyre $tyre)
+    public function edit(Request $request, Tyre $tyre)
     {
-        //
+        $data = parent::index($request);
+
+        return Inertia::render('common/index', [
+            ...$data,
+            'addLink' => 'drawer',
+            'link' => route('tyres.index'),
+            'title' => 'Products',
+            'type' => 'tyre',
+            'edit' => new TyreResource($tyre), 
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Tyre  $tyre
-     * @return \Illuminate\Http\Response
      */
-//    public function update(Request $request, Tyre $tyre)
-//    {
-//
-//        $tyre->brand    = $request->inputTyreBrand;
-//        $tyre->size     = $request->inputTyreSize;
-//        $tyre->pattern  = $request->inputTyrePattern;
-//
-//        $tyre->save();
-//
-//        return redirect("/tyres/".$tyre->id);
-//    }
+    public function update(Request $request, Tyre $tyre)
+    {
+        $tyre = parent::update($request, $tyre);
+
+        return redirect(route('tyres.index'))->with([
+            'notification' => [
+                'message' => 'Tyre ID:' . $tyre->tyre_id . " updated."
+            ]
+            ]);
+    }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Tyre  $tyre
-     * @return \Illuminate\Http\Response
      */
-    public function destroy(Tyre $tyre)
+    public function destroy(string $id)
     {
         //
     }

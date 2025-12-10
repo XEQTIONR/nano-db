@@ -3,19 +3,26 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    //
+    
+    protected $fillable = [
+        'name',
+        'address',
+        'phone',
+        'notes',
+    ];
 
-    public function orders()
-    {
-      return $this->hasMany(Order::class, 'customer_id');
+    public static $searchable = [
+        'id',
+        'name',
+        'address',
+        'phone',
+    ];
+
+    public function orders(): HasMany {
+        return $this->hasMany(Order::class);
     }
-
-    public function payments()
-    {
-      return $this->hasManyThrough(Payment::class, Order::class, 'customer_id', 'Order_num');
-    }
-
 }

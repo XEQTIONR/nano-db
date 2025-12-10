@@ -2,126 +2,112 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BankAccount;
-use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use Validator;
+use Inertia\Inertia;
+use App\Http\Controllers\Api\PaymentController as ApiController;
+use App\Models\Order;
 
-class PaymentController extends Controller
+class PaymentController extends ApiController
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
-    public function index()
+    public function index(Request $request)
     {
-        $payments = Payment::with('bankAccount')->orderBy('created_at', 'desc')->get();
-        $paymentTypes = Payment::$paymentTypes;
+        $data = parent::index($request);
 
-        return view('payments', compact('payments', 'paymentTypes'));
+        return Inertia::render('common/index', [
+            ...$data,
+            'link' => route('payments.index'),
+            'title' => 'Payments',
+            'type' => 'payment',
+            'breadcrumbsLinks' => [
+                ['title' => 'Orders', 'href' => route('orders.index')],
+                ['title' => 'Payments', 'href' => route('payments.index')],
+            ],
+        ]);
     }
-
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
      */
     public function create()
     {
-      $paymentTypes = array_filter( Payment::$paymentTypes, function($val) { return $val !== 'Unknown'; });
-      $bankAccounts = BankAccount::all();
-      $orders = Order::with(['customer:id,name,address,phone','payments', 'orderContents.tyre'])->get();
-
-      foreach($orders as $order)
-      {
-        $order->customer->address =  str_replace("\n", "", nl2br($order->customer->address));
-        //$order->customer->notes =  str_replace("\n", "", nl2br($order->customer->notes));
-      }
-
-
-      return view('new_payment', compact('orders', 'paymentTypes', 'bankAccounts'));
+        
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
+        $order_num = $request->order_num;
+        $payment_amount = $request->payment_amount;
+        $type = $request->payment_type;
+        $account = $request->account;
+    
+        $order = Order::find($order_num);
 
-        //VALIDATE
-        $amount = $request->amount;
-        $order = Order::find(intval($request->order));
-        $payable = floatval($order->calculatePayable());
-        $duplicate = Payment::where('random', $request->random)->first();
+        if ($type == 'commission') {
+            if ($order->commission == 0) {
+                $order->load(['contents', 'payments']);
+                $paymentsTotal = $order->payments->reduce(fn($carry, $payment) => $carry + $payment->amount, 0);
+                $subTotal = $order->contents->reduce(fn($carry, $content) => $carry + ($content->qty * $content->unit_price) ,0);
+                $grandTotal = $subTotal * (1 + (($order->tax_percentage - $order->discount_percent)/100)) + $order->tax_amount - $order->discount_amount;
+                
+                if (($grandTotal - $paymentsTotal - $payment_amount) >= 0) {
+                    $order->commission = $payment_amount;
+                    $order->save();
 
-        if($amount > $payable)
-        {
-          $response = [];
+                    return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
+                        'message' => 'Commission ' 
+                            . ' of TK ' 
+                            . $payment_amount 
+                            . ' saved for Order #'
+                            . $order_num,
+                    ]);
+                } // commission overflows
+                return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
+                    'message' => 'Commission ' 
+                        . ' of TK ' 
+                        . $payment_amount 
+                        . ' is greater than order balance for Order #'
+                        . $order_num,
+                ]);
+                
+            } // commision already exists
+            return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
+                'message' => 'Commission already added for Order #' . $order_num
+            ]);
+        } // real payment (not commission)
+        $payment = new Payment([
+            'payment_amount' => $payment_amount,
+            'type' => $type,
+            'random' => substr(
+                substr(uniqid(), 7) . substr(uniqid(), 7)
+                    . substr(uniqid(), 7) . substr(uniqid(), 7),
+                2
+            ),
+            'account' => $account
+        ]);
 
-          $response['status'] = 'failed';
-          $response['message'] = "Amount paid is greater than payable amount.";
+        $order->payments()->save($payment);
 
-          return $response;
-        }
+        $payment->fresh();
 
-        if($duplicate != null){
-
-          $response = [];
-
-          $response['status'] = 'failed';
-          $response['message'] = "Duplicate Request. Your payment may have been already added.".
-                                  " Check and then try again if required.";
-
-          return $response;
-        }
-
-        //ALLOCATE
-        $payment = new Payment;
-
-        //INITIALIZE
-        $payment->Order_num = $request->order;
-        $payment->payment_amount = $request->amount;
-        $payment->refund_amount = 0;
-        $payment->random = $request->random;
-        $payment->type = $request->paymentType;
-        $payment->account = $request->accountId;
-
-
-        //STORE
-        if ($request->paymentType == 'commission') { // payment is not created if it is a commission 
-          $order->commission = $request->amount;
-          $order->save();
-          $order->refresh();
-          //fake payment details
-          $payment->created_at = $order->updated_at;
-          $payment->updated_at = $order->updated_at;
-        } else {
-          $payment->save();
-          $payment->refresh(); // otherwise $payment->refund_amount is not hydrated.
-        }
-
-        $payment->new = true;
-
-        //REDIRECT
-        $response = [];
-
-        $response['status'] = 'success';
-        $response['payment'] = $payment;
-
-        return $response;
+        return redirect(route('orders.show', [ 'order' => $order ]))->with('notification', [
+            'message' => 'New payment (ID: ' 
+                . $payment->transaction_id 
+                . ') of TK ' 
+                . $payment_amount 
+                . ' created for Order #'
+                . $order_num,
+        ]);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param  \App\Payment  $payment
-     * @return \Illuminate\Http\Response
      */
     public function show(Payment $payment)
     {
@@ -130,9 +116,6 @@ class PaymentController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param  \App\Payment  $payment
-     * @return \Illuminate\Http\Response
      */
     public function edit(Payment $payment)
     {
@@ -141,10 +124,6 @@ class PaymentController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Payment  $payment
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Payment $payment)
     {
@@ -153,9 +132,6 @@ class PaymentController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  \App\Payment  $payment
-     * @return \Illuminate\Http\Response
      */
     public function destroy(Payment $payment)
     {

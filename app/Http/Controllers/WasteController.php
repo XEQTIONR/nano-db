@@ -2,66 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DetailedStockResource;
+use App\Http\Resources\TyreResource;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
 use App\Models\Tyre;
 use App\Models\Waste;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Api\WasteController as ApiController;
 
-class WasteController extends Controller
+class WasteController extends ApiController
 {
-    //
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        $data = parent::index($request);
 
-  public function create(){
-    $order = resolve('TyresRemainingInContainers')->where("in_stock", ">", 0)->values();
-    $tyres = Tyre::all('tyre_id', 'brand', 'size', 'lisi', 'pattern');
-
-    foreach($order as $o)
-      $o->tyre = $tyres->where('tyre_id', $o->tyre_id)->first();
-    //return $order;
-    $ret = $order->groupBy('BOL');
-
-    $remain = collect();
-
-    foreach($ret as $key => $val){
-      $array = array( $key => $val->groupBy('Container_num') );
-      $remain->push($array);
+        return Inertia::render('common/index', [
+            ...$data,
+            'addLink' => route('waste.create'),
+            'link' => route('waste.index'),
+            'title' => 'Waste',
+            'type' => 'waste',
+            'breadcrumbsLinks' => [
+                ['title' => 'Consignments', 'href' => route('consignments.index')],
+                ['title' => 'Waste', 'href' => route('waste.index')],
+            ],
+        ]);
     }
 
-   //return $remain;
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $groupedConsignments = resolve(DetailedStockResource::class)
+            ->whereRaw('(IFNULL(container_contents.supplied_qty, 0) - IFNULL(order_contents.ordered_qty, 0) - IFNULL(waste.wasted_qty, 0)) > 0')
+            ->get()
+            ->groupBy('BOL')
+            ->map(function($each) {
+                return $each->groupBy('Container_num');
+            });
 
-    return view('waste', compact('remain'));
-  }
+        $gc = resolve(DetailedStockResource::class)
+            ->whereRaw('(IFNULL(container_contents.supplied_qty, 0) - IFNULL(order_contents.ordered_qty, 0) - IFNULL(waste.wasted_qty, 0)) > 0')
+            ->get();
 
-  public function store(Request $request){
-      //$array = array();
-      $response = array();
-      DB::beginTransaction();
-      try {
-        foreach ($request->data as $consignment)
-          foreach ($consignment as $bol=>$containers)
-            foreach ($containers as $container_num=>$contents)
-              foreach ($contents as $content)
-                if (intval($content[ 'ret_amt' ])>0) {
-                  $waste=new Waste();
-                  $waste->Container_num=$content[ 'Container_num' ];
-                  $waste->BOL=$content[ 'BOL' ];
-                  $waste->tyre_id=$content[ 'tyre_id' ];
-                  $waste->qty=intval($content[ 'ret_amt' ]);
+        $tyres =  TyreResource::collection(Tyre::whereIn('tyre_id', $gc->map(fn($each) => $each->tyre_id))->get());
 
-                  $waste->save();
-                }
-        DB::commit();
-        $response['status'] = 'success';
-        return $response;
-      }
-      catch(\Exception $e){
+        return Inertia::render('waste/create', compact('groupedConsignments', 'tyres'));
+    }
 
-        $response['status'] = 'failed';
-        $response['error'] = $e->getMessage();
-        return $response;
-      }
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $total = parent::store($request);
 
+        return redirect(route('waste.index'))->with('notification', [
+            'message' => "Removed $total items from stock and added to waste."
+        ]);
+    }
 
-  }
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
 }

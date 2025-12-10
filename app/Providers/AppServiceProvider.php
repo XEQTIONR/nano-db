@@ -2,160 +2,113 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Http\Resources\DetailedStockResource;
+use App\Http\Resources\StockResource;
+use App\Models\ContainerContent;
+use App\Models\OrderContent;
+use App\Models\Tyre;
+use App\Models\Waste;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
-    public function register()
+    public function register(): void
     {
-        //
-        app()->bind('TyresRemainingInContainers', function(){
-          $remaining = DB::select('
-      
-                  SELECT C.* , IFNULL((qty_bought - qty_sold - IFNULL(waste, 0)), qty_bought) AS in_stock
-                  FROM
-                    (SELECT Container_num, BOL, tyre_id, SUM(qty) as qty_bought, MIN(created_at) as created_at 
-                    FROM container_contents
-                    GROUP BY Container_num, BOL, tyre_id) AS C
-  
-                    LEFT JOIN
-  
-                    (SELECT container_num, bol, tyre_id, SUM(qty) AS qty_sold
-                    FROM order_contents
-                    GROUP BY container_num, bol, tyre_id) AS B
-	                  
-	                  ON (C.tyre_id = B.tyre_id AND C.BOL = B.bol AND C.Container_num = B.container_num)
-	                  
-	                  LEFT JOIN 
-	                  
-	                  (SELECT Container_num, BOL, tyre_id, SUM(qty) as waste
-	                  FROM waste
-	                  GROUP BY Container_num, BOL, tyre_id) AS W
-	                  
-	                  ON (C.tyre_id = W.tyre_id AND C.BOL = W.BOL AND C.Container_num = W.Container_num)
-		              
-		              ORDER BY created_at ASC
-	    
-      
-          ');
+        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
+        $this->app->bind(StockResource::class, function() {
+            $order_contents =  OrderContent::select('tyre_id', DB::raw('SUM(qty) AS ordered_qty'))
+                ->groupBy('tyre_id');
+            $container_contents = ContainerContent::select('tyre_id', DB::raw('SUM(qty) AS supplied_qty'))
+                ->groupBy('tyre_id');
+            $waste = Waste::select('tyre_id',  DB::raw('SUM(qty) AS wasted_qty'))
+                ->groupBy('tyre_id');
 
-          return collect($remaining); //because we need collection not array
+            return Tyre::leftJoinSub($container_contents, 'container_contents', function($join) {
+                $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
+            })->leftJoinSub($order_contents, 'order_contents', function($join) {
+                $join->on('order_contents.tyre_id', '=', 'tyres.tyre_id');
+            })->leftJoinSub($waste, 'waste', function($join) {
+                $join->on('waste.tyre_id', '=', 'tyres.tyre_id');
+            })->select(
+                'tyres.tyre_id',
+                'brand', 
+                'size', 
+                'lisi', 
+                'pattern', 
+                'created_at',
+                'updated_at', 
+                DB::raw('IFNULL(ordered_qty,0) AS ordered_qty'),
+                DB::raw('IFNULL(supplied_qty,0) AS supplied_qty'),
+                DB::raw('IFNULL(wasted_qty,0) AS wasted_qty'),
+                DB::raw('IFNULL(supplied_qty,0) - IFNULL(ordered_qty,0) - IFNULL(wasted_qty,0) AS in_stock')
+            );
         });
 
-        app()->bind('TyresRemainingSQL', function(){
-
-          return '
-      
-          SELECT T.tyre_id, T.brand, T.size, T.pattern, T.lisi, E.qtyavailable AS in_stock
-          FROM	(SELECT  C.tyre_id, SUM(C.supplyqty -  IFNULL(B.sumqty,0) - IFNULL(W.waste,0)) AS qtyavailable  
-                FROM  (SELECT Container_num, BOL, tyre_id, SUM(qty) as supplyqty 
-                      FROM container_contents
-                      GROUP BY Container_num, BOL, tyre_id) AS C
-    
-                      LEFT JOIN
-    
-                      (SELECT container_num, bol, tyre_id, SUM(qty) AS sumqty
-                      FROM order_contents
-                      GROUP BY container_num, bol, tyre_id) AS B
-                      
-                      ON (C.tyre_id = B.tyre_id AND C.BOL = B.bol AND C.Container_num = B.container_num)                      
-                      
-                      LEFT JOIN 
-	                  
-                      (SELECT Container_num, BOL, tyre_id, SUM(qty) as waste
-                      FROM waste
-                      GROUP BY Container_num, BOL, tyre_id) AS W
-                      
-                      ON (C.tyre_id = W.tyre_id AND C.BOL = W.BOL AND C.Container_num = W.Container_num)
-      
-
-                        GROUP BY tyre_id) E, tyres T	
-                WHERE T.tyre_id = E.tyre_id
+        $this->app->bind(DetailedStockResource::class, function() {
             
-            ';
-
+            $order_contents =  OrderContent::select('tyre_id', 'container_num', 'bol', DB::raw('SUM(qty) AS ordered_qty'))
+                ->groupBy(['tyre_id', 'container_num', 'bol']);
+            
+            $container_contents = ContainerContent::select('tyre_id', 'Container_num', 'BOL', DB::raw('SUM(qty) AS supplied_qty'), DB::raw('MIN(created_at) AS created_at'))
+                ->groupBy('tyre_id', 'Container_num', 'BOL');
+            
+            $waste = Waste::groupBy(['tyre_id', 'Container_num', 'BOL'])
+                ->select(['tyre_id', 'Container_num', 'BOL', DB::raw('SUM(qty) AS wasted_qty')]);
+            
+            return Tyre::joinSub($container_contents, 'container_contents', function($join) {
+                $join->on('container_contents.tyre_id', '=', 'tyres.tyre_id');
+            })->leftjoinSub($order_contents, 'order_contents', function($join) {
+                $join->on('container_contents.BOL', '=', 'order_contents.bol');
+                $join->on('container_contents.Container_num', '=', 'order_contents.container_num');
+                $join->on('container_contents.tyre_id', '=', 'order_contents.tyre_id');
+            })->leftjoinSub($waste, 'waste', function($join) {
+                $join->on('container_contents.BOL', '=', 'waste.BOL');
+                $join->on('container_contents.Container_num', '=', 'waste.Container_num');
+                $join->on('container_contents.tyre_id', '=', 'waste.tyre_id');
+            })->select([
+                'container_contents.tyre_id',
+                'container_contents.BOL',
+                'container_contents.Container_num',
+                'container_contents.created_at',
+                DB::raw('IFNULL(container_contents.supplied_qty, 0) AS supplied_qty'),
+                DB::raw('IFNULL(order_contents.ordered_qty, 0) AS ordered_qty'),
+                DB::raw('IFNULL(waste.wasted_qty, 0) AS wasted_qty'),
+                DB::raw('IFNULL(container_contents.supplied_qty, 0) - IFNULL(order_contents.ordered_qty, 0) - IFNULL(waste.wasted_qty, 0) AS in_stock')
+            ]);
         });
 
-        app()->bind('CustomersOwingSQL', function(){
+        $this->app->singleton(PersonalAccessToken::class, function() {
+            $user = request()->user();
+                if ($user) {
 
-          $customers = 
-            'SELECT C.*, B.*, (B.sum_grand_total - B.sum_payments_total - B.sum_commission) AS balance_total
-            FROM customers C 
-            LEFT JOIN
-            (SELECT customer_id, SUM(sub_total) AS sum_sub_total, 
-                    SUM(grand_total) AS sum_grand_total, 
-                    SUM(payments_total) AS sum_payments_total,
-                    SUM(commission) AS sum_commission,
-                    COUNT(*) AS number_of_orders
-            FROM
-                (SELECT orders.customer_id, ST.sub_total, 
-                        (ST.sub_total - ((ST.sub_total*orders.discount_percent)/100) - orders.discount_amount + ((ST.sub_total*orders.tax_percentage)/100) + orders.tax_amount) AS grand_total,
-                        IFNULL(payment_total, 0) AS payments_total,
-                        orders.commission -- 3. get order info including subtotal, and sum payments
-                FROM orders
-                  INNER JOIN  
-                    (SELECT Order_num, SUM(qty*unit_price) AS sub_total -- 1. get subtotal
-                    FROM order_contents
-                    GROUP BY Order_num) AS ST        
-                  ON orders.Order_num = ST.Order_num
-                            
-                  LEFT JOIN 
-                    (SELECT Order_num, SUM(payment_amount-refund_amount) as payment_total -- 2. get sum of payments
-                    FROM payments
-                    GROUP BY Order_num) AS P
-                  ON orders.Order_num = P.Order_num) AS A
+                    $token = request()->session()->get('apiToken');
 
-            GROUP BY customer_id) B
-            
-            ON C.id = B.customer_id
-            
-            ORDER BY balance_total DESC
-          
-          ';
+                    if ($token) {
+                        return $token;
+                    }
 
-          return $customers;
-        });
 
-        app()->bind('OrdersSummarySQL', function(){
-            return
-              'SELECT X.*, (sub_total - discount + tax) AS grand_total, payments_total, (sub_total - discount + tax - commission - payments_total) AS balance
-              FROM
-                (SELECT T.*, 
-                  ((T.sub_total * T.discount_percent/100.0) + T.discount_amount) AS discount,
-                  ((T.sub_total * T.tax_percentage/100.0) + T.tax_amount) AS tax,
-                  IFNULL(P.payments_total,0) AS payments_total,
-                  IFNULL(P.count,0) AS num_payments
-                FROM  (SELECT O.*, D.sub_total, C.name 
-                      FROM (SELECT Order_num, SUM(unit_price*qty) as sub_total 
-                            FROM order_contents 
-                            GROUP BY Order_num) D, orders O, customers C 
-                      WHERE D.Order_num = O.Order_num AND O.customer_id = C.id) T
-            
-                LEFT JOIN
+                    $token = $user->createToken('default-token')->plainTextToken;
+                    
+                    request()->session()->put('apiToken', $token);
 
-                  (SELECT Order_num, (SUM(payment_amount) - SUM(refund_amount)) as payments_total, COUNT(*) AS count 
-                  FROM payments 
-                  GROUP BY Order_num) P
-      
-                ON T.Order_num = P.Order_num) X';
-        });
-
-        app()->singleton('CurrencyFormatter', function(){
-            $fmt = numfmt_create( 'en_IN', \NumberFormatter::DECIMAL );
-            $fmt->setAttribute(\NumberFormatter::MIN_FRACTION_DIGITS, 2);
-            $fmt->setAttribute(\NumberFormatter::MAX_FRACTION_DIGITS, 2);
-            //$fmt->setSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, "’");
-            return $fmt;
+                    return $token;
+                }
+                return null;
         });
     }
 
     /**
      * Bootstrap any application services.
-     */
+    */
     public function boot(): void
     {
         //

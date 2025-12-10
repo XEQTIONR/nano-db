@@ -2,103 +2,56 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 class Payment extends Model
 {
-    //
+    protected $primaryKey = 'transaction_id';
 
-    protected $appends = ['amount'];
-
-    public $primaryKey = 'transaction_id';
-
-    public static $paymentTypes = [
-      'unknown' => 'Unknown',
-      'cash'    => 'Cash',
-      'check'   => 'Check',
-      'deposit' => 'Bank Deposit',
-      'commission' => 'Commission',
+    protected $fillable = [
+        'payment_amount',
+        'refund_amount',
+        'type',
+        'account',
     ];
 
-    public function order()
-    {
-      return $this->belongsTo(Order::class,'Order_num');
+    public static $searchable = [
+        'transaction_id',
+        'Order_num',
+        'payment_amount',
+        'refund_amount',
+        'type',
+        'account',
+    ];
+
+    protected $appends = [
+        'amount',
+    ];
+
+    public function casts() {
+        return [
+            'payment_amount' => 'float',
+            'refund_amount' => 'float',
+            'amount' => 'float'
+        ];
     }
 
-    public function bankAccount()
+    public function order(): BelongsTo
     {
-      return $this->belongsTo(BankAccount::class,'account');
+        return $this->belongsTo(Order::class, 'Order_num');
     }
 
-    public function getAmountAttribute()
-    {
-      return $this->payment_amount - $this->refund_amount;
+    public function bankAccount(): BelongsTo {
+        return $this->belongsTo(BankAccount::class, 'account');
     }
 
-    public function getPaymentOnAttribute()
+    public function amount(): Attribute
     {
-      return $this->created_at->format('d/m/Y');
-    }
-
-    public static function paymentsInMonth($month, $year)
-    {
-      $payments = DB::table('payments')
-                ->whereMonth('created_at', '=', $month)
-                ->whereYear('created_at', '=', $year)
-                ->get();
-      return $payments;
-    }
-
-    public static function paymentsInYear($year)
-    {
-      $payments = DB::table('payments')
-                ->whereYear('created_at', '=', $year)
-                ->get();
-      return $payments;
-    }
-
-    public static function PaymentsInQuarter($quarter, $year)
-    {
-      $startmonth="";
-      $endmonth="";
-      switch ($quarter) {
-        case 1:
-          $startmonth="January";
-          $endmonth="March";
-        break;
-
-        case 2:
-          $startmonth="April";
-          $endmonth="June";
-        break;
-
-        case 3:
-          $startmonth="July";
-          $endmonth="September";
-        break;
-
-        case 4:
-        $startmonth="October";
-        $endmonth="December";
-        break;
-      }
-
-      $start_date = new Carbon("First day of ". $startmonth. " ".$year);
-      $end_date = new Carbon ("Last day of ". $endmonth. " ".$year);
-      $end_date = $end_date->addHours(23);
-      $end_date = $end_date->addMinutes(59);
-      $end_date = $end_date->addSeconds(59);
-    /*
-                ->whereYear('created_at', '=', $year)
-                ->whereMonth('created_at', '>', 3*$quarter-1);
-
-      $orders = $orders->whereMonth('created_at', '<=', 3*$quarter)
-                ->get();*/
-
-      $payments = DB::table('payments')
-              ->whereBetween('created_at',[$start_date, $end_date])
-              ->get();
-      return $payments;
+        return Attribute::make( get: function(mixed $val, array $attr) {
+               return $attr['payment_amount'] - $attr['refund_amount'];
+            }
+        );
     }
 }
